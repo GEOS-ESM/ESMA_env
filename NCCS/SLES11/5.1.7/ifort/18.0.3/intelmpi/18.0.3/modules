@@ -11,12 +11,22 @@ module load comp/intel-18.0.3.222
 module load mpi/impi-18.0.3.222
 module load lib/mkl-18.0.3.222
 module load other/python/GEOSpyD/Ana2019.03_py2.7
-
 module load other/git
 module load other/cmake
-module load other/ecbuild/latest
-module load other/manage_externals/latest
 
+# MAT For some reason, module purge does not like to have
+#     module use in a meta module like this. For now, just
+#     add the paths here
+
+# Add paths for ecbuild
+append-path PATH /discover/swdev/mathomp4/other/SLES11.3/ecbuild/2019Jun18/bin
+append-path LD_LIBRARY_PATH /discover/swdev/mathomp4/other/SLES11.3/ecbuild/2019Jun18/lib
+append-path INCLUDE /discover/swdev/mathomp4/other/SLES11.3/ecbuild/2019Jun18/include
+
+# Add paths for manage_externals
+append-path PATH /discover/swdev/mathomp4/manage_externals
+
+# Set paths for Baselibs
 set basedir /discover/swdev/mathomp4/Baselibs/ESMA-Baselibs-5.1.7/x86_64-unknown-linux-gnu/ifort_18.0.3.222-intelmpi_18.0.3.222
 
 setenv basedir $basedir
