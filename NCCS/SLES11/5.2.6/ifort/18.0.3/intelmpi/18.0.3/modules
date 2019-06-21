@@ -11,6 +11,6 @@ module load comp/intel-18.0.3.222
 module load mpi/impi-18.0.3.222
 module load lib/mkl-18.0.3.222
 module load other/python/GEOSpyD/Ana2019.03_py2.7
-module load Baselibs/5.2.6/ifort_18.0.3-intelmpi_18.0.3
+module load Baselibs/ifort_18.0.3-intelmpi_18.0.3/5.2.6
 
 setenv GEOS_SITE NCCS
