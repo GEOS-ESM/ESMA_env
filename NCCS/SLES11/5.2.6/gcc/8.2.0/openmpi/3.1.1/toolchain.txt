@@ -1,0 +1,4 @@
+set (CMAKE_CXX_COMPILER     /usr/local/other/SLES11.3/gcc/8.2/bin/g++)
+set (CMAKE_C_COMPILER       /usr/local/other/SLES11.3/gcc/8.2/bin/gcc)
+set (CMAKE_Fortran_COMPILER /usr/local/other/SLES11.3/gcc/8.2/bin/gfortran)
+
