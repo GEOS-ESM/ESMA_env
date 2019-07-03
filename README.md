@@ -1,2 +1,2 @@
-# GEOS_modules
-Repository containing modulefiles for GEOS
+# ESMA Environment
+Repository containing modulefiles for GEOS-ESM
