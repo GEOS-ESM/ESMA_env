@@ -143,33 +143,40 @@ if ( $site == NCCS ) then
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
-   set usemodules = 0
+
+   set usemod1 = /discover/nobackup/projects/gmao/sit/modulefiles-SLES11
+   set usemods = ( $usemod1 )
+   set usemodules = 1
 
 #=======#
 #  NAS  #
 #=======#
 else if ( $site == NAS ) then
 
-   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-5.1.5/x86_64-unknown-linux-gnu/ifort_2018.3.222-mpt_2.17r13-gcc_6.3.0
-   set mod1 = comp-gcc/6.3.0
-   set mod2 = comp-intel/2018.3.222
-   set mod3 = mpi-hpe/mpt.2.17r13
-   set mod4 = math-mkl/2018.3.222
-   set mod5 = python/2.7.12
+   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-5.1.7/x86_64-unknown-linux-gnu/ifort_2018.3.222-mpt_2.17r13-gcc_6.3.0
 
-   set mod6 = git/2.17.1
-   set mod7 = cmake/3.11.2
+   set mod1 = GEOSenv
 
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 )
+   set mod2 = comp-gcc/6.3.0
+   set mod3 = comp-intel/2018.3.222
+   set mod4 = mpi-hpe/mpt.2.17r13
+   set mod5 = math-mkl/2018.3.222
+   set mod6 = python/GEOSpyD/Ana2019.03_py2.7
+
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/modules/init/tcsh
    set loadmodules = 0
+
+   set usemod1 = /u/scicon/tools/modulefiles
+   set usemod2 = /nobackup/gmao_SIteam/modulefiles
+   set usemods = ( $usemod1 $usemod2 )
    set usemodules = 1
 
 #=========#
 #  JANUS  #
 #=========#
 else if ( $site == GMAO.janus ) then
-   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-5.1.5/x86_64-unknown-linux-gnu/pgfortran_17.10-openmpi_3.0.0-gcc_6.3.0
+   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-5.1.7/x86_64-unknown-linux-gnu/pgfortran_17.10-openmpi_3.0.0-gcc_6.3.0
    set mod1 = comp/gcc/6.3.0
    set mod2 = comp/pgi/17.10-gcc_6.3.0
    set mod3 = mpi/openmpi/3.0.0/pgi-17.10_gcc-6.3.0
@@ -223,19 +230,22 @@ else if ( $site == GMAO.niteroi ) then
 #=================#
 else if ( $site == GMAO.desktop ) then
 
-   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-5.1.5/x86_64-unknown-linux-gnu/ifort_18.0.3.222-openmpi_3.1.0-gcc_6.3.0
-   set mod1 = comp/gcc/6.3.0
-   set mod2 = comp/intel/18.0.3.222
-   set mod3 = mpi/openmpi/3.1.0/intel-18.0.3.222_gcc-6.3.0
-   set mod4 = lib/mkl/18.0.3.222
-   set mod5 = other/python/GEOSpyD/Ana2018.12_py2.7
+   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-5.1.7/x86_64-unknown-linux-gnu/ifort_18.0.3.222-openmpi_3.1.0-gcc_6.3.0
 
-   set mod6 = other/git/latest
-   set mod7 = other/cmake/latest
+   set mod1 = GEOSenv
 
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 )
+   set mod2 = comp/gcc/6.3.0
+   set mod3 = comp/intel/18.0.3.222
+   set mod4 = mpi/openmpi/3.1.0/intel-18.0.3.222_gcc-6.3.0
+   set mod5 = lib/mkl/18.0.3.222
+   set mod6 = other/python/GEOSpyD/Ana2018.12_py2.7
+
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/Modules/init/tcsh
    set loadmodules = 0
+
+   set usemod1 = /ford1/share/gmao_SIteam/modulefiles
+   set usemods = ( $usemod1 )
    set usemodules = 1
 
 endif
@@ -266,7 +276,7 @@ if ( $#argv > 0 ) then
       echo $loadmodules
 
    else if ( $1 == usemodules ) then
-      echo $usemodules
+      echo $usemods
 
    else if ( $1 == ESMA_FC ) then
       echo $ESMA_FC
@@ -351,18 +361,9 @@ if (-e $modinit) then
    if ($loadmodules) module load modules
 
    if ($usemodules) then
-      if ($site == NCCS) then
-         module use -a /discover/nobackup/projects/gmao/sit/modulefiles-SLES11
-      endif
-
-      if ($site == NAS) then
-         module use -a /u/scicon/tools/modulefiles
-         module use -a /nobackup/gmao_SIteam/modulefiles
-      endif
-
-      if ($site =~ "GMAO.*" ) then
-         module use -a /ford1/share/gmao_SIteam/modulefiles
-      endif
+      foreach usemod ( $usemods )
+         module use -a $usemod
+      end
    endif
 
    foreach mod ( $mods )
