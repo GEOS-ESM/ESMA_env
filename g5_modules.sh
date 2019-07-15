@@ -23,12 +23,15 @@ fi
 # Basedir
 export BASEDIR=$(csh $g5modules basedir)
 
-# MOMDIR
-export MOMDIR=$(csh $g5modules momdir)
-
 # Modules
 source $MODULESHOME/init/bash
 module purge
+
+# This is for non-standard module paths
+for usemod in $(csh $g5modules usemodules); do
+    module use -a $usemod
+done
+
 for mymod in $(csh $g5modules modules); do
     module load $mymod
 done
