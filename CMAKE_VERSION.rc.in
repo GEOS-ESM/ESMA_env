@@ -1,0 +1,2 @@
+CMake Version Used for Build: @CMAKE_VERSION@
+CMake Required Version: @CMAKE_MINIMUM_REQUIRED_VERSION@
