@@ -144,7 +144,7 @@ if ( $site == NCCS ) then
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
 
-   set usemod1 = /discover/nobackup/projects/gmao/sit/modulefiles-SLES11
+   set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES11
    set usemods = ( $usemod1 )
    set usemodules = 1
 
