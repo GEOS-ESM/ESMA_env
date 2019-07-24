@@ -14,7 +14,7 @@ set (BASEDIR /discover/swdev/mathomp4/Baselibs/ESMA-Baselibs-5.1.7/x86_64-unknow
   CACHE PATH "Path to base libraries")
 
 # Python
-set (PYTHON_EXECUTABLE /usr/local/other/python/GEOSpyD/2019.03_py2.7/2019-04-23/bin/python
+set (PYTHON_EXECUTABLE /usr/local/other/SLES11.3/SIVO-PyD/1.25.1_gcc6.3_mkl17.0.4.196/bin/python
   CACHE FILEPATH "Path to python executable")
 
 
