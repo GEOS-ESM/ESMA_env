@@ -135,7 +135,7 @@ if ( $site == NCCS ) then
    set mod4 = mpi/sgi-mpt-2.17
 
    set mod5 = lib/mkl-18.0.3.222
-   set mod6 = other/python/GEOSpyD/Ana2019.03_py2.7
+   set mod6 = other/SIVO-PyD/spd_1.25.1_gcc-6.3_mkl-17.0.4.196
 
    set basedir = /discover/swdev/mathomp4/Baselibs/ESMA-Baselibs-5.1.7/x86_64-unknown-linux-gnu/ifort_18.0.3.222-mpt_2.17
    #set mod7 = Baselibs/ifort_18.0.3-intelmpi_18.0.3/5.1.7
