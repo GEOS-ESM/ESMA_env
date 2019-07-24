@@ -81,6 +81,13 @@ setenv account     ""
 setenv tmpdir      ""
 setenv walltime    ""
 
+# Detect if on compute node already
+# ---------------------------------
+setenv oncompnode  0
+if ($?PBS_JOBID || $?SLURM_JOBID) then
+   set oncompnode = 1
+endif
+
 # check for runtime parameters
 #-----------------------------
 @ n = 0
@@ -206,7 +213,7 @@ if ($SITE == NCCS) then
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-4 `
    if (($nT != hasw)) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
-      exit
+      exit 1
    endif
    if ($nT == hasw) @ NCPUS_DFLT = 28
 
@@ -219,7 +226,7 @@ if ( $SITE == NAS ) then
    set nT = `echo $nodeTYPE | cut -c1-3 | tr "[A-Z]" "[a-z]"`
    if (($nT != san) && ($nT != ivy) && ($nT != has) && ($nT != bro) && ($nT != sky)) then
       echo "ERROR. Unknown node type at NAS: $nodeTYPE"
-      exit
+      exit 2
    endif
    if ($nT == sky) set nT = 'sky_ele'
    set proc = ":model=$nT"
@@ -287,7 +294,7 @@ if ("$tmpdir" != "") then
       mkdir -p $tmpdir
       if ($status) then
          echo ">> Error << mkdir $tmpdir "
-         exit
+         exit 3
       endif
    endif
 
@@ -295,7 +302,7 @@ if ("$tmpdir" != "") then
    #-------------------------------
    if (! -w $tmpdir) then
       echo ">> Error << TMPIR is not writeable: $tmpdir"  
-      exit
+      exit 4
    endif
    echo ""
 
@@ -335,7 +342,7 @@ if (! -d $Pbuild_build_directory) then
    mkdir -p $Pbuild_build_directory
    if ($status) then
       echo ">> Error << mkdir $Pbuild_build_directory "
-      exit
+      exit 5
    endif
 endif
 
@@ -348,9 +355,20 @@ if ( ($SITE == NCCS) || ($SITE == NAS) ) then
    #--------------------------------------
    @ ncpus_val  = $NCPUS_DFLT
    @ numjobs_val  = $ncpus_val - 2  # save some CPUs for memory
-   if ($numjobs_val > 14) @ numjobs_val = 14
+
+   # Are we on a compute node?
+   # -------------------------
+   if ( (! $oncompnode) && $interactive) then
+      # If we aren't don't use all the cores
+      if ($numjobs_val > 6) @ numjobs_val = 6
+   endif
    echo ""
-   echo "The build will proceed with $numjobs_val parallel processes on $ncpus_val CPUs."
+   echo -n "The build will proceed with $numjobs_val parallel processes on $ncpus_val CPUs"
+   if ( (! $oncompnode) && $interactive) then
+      echo " to not monopolize head node."
+   else
+      echo "."
+   endif
 
 else
 
@@ -380,7 +398,7 @@ else
 
    # save some CPUs for memory
    #--------------------------
-   @ numjobs_val = $ncpus_val / 2
+   @ numjobs_val = $ncpus_val - 2
    echo -n "The build will proceed with $numjobs_val parallel processes"
    echo    " on $ncpus_val CPUs."
 
@@ -591,7 +609,9 @@ echo1 `uname -a`
 echo1 "ESMADIR: $ESMADIR"
 echo1 "BASEDIR: $BASEDIR"
 echo1 "SITE: $SITE"
-echo1 "TMPDIR = $TMPDIR"
+if ($?TMPDIR) then
+   echo1 "TMPDIR = $TMPDIR"
+endif
 if ($?ESMA_FC) then
    echo1 "ESMA_FC: $ESMA_FC"
 endif
