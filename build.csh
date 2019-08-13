@@ -255,7 +255,11 @@ endif
 
 if ($SITE == UNKNOWN) then
    echo ""
-   @ NCPUS_DFLT = `cat /proc/cpuinfo  | grep processor | wc -l`
+   if ($ARCH == Darwin) then
+      @ NCPUS_DFLT = `sysctl -a | grep machdep.cpu.core_count | awk '{print $2}'`
+   else
+      @ NCPUS_DFLT = `cat /proc/cpuinfo  | grep processor | wc -l`
+   endif
    echo "Unknown site. Detected $NCPUS_DFLT cores and setting interactive build"
    set interactive = 1
 endif
@@ -690,6 +694,7 @@ where
     fc                 user-specified Fortran compiler
 
 flagged options
+   -develop            checkout with the Develop.cfg externals file
    -debug (or -db)     compile with debug flags (BOPT=g)
    -gpu                compile with BOPT=GPU (only valid with ESMA_FC=pgfortran)
    -help (or -h)       echo usage information
