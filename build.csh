@@ -77,6 +77,7 @@ setenv interactive 0
 setenv proc        ""
 setenv prompt      1
 setenv queue       ""
+setenv partition   ""
 setenv account     ""
 setenv tmpdir      ""
 setenv walltime    ""
@@ -108,12 +109,6 @@ while ($#argv)
       setenv debug "-DCMAKE_BUILD_TYPE=Debug"
    endif
 
-   # compile with GPU (if using pgfortran compiler)
-   #-----------------------------------------------
-   if ("$1" == "-gpu") then
-      set GPU = 1
-   endif
-
    # specify node type
    #------------------
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
@@ -136,12 +131,18 @@ while ($#argv)
       setenv ESMADIR $1
    endif
 
-   # specify Fortran compiler
-   #-------------------------
-   if ("$1" =~ *=*) then
-      set var = `echo $1 | cut -d= -f1`
-      set val = `echo $1 | cut -d= -f2`
-      if ($var == "ESMA_FC") setenv ESMA_FC $val
+   # set BUILDDIR
+   #-------------
+   if ("$1" == "-builddir") then
+      shift; if (! $#argv) goto usage
+      setenv BUILDDIR $1
+   endif
+
+   # set INSTALLDIR
+   #---------------
+   if ("$1" == "-installdir") then
+      shift; if (! $#argv) goto usage
+      setenv INSTALLDIR $1
    endif
 
    # run job interactively
@@ -162,6 +163,13 @@ while ($#argv)
       else
          setenv queue "-q $1"
       endif
+   endif
+
+   # submit batch job to specified partition
+   #----------------------------------------
+   if ("$1" == "-partition") then
+      shift; if (! $#argv) goto usage
+      setenv partition "--partition=$1"
    endif
 
    # submit batch job to specified account
@@ -194,12 +202,6 @@ while ($#argv)
    shift
 end
 
-# set BOPT=GPU if appropriate
-#----------------------------
-if ($?GPU && $?ESMA_FC) then
-   if ("$ESMA_FC" == "pgfortran") setenv debug "BOPT=GPU"
-endif
-
 # default nodeTYPE
 #-----------------
 if (! $?nodeTYPE) then
@@ -210,6 +212,15 @@ endif
 # at NCCS
 #--------
 if ($SITE == NCCS) then
+
+   if ("$queue" == "") then
+      set queue = '--qos=debug'
+   endif
+
+   if ("$partition" == "") then
+      set partition = '--partition=compute'
+   endif
+
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-4 `
    if (($nT != hasw)) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
@@ -223,6 +234,7 @@ endif
 # at NAS
 #-------
 if ( $SITE == NAS ) then
+
    set nT = `echo $nodeTYPE | cut -c1-3 | tr "[A-Z]" "[a-z]"`
    if (($nT != san) && ($nT != ivy) && ($nT != has) && ($nT != bro) && ($nT != sky)) then
       echo "ERROR. Unknown node type at NAS: $nodeTYPE"
@@ -264,6 +276,26 @@ if ($SITE == UNKNOWN) then
    set interactive = 1
 endif
 
+# set Pbuild_build_directory
+# --------------------------
+if ($?BUILDDIR) then
+   setenv Pbuild_build_directory   $ESMADIR/$BUILDDIR
+else if ("$debug" != "") then
+   setenv Pbuild_build_directory   $ESMADIR/build-Debug
+else
+   setenv Pbuild_build_directory   $ESMADIR/build
+endif
+
+# set Pbuild_install_directory
+# ----------------------------
+if ($?INSTALLDIR) then
+   setenv Pbuild_install_directory $ESMADIR/$INSTALLDIR
+else if ("$debug" != "") then
+   setenv Pbuild_install_directory $ESMADIR/install-Debug
+else
+   setenv Pbuild_install_directory $ESMADIR/install
+endif
+
 # developer's debug
 #------------------
 if ($ddb) then
@@ -274,16 +306,18 @@ if ($ddb) then
       echo "nodeTYPE = $nodeTYPE"
    endif
    echo "tmpdir = $tmpdir"
-   if ($?ESMA_FC) then
-      echo "ESMA_FC = $ESMA_FC"
-   endif
    echo "proc = $proc"
    echo "interactive = $interactive"
    echo "queue = $queue"
+   if ($SITE == NCCS) then
+      echo "partition = $partition"
+   endif
    echo "account = $account"
    echo "walltime = $walltime"
    echo "prompt = $prompt"
    echo "NCPUS_DFLT = $NCPUS_DFLT"
+   echo "Build directory = $Pbuild_build_directory"
+   echo "Install directory = $Pbuild_install_directory"
    exit
 endif
 
@@ -305,7 +339,7 @@ if ("$tmpdir" != "") then
    # ... check that it is writeable
    #-------------------------------
    if (! -w $tmpdir) then
-      echo ">> Error << TMPIR is not writeable: $tmpdir"  
+      echo ">> Error << TMPDIR is not writeable: $tmpdir"  
       exit 4
    endif
    echo ""
@@ -329,15 +363,6 @@ echo ""
 #--------------------------
 source $ESMADIR/@env/g5_modules
 setenv Pbuild_source_directory  $ESMADIR
-if ("$debug" != "") then
-   setenv Pbuild_build_directory   $ESMADIR/build-Debug
-   setenv Pbuild_install_directory $ESMADIR/install-Debug
-else
-   setenv Pbuild_build_directory   $ESMADIR/build
-   setenv Pbuild_install_directory $ESMADIR/install
-endif
-setenv Parallel_build_bypass_flag
-set jobname = "parallel_build"
 
 # Make the BUILD directory
 # ------------------------
@@ -349,6 +374,9 @@ if (! -d $Pbuild_build_directory) then
       exit 5
    endif
 endif
+
+setenv Parallel_build_bypass_flag
+set jobname = "parallel_build"
 
 #===========================
 # query for number of CPUs
@@ -528,14 +556,13 @@ else if ( $SITE == NAS ) then
 else if ( $SITE == NCCS ) then
    if ("$walltime" == "") setenv walltime "1:00:00"
    set echo
-   sbatch $groupflag $queue    \
+   sbatch $groupflag $partition $queue    \
         --constraint=$proc     \
         --job-name=$jobname    \
         --output=$jobname.o%j  \
         --nodes=1              \
         --ntasks=${numjobs}    \
         --time=$walltime       \
-        --partition=compute --qos=debug    \
         $0
    unset echo
    sleep 1
@@ -616,9 +643,6 @@ echo1 "SITE: $SITE"
 if ($?TMPDIR) then
    echo1 "TMPDIR = $TMPDIR"
 endif
-if ($?ESMA_FC) then
-   echo1 "ESMA_FC: $ESMA_FC"
-endif
 if ("$debug" != "") then
    echo1 "debug: $debug"
 endif
@@ -689,26 +713,28 @@ exit $buildstatus
 usage:
 cat <<EOF
 
-usage: $scriptname:t [ESMA_FC=fc] [flagged options]
-where
-    fc                 user-specified Fortran compiler
+usage: $scriptname:t [flagged options]
 
 flagged options
-   -develop            checkout with the Develop.cfg externals file
-   -debug (or -db)     compile with debug flags (BOPT=g)
-   -gpu                compile with BOPT=GPU (only valid with ESMA_FC=pgfortran)
-   -help (or -h)       echo usage information
-   -i                  run interactively rather than queuing job
-   -q qos/queue        send batch job to qos/queue
-   -account account    send batch job to account
-   -np                 do not prompt for responses; use defaults
-   -tmpdir dir         alternate Fortran TMPDIR location
-   -esmadir dir        esmadir location
-   -walltime hh:mm:ss  time to use as batch walltime at job submittal
+   -np                  do not prompt for responses; use defaults
+   -help (or -h)        echo usage information
 
-   -sky                compile on Skylake nodes (only at NAS)
-   -bro                compile on Broadwell nodes (only at NAS, default at NAS)
-   -has                compile on Haswell nodes (default at NCCS)
-   -ivy                compile on Ivy Bridge nodes 
-   -sand               compile on SandyBridge nodes
+   -develop             checkout with the Develop.cfg externals file
+   -debug (or -db)      compile with debug flags (-DCMAKE_BUILD_TYPE=Debug)
+   -builddir dir        alternate CMake build directory (relative to $ESMADIR)
+   -installdir dir      alternate CMake install directory (relative to $ESMADIR)
+   -tmpdir dir          alternate Fortran TMPDIR location
+   -esmadir dir         esmadir location
+
+   -i                   run interactively rather than queuing job
+   -q qos/queue         send batch job to qos/queue
+   -partition partition send batch job to partition (in case SLURM queue not on default compute partition)
+   -account account     send batch job to account
+   -walltime hh:mm:ss   time to use as batch walltime at job submittal
+
+   -sky                 compile on Skylake nodes (only at NAS)
+   -bro                 compile on Broadwell nodes (only at NAS, default at NAS)
+   -has                 compile on Haswell nodes (default at NCCS)
+   -ivy                 compile on Ivy Bridge nodes 
+   -sand                compile on SandyBridge nodes
 EOF
