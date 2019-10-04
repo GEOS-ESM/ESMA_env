@@ -135,7 +135,7 @@ if ( $site == NCCS ) then
    set mod4 = lib/mkl-18.0.5.274
    set mod5 = other/python/GEOSpyD/Ana2019.03_py2.7
 
-   set basedir = /discover/swdev/mathomp4/Baselibs/ESMA-Baselibs-5.2.7/x86_64-unknown-linux-gnu/ifort_18.0.5.274-intelmpi_18.0.5.274
+   set basedir = /discover/swdev/mathomp4/Baselibs/ESMA-Baselibs-5.2.8/x86_64-unknown-linux-gnu/ifort_18.0.5.274-intelmpi_18.0.5.274
 
    set mod6 = GEOSenv
 
@@ -152,14 +152,14 @@ if ( $site == NCCS ) then
 #=======#
 else if ( $site == NAS ) then
 
-   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-5.2.7/x86_64-unknown-linux-gnu/ifort_2018.5.274-mpt_2.17r13-gcc_6.3.0
+   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-5.2.8/x86_64-unknown-linux-gnu/ifort_2019.3.199-mpt_2.17r13-gcc_6.3.0
 
    set mod1 = GEOSenv
 
    set mod2 = comp-gcc/6.3.0
-   set mod3 = 2018.5.274.modulefile
+   set mod3 = 2019.3.199.modulefile
    set mod4 = mpi-hpe/mpt.2.17r13
-   set mod5 = math-mkl/2018.3.222
+   set mod5 = math-mkl/2019.3.199
    set mod6 = python/GEOSpyD/Ana2019.03_py2.7
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
@@ -168,7 +168,7 @@ else if ( $site == NAS ) then
 
    set usemod1 = /u/scicon/tools/modulefiles
    set usemod2 = /nobackup/gmao_SIteam/modulefiles
-   set usemod3 = /nasa/intel/Compiler/2018.5.274
+   set usemod3 = /nasa/intel/Compiler/2019.3.199
    set usemods = ( $usemod1 $usemod2 $usemod3 )
    set usemodules = 1
 
@@ -176,7 +176,7 @@ else if ( $site == NAS ) then
 #  JANUS  #
 #=========#
 else if ( $site == GMAO.janus ) then
-   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-5.2.7/x86_64-unknown-linux-gnu/pgfortran_17.10-openmpi_3.0.0-gcc_6.3.0
+   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-5.2.8/x86_64-unknown-linux-gnu/pgfortran_17.10-openmpi_3.0.0-gcc_6.3.0
    set mod1 = comp/gcc/6.3.0
    set mod2 = comp/pgi/17.10-gcc_6.3.0
    set mod3 = mpi/openmpi/3.0.0/pgi-17.10_gcc-6.3.0
@@ -230,7 +230,7 @@ else if ( $site == GMAO.niteroi ) then
 #=================#
 else if ( $site == GMAO.desktop ) then
 
-   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-5.2.7/x86_64-unknown-linux-gnu/ifort_18.0.5.274-openmpi_4.0.0-gcc_6.3.0
+   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-5.2.8/x86_64-unknown-linux-gnu/ifort_18.0.5.274-openmpi_4.0.0-gcc_6.3.0
 
    set mod1 = GEOSenv
 
