@@ -135,11 +135,11 @@ if ( $site == NCCS ) then
       set mod2 = comp/gcc/6.5.0
       set mod3 = comp/intel/18.0.5.274
 
-      set mod4 = mpi/impi/18.0.5.274
+      set mod4 = mpi/impi/19.1.0.166
 
       set mod5 = python/GEOSpyD/Ana2019.10_py2.7
 
-      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.4-SLES12/x86_64-unknown-linux-gnu/ifort_18.0.5.274-intelmpi_18.0.5.274
+      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.4-SLES12/x86_64-unknown-linux-gnu/ifort_18.0.5.274-intelmpi_19.1.0.166
 
       set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
 
