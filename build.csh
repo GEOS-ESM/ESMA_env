@@ -111,11 +111,10 @@ while ($#argv)
 
    # specify node type
    #------------------
+   if ("$1" == "-cas")  set nodeTYPE = "CascadeLake"
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
    if ("$1" == "-bro")  set nodeTYPE = "Broadwell"
    if ("$1" == "-has")  set nodeTYPE = "Haswell"
-   if ("$1" == "-ivy")  set nodeTYPE = "IvyBridge"
-   if ("$1" == "-sand") set nodeTYPE = "SandyBridge"
 
    # reset Fortran TMPDIR
    #---------------------
@@ -206,12 +205,24 @@ end
 #-----------------
 if (! $?nodeTYPE) then
    if ($SITE == NCCS) set nodeTYPE = "Haswell"
-   if ($SITE == NAS)  set nodeTYPE = "Broadwell"
+   if ($SITE == NAS)  set nodeTYPE = "Skylake"
 endif
 
 # at NCCS
 #--------
 if ($SITE == NCCS) then
+
+   set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
+   if (($nT != has) && ($nT != sky)) then
+      echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
+      exit 1
+   endif
+
+   if ($nT == has) @ NCPUS_DFLT = 28
+   if ($nT == sky) @ NCPUS_DFLT = 40
+
+   if ($nT == has) set proc = 'hasw'
+   if ($nT == sky) set proc = 'sky'
 
    if ("$queue" == "") then
       set queue = '--qos=debug'
@@ -221,14 +232,6 @@ if ($SITE == NCCS) then
       set partition = '--partition=compute'
    endif
 
-   set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-4 `
-   if (($nT != hasw)) then
-      echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
-      exit 1
-   endif
-   if ($nT == hasw) @ NCPUS_DFLT = 28
-
-   if ($nT == hasw) set proc = 'hasw'
 endif
 
 # at NAS
@@ -236,17 +239,19 @@ endif
 if ( $SITE == NAS ) then
 
    set nT = `echo $nodeTYPE | cut -c1-3 | tr "[A-Z]" "[a-z]"`
-   if (($nT != san) && ($nT != ivy) && ($nT != has) && ($nT != bro) && ($nT != sky)) then
+   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nt != cas)) then
       echo "ERROR. Unknown node type at NAS: $nodeTYPE"
       exit 2
    endif
+
    if ($nT == sky) set nT = 'sky_ele'
+   if ($nT == cas) set nT = 'cas_ait'
    set proc = ":model=$nT"
-   if ($nT == san)     @ NCPUS_DFLT = 16
-   if ($nT == ivy)     @ NCPUS_DFLT = 20
+
    if ($nT == has)     @ NCPUS_DFLT = 24
    if ($nT == bro)     @ NCPUS_DFLT = 28
    if ($nT == sky_ele) @ NCPUS_DFLT = 40
+   if ($nT == cas_ait) @ NCPUS_DFLT = 40
 
    # TMPDIR needs to be reset
    #-------------------------
@@ -732,9 +737,8 @@ flagged options
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
-   -sky                 compile on Skylake nodes (only at NAS)
-   -bro                 compile on Broadwell nodes (only at NAS, default at NAS)
+   -sky                 compile on Cascade Lake nodes (only at NAS)
+   -sky                 compile on Skylake nodes (default at NAS)
+   -bro                 compile on Broadwell nodes (only at NAS)
    -has                 compile on Haswell nodes (default at NCCS)
-   -ivy                 compile on Ivy Bridge nodes 
-   -sand                compile on SandyBridge nodes
 EOF
