@@ -737,7 +737,7 @@ flagged options
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
-   -sky                 compile on Cascade Lake nodes (only at NAS)
+   -cas                 compile on Cascade Lake nodes (only at NAS)
    -sky                 compile on Skylake nodes (default at NAS)
    -bro                 compile on Broadwell nodes (only at NAS)
    -has                 compile on Haswell nodes (default at NCCS)
