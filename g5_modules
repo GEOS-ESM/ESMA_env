@@ -127,48 +127,22 @@ set usemodules = 0
 #========#
 if ( $site == NCCS ) then
 
-   # Are we on SLES12...
-   if ( -e /etc/os-release ) then
+   set mod1 = GEOSenv
 
-      set mod1 = GEOSenv
+   set mod2 = comp/gcc/6.5.0
+   set mod3 = comp/intel/19.0.1.166
 
-      set mod2 = comp/gcc/6.5.0
-      set mod3 = comp/intel/18.0.5.274
+   set mod4 = mpi/impi/19.1.0.166
 
-      set mod4 = mpi/impi/19.1.0.166
+   set mod5 = python/GEOSpyD/Ana2019.10_py2.7
 
-      set mod5 = python/GEOSpyD/Ana2019.10_py2.7
+   set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.4-SLES12/x86_64-unknown-linux-gnu/ifort_19.0.1.166-intelmpi_19.1.0.166
 
-      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.4-SLES12/x86_64-unknown-linux-gnu/ifort_18.0.5.274-intelmpi_19.1.0.166
-
-      set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
-
-      set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
-
-   # or SLES 11?
-   else
-
-      set mod1 = GEOSenv
-
-      set mod2 = other/comp/gcc-6.3
-      set mod3 = comp/intel-18.0.5.274
-
-      set mod4 = mpi/impi-18.0.5.274
-
-      set mod5 = lib/mkl-18.0.5.274
-      set mod6 = other/python/GEOSpyD/Ana2019.10_py2.7
-
-      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.4-SLES11/x86_64-unknown-linux-gnu/ifort_18.0.5.274-intelmpi_18.0.5.274
-
-      set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
-
-      set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES11
-
-   endif
-
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
 
+   set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
    set usemods = ( $usemod1 )
    set usemodules = 1
 
