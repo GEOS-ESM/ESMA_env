@@ -70,6 +70,7 @@ endif
 # set defaults
 #-------------
 setenv esmadir     ""
+setenv docmake     1
 setenv ddb         0
 setenv debug       ""
 setenv verbose     ""
@@ -198,6 +199,13 @@ while ($#argv)
    if (("$1" == "-np") || ("$1" == "-noprompt")) then
       setenv prompt 0
    endif
+
+   # set nocmake option
+   #--------------------
+   if ("$1" == "-nocmake") then
+      setenv docmake 0
+   endif
+
    shift
 end
 
@@ -239,7 +247,7 @@ endif
 if ( $SITE == NAS ) then
 
    set nT = `echo $nodeTYPE | cut -c1-3 | tr "[A-Z]" "[a-z]"`
-   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nt != cas)) then
+   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas)) then
       echo "ERROR. Unknown node type at NAS: $nodeTYPE"
       exit 2
    endif
@@ -320,6 +328,7 @@ if ($ddb) then
    echo "account = $account"
    echo "walltime = $walltime"
    echo "prompt = $prompt"
+   echo "nocmake = $nocmake"
    echo "NCPUS_DFLT = $NCPUS_DFLT"
    echo "Build directory = $Pbuild_build_directory"
    echo "Install directory = $Pbuild_install_directory"
@@ -685,10 +694,12 @@ set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBA
 set cmd2 = "make --jobs=$numjobs install $verbose"
 echo1 "" 
 echo1 ""
+if ($docmake) then
 echo1 "--------------------------------------"
 echo1 $cmd1
 $cmd1 |& tee -a $cmakelog
 echo1 ""
+endif
 echo1 "--------------------------------------"
 echo1 $cmd2
 date1
@@ -730,6 +741,7 @@ flagged options
    -installdir dir      alternate CMake install directory (relative to $ESMADIR)
    -tmpdir dir          alternate Fortran TMPDIR location
    -esmadir dir         esmadir location
+   -nocmake             do not run cmake (useful for scripting)
 
    -i                   run interactively rather than queuing job
    -q qos/queue         send batch job to qos/queue
