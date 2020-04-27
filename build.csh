@@ -239,7 +239,7 @@ endif
 if ( $SITE == NAS ) then
 
    set nT = `echo $nodeTYPE | cut -c1-3 | tr "[A-Z]" "[a-z]"`
-   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nt != cas)) then
+   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas)) then
       echo "ERROR. Unknown node type at NAS: $nodeTYPE"
       exit 2
    endif
