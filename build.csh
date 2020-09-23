@@ -71,6 +71,7 @@ endif
 #-------------
 setenv esmadir     ""
 setenv docmake     1
+setenv usegnu      0
 setenv ddb         0
 setenv debug       ""
 setenv verbose     ""
@@ -204,6 +205,12 @@ while ($#argv)
    #--------------------
    if ("$1" == "-nocmake") then
       setenv docmake 0
+   endif
+
+   # set nocmake option
+   #--------------------
+   if ("$1" == "-gnu") then
+      setenv usegnu 1
    endif
 
    shift
@@ -690,7 +697,13 @@ if ( $cleanFLAG == "clean" ) then
     time >> $buildinfo
 endif
 
-set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=ifort $debug"
+if ($usegnu) then
+   setenv FORTRAN_COMPILER 'gfortran'
+else
+   setenv FORTRAN_COMPILER 'ifort'
+endif
+
+set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} $debug"
 set cmd2 = "make --jobs=$numjobs install $verbose"
 echo1 "" 
 echo1 ""
@@ -742,6 +755,7 @@ flagged options
    -tmpdir dir          alternate Fortran TMPDIR location
    -esmadir dir         esmadir location
    -nocmake             do not run cmake (useful for scripting)
+   -gnu                 build with gfortran
 
    -i                   run interactively rather than queuing job
    -q qos/queue         send batch job to qos/queue

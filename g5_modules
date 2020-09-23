@@ -127,48 +127,22 @@ set usemodules = 0
 #========#
 if ( $site == NCCS ) then
 
-   # Are we on SLES12...
-   if ( -e /etc/os-release ) then
+   set mod1 = GEOSenv
 
-      set mod1 = GEOSenv
+   set mod2 = comp/gcc/8.3.0
+   set mod3 = comp/intel/19.1.2.254
 
-      set mod2 = comp/gcc/6.5.0
-      set mod3 = comp/intel/18.0.5.274
+   set mod4 = mpi/impi/19.1.2.254
 
-      set mod4 = mpi/impi/19.1.0.166
+   set mod5 = python/GEOSpyD/Min4.8.3_py2.7
 
-      set mod5 = python/GEOSpyD/Ana2019.10_py2.7
+   set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.16/x86_64-unknown-linux-gnu/ifort_19.1.2.254-intelmpi_19.1.2.254
 
-      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.13-SLES12/x86_64-unknown-linux-gnu/ifort_18.0.5.274-intelmpi_19.1.0.166
-
-      set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
-
-      set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
-
-   # or SLES 11?
-   else
-
-      set mod1 = GEOSenv
-
-      set mod2 = other/comp/gcc-6.3
-      set mod3 = comp/intel-18.0.5.274
-
-      set mod4 = mpi/impi-18.0.5.274
-
-      set mod5 = lib/mkl-18.0.5.274
-      set mod6 = other/python/GEOSpyD/Ana2019.10_py2.7
-
-      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.13-SLES11/x86_64-unknown-linux-gnu/ifort_18.0.5.274-intelmpi_18.0.5.274
-
-      set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
-
-      set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES11
-
-   endif
-
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
 
+   set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
    set usemods = ( $usemod1 )
    set usemodules = 1
 
@@ -177,15 +151,15 @@ if ( $site == NCCS ) then
 #=======#
 else if ( $site == NAS ) then
 
-   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.13/x86_64-unknown-linux-gnu/ifort_2018.5.274-mpt_2.17r13-gcc_6.3.0
+   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.16/x86_64-unknown-linux-gnu/ifort_2020.2.254-mpt_2.17r13-gcc_8.4.0
 
    set mod1 = GEOSenv
 
-   set mod2 = comp-gcc/6.3.0
-   set mod3 = 2018.5.274.modulefile
+   set mod2 = comp-gcc/8.4.0
+   set mod3 = /nasa/intel/Compiler/2020.2.254/2020.2.254.modulefile
    set mod4 = mpi-hpe/mpt.2.17r13
-   set mod5 = math-mkl/2018.5.274
-   set mod6 = python/GEOSpyD/Ana2019.10_py2.7
+   set mod5 = math-mkl/2020.2.254
+   set mod6 = python/GEOSpyD/Min4.8.3_py2.7
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/modules/init/tcsh
@@ -193,15 +167,14 @@ else if ( $site == NAS ) then
 
    set usemod1 = /u/scicon/tools/modulefiles
    set usemod2 = /nobackup/gmao_SIteam/modulefiles
-   set usemod3 = /nasa/intel/Compiler/2018.5.274
-   set usemods = ( $usemod1 $usemod2 $usemod3 )
+   set usemods = ( $usemod1 $usemod2 )
    set usemodules = 1
 
 #=========#
 #  JANUS  #
 #=========#
 else if ( $site == GMAO.janus ) then
-   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.13/x86_64-unknown-linux-gnu/pgfortran_17.10-openmpi_3.0.0-gcc_6.3.0
+   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.16/x86_64-unknown-linux-gnu/pgfortran_17.10-openmpi_3.0.0-gcc_6.3.0
    set mod1 = comp/gcc/6.3.0
    set mod2 = comp/pgi/17.10-gcc_6.3.0
    set mod3 = mpi/openmpi/3.0.0/pgi-17.10_gcc-6.3.0
@@ -255,15 +228,15 @@ else if ( $site == GMAO.niteroi ) then
 #=================#
 else if ( $site == GMAO.desktop ) then
 
-   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.13/x86_64-unknown-linux-gnu/ifort_18.0.5.274-openmpi_4.0.0-gcc_6.3.0
+   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.16/x86_64-unknown-linux-gnu/ifort_19.1.2.254-openmpi_4.0.4-gcc_8.2.0
 
    set mod1 = GEOSenv
 
-   set mod2 = comp/gcc/6.3.0
-   set mod3 = comp/intel/18.0.5.274
-   set mod4 = mpi/openmpi/4.0.0/intel-18.0.5.274_gcc-6.3.0
-   set mod5 = lib/mkl/18.0.5.274
-   set mod6 = other/python/GEOSpyD/Ana2019.10_py2.7
+   set mod2 = comp/gcc/8.2.0
+   set mod3 = comp/intel/19.1.2.254
+   set mod4 = mpi/openmpi/4.0.4/intel-19.1.2.254
+   set mod5 = lib/mkl/19.1.2.254
+   set mod6 = other/python/GEOSpyD/Min4.8.3_py2.7
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/Modules/init/tcsh

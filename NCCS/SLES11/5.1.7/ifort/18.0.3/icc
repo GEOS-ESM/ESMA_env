@@ -1,8 +1,0 @@
-#!/bin/bash
-export INTEL_LICENSE_FILE=/usr/local/intel/license
-export PATH=/usr/local/other/SLES11.3/gcc/6.3/bin/gcc:${PATH}
-export LD_LIBRARY_PATH=/discover/swdev/mathomp4/Baselibs/ESMA-Baselibs-5.1.7/x86_64-unknown-linux-gnu/ifort_18.0.3.222-intelmpi_18.0.3.222/Linux/lib:/usr/local/intel/2018/compilers_and_libraries_2018.3.222/linux/compiler/lib/intel64_lin:/usr/local/intel/2018/compilers_and_libraries_2018.3.222/linux/mpi/lib64:/usr/local/intel/2018/compilers_and_libraries_2018.3.222/linux/compiler/lib/intel64:/opt/intel/mic/coi/host-linux-release/lib:/opt/intel/mic/myo/lib:/usr/local/intel/2018/compilers_and_libraries_2018.3.222/linux/ipp/lib/intel64:/usr/local/intel/2018/compilers_and_libraries_2018.3.222/linux/mkl/lib/intel64:/usr/local/intel/2018/compilers_and_libraries_2018.3.222/linux/tbb/lib/intel64/gcc4.1:/usr/local/intel/2018/debugger_2018/libipt/intel64/lib:/usr/local/other/SLES11.3/gcc/6.3/lib64:/usr/local/other/SLES11.3/X11/lib:/usr/local/other/SLES11.3/emacs/25.2/lib:/discover/swdev/mathomp4/other/SLES11.3/ecbuild/2019Jun19-JCSDA/lib:/gpfsm/dulocal/sles11/other/SLES11.3/git/2.21.0/lib
-
-/usr/local/intel/2018/compilers_and_libraries_2018.3.222/linux/bin/intel64/icc "$@"
-
-
