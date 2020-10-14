@@ -407,7 +407,7 @@ if ( ($SITE == NCCS) || ($SITE == NAS) ) then
    # use set number of CPUs on NCCS or NAS
    #--------------------------------------
    @ ncpus_val  = $NCPUS_DFLT
-   @ numjobs_val  = $ncpus_val - 2  # save some CPUs for memory
+   @ numjobs_val  = $ncpus_val / 2  # save some CPUs for memory
 
    # Are we on a compute node?
    # -------------------------
