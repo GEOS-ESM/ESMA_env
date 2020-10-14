@@ -407,7 +407,15 @@ if ( ($SITE == NCCS) || ($SITE == NAS) ) then
    # use set number of CPUs on NCCS or NAS
    #--------------------------------------
    @ ncpus_val  = $NCPUS_DFLT
-   @ numjobs_val  = $ncpus_val / 2  # save some CPUs for memory
+   @ numjobs_val  = $ncpus_val / 3  # save some CPUs for memory
+
+   # use only even number of CPUs
+   #-----------------------------
+   @ check = ( $numjobs_val % 2 )
+   if ($check == 1) then
+      @ numjobs_val --
+      echo "Rounding down to an even $numjobs_val CPUs."
+   endif
 
    # Are we on a compute node?
    # -------------------------
