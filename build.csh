@@ -756,7 +756,7 @@ flagged options
    -np                  do not prompt for responses; use defaults
    -help (or -h)        echo usage information
 
-   -develop             checkout with the Develop.cfg externals file
+   -develop             checkout with GEOSgcm_GridComp and GEOSgcm_App develop branches
    -debug (or -db)      compile with debug flags (-DCMAKE_BUILD_TYPE=Debug)
    -builddir dir        alternate CMake build directory (relative to $ESMADIR)
    -installdir dir      alternate CMake install directory (relative to $ESMADIR)
