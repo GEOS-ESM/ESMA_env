@@ -73,7 +73,8 @@ setenv esmadir     ""
 setenv docmake     1
 setenv usegnu      0
 setenv ddb         0
-setenv debug       ""
+setenv debug       0
+setenv aggressive  0
 setenv verbose     ""
 setenv interactive 0
 setenv proc        ""
@@ -83,6 +84,7 @@ setenv partition   ""
 setenv account     ""
 setenv tmpdir      ""
 setenv walltime    ""
+setenv cmake_build_type "Release"
 
 # Detect if on compute node already
 # ---------------------------------
@@ -108,7 +110,15 @@ while ($#argv)
    # compile with debug
    #-------------------
    if (("$1" == "-debug") || ("$1" == "-db")) then
-      setenv debug "-DCMAKE_BUILD_TYPE=Debug"
+      setenv cmake_build_type "Debug"
+      set debug = 1
+   endif
+
+   # compile with aggressive
+   #------------------------
+   if ("$1" == "-aggressive") then
+      setenv cmake_build_type "Aggressive"
+      set aggressive = 1
    endif
 
    # specify node type
@@ -216,6 +226,14 @@ while ($#argv)
    shift
 end
 
+# Only allow one of debug and aggressive
+# --------------------------------------
+
+if ( ($aggressive) && ($debug) )
+   echo "ERROR. Only one of -debug and -aggressive is allowed"
+   exit 1
+endif
+
 # default nodeTYPE
 #-----------------
 if (! $?nodeTYPE) then
@@ -300,8 +318,10 @@ endif
 # --------------------------
 if ($?BUILDDIR) then
    setenv Pbuild_build_directory   $ESMADIR/$BUILDDIR
-else if ("$debug" != "") then
+else if ($debug) then
    setenv Pbuild_build_directory   $ESMADIR/build-Debug
+else if ($aggressive) then
+   setenv Pbuild_build_directory   $ESMADIR/build-Aggressive
 else
    setenv Pbuild_build_directory   $ESMADIR/build
 endif
@@ -310,8 +330,10 @@ endif
 # ----------------------------
 if ($?INSTALLDIR) then
    setenv Pbuild_install_directory $ESMADIR/$INSTALLDIR
-else if ("$debug" != "") then
+else if ($debug) then
    setenv Pbuild_install_directory $ESMADIR/install-Debug
+else if ($aggressive) then
+   setenv Pbuild_install_directory $ESMADIR/install-Aggressive
 else
    setenv Pbuild_install_directory $ESMADIR/install
 endif
@@ -321,6 +343,7 @@ endif
 if ($ddb) then
    echo "ESMADIR = $ESMADIR"
    echo "debug = $debug"
+   echo "aggressive = $aggressive"
    echo "verbose = $verbose"
    if ($?nodeTYPE) then
       echo "nodeTYPE = $nodeTYPE"
@@ -672,9 +695,7 @@ echo1 "SITE: $SITE"
 if ($?TMPDIR) then
    echo1 "TMPDIR = $TMPDIR"
 endif
-if ("$debug" != "") then
-   echo1 "debug: $debug"
-endif
+echo1 "cmake_build_type: $cmake_build_type"
 if ("$verbose" != "") then
    echo1 "verbose: $verbose"
 endif
@@ -711,7 +732,7 @@ else
    setenv FORTRAN_COMPILER 'ifort'
 endif
 
-set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} $debug"
+set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type}"
 set cmd2 = "make --jobs=$numjobs install $verbose"
 echo1 "" 
 echo1 ""
@@ -758,6 +779,7 @@ flagged options
 
    -develop             checkout with GEOSgcm_GridComp and GEOSgcm_App develop branches
    -debug (or -db)      compile with debug flags (-DCMAKE_BUILD_TYPE=Debug)
+   -aggressive          compile with aggressive flags (-DCMAKE_BUILD_TYPE=Aggressive)
    -builddir dir        alternate CMake build directory (relative to $ESMADIR)
    -installdir dir      alternate CMake install directory (relative to $ESMADIR)
    -tmpdir dir          alternate Fortran TMPDIR location
