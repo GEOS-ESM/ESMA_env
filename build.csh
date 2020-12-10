@@ -358,7 +358,7 @@ if ($ddb) then
    echo "account = $account"
    echo "walltime = $walltime"
    echo "prompt = $prompt"
-   echo "nocmake = $nocmake"
+   echo "nocmake = $docmake"
    echo "NCPUS_DFLT = $NCPUS_DFLT"
    echo "Build directory = $Pbuild_build_directory"
    echo "Install directory = $Pbuild_install_directory"
