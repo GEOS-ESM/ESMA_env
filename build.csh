@@ -360,6 +360,7 @@ if ($ddb) then
    echo "prompt = $prompt"
    echo "nocmake = $docmake"
    echo "NCPUS_DFLT = $NCPUS_DFLT"
+   echo "CMAKE_BUILD_TYPE= $cmake_build_type"
    echo "Build directory = $Pbuild_build_directory"
    echo "Install directory = $Pbuild_install_directory"
    exit
