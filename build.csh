@@ -780,7 +780,6 @@ flagged options
 
    -develop             checkout with GEOSgcm_GridComp and GEOSgcm_App develop branches
    -debug (or -db)      compile with debug flags (-DCMAKE_BUILD_TYPE=Debug)
-   -aggressive          compile with aggressive flags (-DCMAKE_BUILD_TYPE=Aggressive)
    -builddir dir        alternate CMake build directory (relative to $ESMADIR)
    -installdir dir      alternate CMake install directory (relative to $ESMADIR)
    -tmpdir dir          alternate Fortran TMPDIR location
