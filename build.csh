@@ -229,7 +229,7 @@ end
 # Only allow one of debug and aggressive
 # --------------------------------------
 
-if ( ($aggressive) && ($debug) )
+if ( ($aggressive) && ($debug) ) then
    echo "ERROR. Only one of -debug and -aggressive is allowed"
    exit 1
 endif
