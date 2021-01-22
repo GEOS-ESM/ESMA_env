@@ -130,20 +130,22 @@ if ( $site == NCCS ) then
    set mod1 = GEOSenv
 
    set mod2 = comp/gcc/8.3.0
-   set mod3 = comp/intel/19.1.3.304
+   set mod3 = compiler/2021.1.1
 
-   set mod4 = mpi/impi/19.1.3.304
+   set mod4 = mpi/2021.1.1
+   set mod5 = mkl/2021.1.1
 
-   set mod5 = python/GEOSpyD/Min4.8.3_py2.7
+   set mod6 = python/GEOSpyD/Min4.8.3_py2.7
 
-   set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.27/x86_64-pc-linux-gnu/ifort_19.1.3.304-intelmpi_19.1.3.304
+   set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.27/x86_64-pc-linux-gnu/ifort_2021.1.1-intelmpi_2021.1.1
 
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
 
    set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
-   set usemods = ( $usemod1 )
+   set usemod2 = /discover/swdev/mathomp4/intel/oneapi/modulefiles
+   set usemods = ( $usemod1 $usemod2 )
    set usemodules = 1
 
 #=======#
