@@ -137,9 +137,11 @@ if ( $site == NCCS ) then
 
    set mod6 = python/GEOSpyD/Min4.8.3_py2.7
 
+   set mod7 = cmake/3.19.3
+
    set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.27/x86_64-pc-linux-gnu/ifort_2021.1.1-intelmpi_2021.1.1
 
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 )
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
 
