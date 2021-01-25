@@ -76,6 +76,7 @@ if (($node =~ discover*) || ($node =~ borg*)  || \
 
 else if (($node =~ pfe*)  || ($node =~ p4fe*) || \
          ($node =~ r[0-9]*i[0-9]*n[0-9]*)     || \
+         ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)     || \
          ($node =~ bridge*) || ($node =~ maia*)) then
    set site = "NAS"
 
