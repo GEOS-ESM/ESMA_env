@@ -152,7 +152,7 @@ if ( $site == NCCS ) then
 #=======#
 else if ( $site == NAS ) then
 
-   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.0.27/x86_64-pc-linux-gnu/ifort_2020.4.304-mpt_2.23-gcc_8.4.0
+   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-main-RomeTest/x86_64-pc-linux-gnu/ifort_2020.4.304-mpt_2.23-gcc_8.4.0-ROME-SLES15
 
    set mod1 = GEOSenv
 
