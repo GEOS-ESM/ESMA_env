@@ -755,10 +755,11 @@ endif
 
 if ($usehydro) then
    setenv HYDROBUILD '-DHYDROSTATIC=ON'
-endif
-
-if ($usenonhydro) then
+else if ($usenonhydro) then
    setenv HYDROBUILD '-DHYDROSTATIC=OFF'
+else
+   # If no option is passed, use the default in the model
+   setenv HYDROBUILD ''
 endif
 
 set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD}"
