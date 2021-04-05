@@ -159,7 +159,8 @@ else if ( $site == NAS ) then
    set mod3 = /nasa/intel/Compiler/2020.4.304/2020.4.304.modulefile
    set mod4 = mpi-hpe/mpt.2.23
    set mod5 = math-mkl/2020.4.304
-   set mod6 = python/GEOSpyD/Min4.8.3_py2.7
+   set mod6 = python/GEOSpyD/Min4.8.3_py3.8_AND_py2.7
+
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/modules/init/tcsh
@@ -236,7 +237,7 @@ else if ( $site == GMAO.desktop ) then
    set mod3 = comp/intel/19.1.3.304
    set mod4 = mpi/openmpi/4.0.5/intel-19.1.3.304
    set mod5 = lib/mkl/19.1.3.304
-   set mod6 = other/python/GEOSpyD/Min4.8.3_py2.7
+   set mod6 = other/python/GEOSpyD/Min4.8.3_py3.8_AND_py2.7
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/Modules/init/tcsh
