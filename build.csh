@@ -72,6 +72,8 @@ endif
 setenv esmadir     ""
 setenv docmake     1
 setenv usegnu      0
+setenv usehydro    0
+setenv usenonhydro 0
 setenv ddb         0
 setenv debug       0
 setenv aggressive  0
@@ -217,10 +219,22 @@ while ($#argv)
       setenv docmake 0
    endif
 
-   # set nocmake option
-   #--------------------
+   # set gnu option
+   #---------------
    if ("$1" == "-gnu") then
       setenv usegnu 1
+   endif
+
+   # set hydrostatic option
+   #-----------------------
+   if ("$1" == "-hydrostatic") then
+      setenv usehydro 1
+   endif
+
+   # set hydrostatic option
+   #-----------------------
+   if ("$1" == "-nonhydrostatic") then
+      setenv usenonhydro 1
    endif
 
    shift
@@ -228,9 +242,15 @@ end
 
 # Only allow one of debug and aggressive
 # --------------------------------------
-
 if ( ($aggressive) && ($debug) ) then
    echo "ERROR. Only one of -debug and -aggressive is allowed"
+   exit 1
+endif
+
+# Only allow one of hydrostatic and nonhydrostatic
+# ------------------------------------------------
+if ( ($usehydro) && ($usenonhydro) ) then
+   echo "ERROR. Only one of -hydrostatic and -nonhydrostatic is allowed"
    exit 1
 endif
 
@@ -733,7 +753,16 @@ else
    setenv FORTRAN_COMPILER 'ifort'
 endif
 
-set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type}"
+if ($usehydro) then
+   setenv HYDROBUILD '-DHYDROSTATIC=ON'
+else if ($usenonhydro) then
+   setenv HYDROBUILD '-DHYDROSTATIC=OFF'
+else
+   # If no option is passed, use the default in the model
+   setenv HYDROBUILD ''
+endif
+
+set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD}"
 set cmd2 = "make --jobs=$numjobs install $verbose"
 echo1 "" 
 echo1 ""
@@ -786,6 +815,9 @@ flagged options
    -esmadir dir         esmadir location
    -nocmake             do not run cmake (useful for scripting)
    -gnu                 build with gfortran
+
+   -hydrostatic         build for hydrostatic dynamics in FV
+   -nonhydrostatic      build for nonhydrostatic dynamics in FV
 
    -i                   run interactively rather than queuing job
    -q qos/queue         send batch job to qos/queue
