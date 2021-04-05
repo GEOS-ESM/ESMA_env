@@ -74,10 +74,9 @@ if (($node =~ discover*) || ($node =~ borg*)  || \
 
    set site = "NCCS"
 
-else if (($node =~ pfe*)  || ($node =~ p4fe*) || \
+else if (($node =~ pfe*) || \
          ($node =~ r[0-9]*i[0-9]*n[0-9]*)     || \
-         ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*) || \
-         ($node =~ bridge*) || ($node =~ maia*)) then
+         ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
    set site = "NAS"
 
 else if ($node =~ janus*) then
