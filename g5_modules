@@ -75,9 +75,13 @@ if (($node =~ discover*) || ($node =~ borg*)  || \
    set site = "NCCS"
 
 else if (($node =~ pfe*) || \
-         ($node =~ r[0-9]*i[0-9]*n[0-9]*)     || \
-         ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
+         ($node =~ r[0-9]*i[0-9]*n[0-9]*)) then
    set site = "NAS"
+   set nasos = "SLES12"
+
+else if (($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
+   set site = "NAS"
+   set nasos = "SLES15"
 
 else if ($node =~ janus*) then
    set site = "GMAO.janus"
@@ -151,7 +155,11 @@ if ( $site == NCCS ) then
 #=======#
 else if ( $site == NAS ) then
 
-   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.1.0/x86_64-pc-linux-gnu/ifort_2020.4.304-mpt_2.23-gcc_8.4.0
+   if ( $nasos == SLES15 ) then
+      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.1.0/x86_64-pc-linux-gnu/ifort_2020.4.304-mpt_2.23-gcc_8.4.0-ROME-SLES15
+   else
+      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.1.0/x86_64-pc-linux-gnu/ifort_2020.4.304-mpt_2.23-gcc_8.4.0
+   endif
 
    set mod1 = GEOSenv
 
