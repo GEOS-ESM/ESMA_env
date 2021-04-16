@@ -398,6 +398,12 @@ if (-e $modinit) then
       module load $mod
    end
 
+   if ($?XTRAMODS2LOAD) then
+      set xmods = (`echo $XTRAMODS2LOAD | cut -d: -f1- --output-delimiter=" "`)
+      foreach mod ( $xmods )
+         module load $mod
+      end
+   endif
 endif
 if (! $wrapper) echo " for $node"
 
