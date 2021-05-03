@@ -169,7 +169,6 @@ else if ( $site == NAS ) then
    set mod5 = math-mkl/2020.4.304
    set mod6 = python/GEOSpyD/Min4.8.3_py3.8_AND_py2.7
 
-
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/modules/init/tcsh
    set loadmodules = 0
