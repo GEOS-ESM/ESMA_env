@@ -426,7 +426,13 @@ echo ""
 
 # set environment variables
 #--------------------------
-source $ESMADIR/@env/g5_modules
+if ( -d ${ESMADIR}/@env ) then
+   source $ESMADIR/@env/g5_modules
+else if ( -d ${ESMADIR}/env@ ) then
+   source $ESMADIR/env@/g5_modules
+else if ( -d ${ESMADIR}/env ) then
+   source $ESMADIR/env/g5_modules
+endif
 setenv Pbuild_source_directory  $ESMADIR
 
 # Make the BUILD directory
@@ -703,7 +709,13 @@ echo2 ""
 #================
 # set environment  
 #================
-source $ESMADIR/@env/g5_modules
+if ( -d ${ESMADIR}/@env ) then
+   source $ESMADIR/@env/g5_modules
+else if ( -d ${ESMADIR}/env@ ) then
+   source $ESMADIR/env@/g5_modules
+else if ( -d ${ESMADIR}/env ) then
+   source $ESMADIR/env/g5_modules
+endif
 
 # write environment info to build log
 #------------------------------------
