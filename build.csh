@@ -257,7 +257,7 @@ endif
 # default nodeTYPE
 #-----------------
 if (! $?nodeTYPE) then
-   if ($SITE == NCCS) set nodeTYPE = "Haswell"
+   if ($SITE == NCCS) set nodeTYPE = "Skylake"
    if ($SITE == NAS)  set nodeTYPE = "Skylake"
 endif
 
@@ -266,16 +266,18 @@ endif
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if (($nT != has) && ($nT != sky)) then
+   if (($nT != has) && ($nT != sky) && ($nT != cas) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
 
    if ($nT == has) @ NCPUS_DFLT = 28
    if ($nT == sky) @ NCPUS_DFLT = 40
+   if ($nT == cas) @ NCPUS_DFLT = 48
 
    if ($nT == has) set proc = 'hasw'
    if ($nT == sky) set proc = 'sky'
+   if ($nT == cas) set proc = 'cas'
 
    if ("$queue" == "") then
       set queue = '--qos=debug'
