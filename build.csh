@@ -267,7 +267,7 @@ endif
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if (($nT != has) && ($nT != sky) && ($nT != cas) then
+   if (($nT != has) && ($nT != sky) && ($nT != cas)) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
