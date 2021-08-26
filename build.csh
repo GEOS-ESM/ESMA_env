@@ -636,7 +636,7 @@ else if ( $SITE == NAS ) then
         -l select=1:ncpus=${ncpus}:mpiprocs=${numjobs}$proc \
         -l walltime=$walltime  \
         -S /bin/csh            \
-        -V -j oe               \
+        -V -j oe -k oed        \
         $0
    unset echo
    sleep 1
