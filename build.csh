@@ -309,7 +309,7 @@ if ( $SITE == NAS ) then
    if ($nT == bro)     @ NCPUS_DFLT = 28
    if ($nT == sky_ele) @ NCPUS_DFLT = 40
    if ($nT == cas_ait) @ NCPUS_DFLT = 40
-   if ($nT =~ rom_ait) @ NCPUS_DFLT = 128
+   if ($nT == "rom_ait:aoe=sles15") @ NCPUS_DFLT = 128
 
    # TMPDIR needs to be reset
    #-------------------------
