@@ -125,6 +125,7 @@ while ($#argv)
 
    # specify node type
    #------------------
+   if ("$1" == "-rom")  set nodeTYPE = "Rome"
    if ("$1" == "-cas")  set nodeTYPE = "CascadeLake"
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
    if ("$1" == "-bro")  set nodeTYPE = "Broadwell"
@@ -292,11 +293,12 @@ endif
 if ( $SITE == NAS ) then
 
    set nT = `echo $nodeTYPE | cut -c1-3 | tr "[A-Z]" "[a-z]"`
-   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas)) then
+   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas) && ($nT != rom)) then
       echo "ERROR. Unknown node type at NAS: $nodeTYPE"
       exit 2
    endif
 
+   if ($nT == rom) set nT = 'rom_ait:aoe=sles15'
    if ($nT == sky) set nT = 'sky_ele'
    if ($nT == cas) set nT = 'cas_ait'
    set proc = ":model=$nT"
@@ -305,6 +307,7 @@ if ( $SITE == NAS ) then
    if ($nT == bro)     @ NCPUS_DFLT = 28
    if ($nT == sky_ele) @ NCPUS_DFLT = 40
    if ($nT == cas_ait) @ NCPUS_DFLT = 40
+   if ($nT == "rom_ait:aoe=sles15") @ NCPUS_DFLT = 128
 
    # TMPDIR needs to be reset
    #-------------------------
@@ -472,6 +475,10 @@ if ( ($SITE == NCCS) || ($SITE == NAS) ) then
    if ( (! $oncompnode) && $interactive) then
       # If we aren't don't use all the cores
       if ($numjobs_val > 6) @ numjobs_val = 6
+   else
+      # Just use 10 CPUs at most. GEOS doesn't support more
+      # parallelism in the build
+      if ($numjobs_val > 10) @ numjobs_val = 10
    endif
    echo ""
    echo -n "The build will proceed with $numjobs_val parallel processes on $ncpus_val CPUs"
@@ -627,7 +634,7 @@ else if ( $SITE == NAS ) then
         -l select=1:ncpus=${ncpus}:mpiprocs=${numjobs}$proc \
         -l walltime=$walltime  \
         -S /bin/csh            \
-        -V -j oe               \
+        -V -j oe -k oed        \
         $0
    unset echo
    sleep 1
@@ -837,6 +844,7 @@ flagged options
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
+   -rom                 compile on Rome nodes (only at NAS)
    -cas                 compile on Cascade Lake nodes (only at NAS)
    -sky                 compile on Skylake nodes (default at NAS)
    -bro                 compile on Broadwell nodes (only at NAS)
