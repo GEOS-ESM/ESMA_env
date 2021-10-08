@@ -144,13 +144,13 @@ if ( $site == NCCS ) then
    set mod1 = GEOSenv
 
    set mod2 = comp/gcc/10.1.0
-   set mod3 = comp/intel/2021.2.0
+   set mod3 = comp/intel/2021.3.0
 
-   set mod4 = mpi/impi/2021.2.0
+   set mod4 = mpi/impi/2021.3.0
 
    set mod5 = python/GEOSpyD/Min4.8.3_py2.7
 
-   set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.7/x86_64-pc-linux-gnu/ifort_2021.2.0-intelmpi_2021.2.0
+   set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.8/x86_64-pc-linux-gnu/ifort_2021.3.0-intelmpi_2021.3.0
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
    set modinit = /usr/share/modules/init/csh
@@ -166,11 +166,11 @@ if ( $site == NCCS ) then
 else if ( $site == NAS ) then
 
    if ( $nasos == TOSS3 ) then
-      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.7/x86_64-pc-linux-gnu/ifort_2021.2.0-mpt_2.23-TOSS3
+      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.8/x86_64-pc-linux-gnu/ifort_2021.3.0-mpt_2.23-TOSS3
    else if ( $nasos == SLES15 ) then
-      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.7/x86_64-pc-linux-gnu/ifort_2021.2.0-mpt_2.23-ROME-SLES15
+      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.8/x86_64-pc-linux-gnu/ifort_2021.3.0-mpt_2.23-ROME-SLES15
    else
-      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.7/x86_64-pc-linux-gnu/ifort_2021.2.0-mpt_2.23
+      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.8/x86_64-pc-linux-gnu/ifort_2021.3.0-mpt_2.23
    endif
 
    set mod1 = GEOSenv
@@ -180,7 +180,7 @@ else if ( $site == NAS ) then
    else
       set mod2 = comp-gcc/10.2.0
    endif
-   set mod3 = comp-intel/2021.2.0
+   set mod3 = comp-intel/2021.3.0
    set mod4 = mpi-hpe/mpt.2.23
    set mod5 = python/GEOSpyD/Min4.8.3_py2.7
 
@@ -198,7 +198,7 @@ else if ( $site == NAS ) then
 #  JANUS  #
 #=========#
 else if ( $site == GMAO.janus ) then
-   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.7/x86_64-pc-linux-gnu/pgfortran_17.10-openmpi_3.0.0-gcc_6.3.0
+   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.8/x86_64-pc-linux-gnu/pgfortran_17.10-openmpi_3.0.0-gcc_6.3.0
    set mod1 = comp/gcc/6.3.0
    set mod2 = comp/pgi/17.10-gcc_6.3.0
    set mod3 = mpi/openmpi/3.0.0/pgi-17.10_gcc-6.3.0
@@ -252,13 +252,13 @@ else if ( $site == GMAO.niteroi ) then
 #=================#
 else if ( $site == GMAO.desktop ) then
 
-   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.7/x86_64-pc-linux-gnu/ifort_2021.2.0-intelmpi_2021.2.0
+   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.8/x86_64-pc-linux-gnu/ifort_2021.3.0-intelmpi_2021.3.0
 
    set mod1 = GEOSenv
 
    set mod2 = comp/gcc/10.1.0
-   set mod3 = comp/intel/2021.2.0
-   set mod4 = mpi/impi/2021.2.0
+   set mod3 = comp/intel/2021.3.0
+   set mod4 = mpi/impi/2021.3.0
    set mod5 = other/python/GEOSpyD/Min4.8.3_py2.7
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
