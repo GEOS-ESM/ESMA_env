@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [3.5.0] - 2021-Oct-15
+
+### Added
+
 - Add CMake option to install source tarfile by default in `build.csh`
 
 ## [3.4.0] - 2021-Oct-01
