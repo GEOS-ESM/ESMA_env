@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [3.4.1] - 2021-Oct-15
+
+### Fixed
+
+- When running on Cascade Lake nodes at NCCS, pass in `--ntasks-per-node=45`. Note that this script will never actually run `make -j48` and indeed only asks SLURM for 10 tasks, but this will suppress a loud warning.
+
+### Added
+
+- Add CMake option to install source tarfile by default in `build.csh`
+
 ## [3.4.0] - 2021-Oct-01
 
 ### Changed

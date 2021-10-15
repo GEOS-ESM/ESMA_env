@@ -262,6 +262,9 @@ if (! $?nodeTYPE) then
    if ($SITE == NAS)  set nodeTYPE = "Skylake"
 endif
 
+# This is a flag needed at NCCS for Cascade Lake. Default is blank
+set ntaskspernode = ''
+
 # at NCCS
 #--------
 if ($SITE == NCCS) then
@@ -278,7 +281,14 @@ if ($SITE == NCCS) then
 
    if ($nT == has) set proc = 'hasw'
    if ($nT == sky) set proc = 'sky'
-   if ($nT == cas) set proc = 'cas'
+   if ($nT == cas) then
+      set proc = 'cas'
+      # Adding this adds prevents a warning from NCCS about using 48
+      # tasks per node on Cascade. This script will never actually run
+      # make -j48, (usually make -j10 and only asks for 10 tasks) but
+      # this suppresses the warning.
+      set ntaskspernode = '--ntasks-per-node=45'
+   endif
 
    if ("$queue" == "") then
       set queue = '--qos=debug'
@@ -650,6 +660,7 @@ else if ( $SITE == NCCS ) then
         --output=$jobname.o%j  \
         --nodes=1              \
         --ntasks=${numjobs}    \
+        $ntaskspernode         \
         --time=$walltime       \
         $0
    unset echo
@@ -783,7 +794,7 @@ else
    setenv HYDROBUILD ''
 endif
 
-set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD}"
+set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=ON"
 set cmd2 = "make --jobs=$numjobs install $verbose"
 echo1 "" 
 echo1 ""
