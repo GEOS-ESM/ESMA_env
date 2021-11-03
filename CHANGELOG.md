@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Update to Intel 2021.3
+  - Note: This is non-zero-diff for GEOSgcm
 
 ## [3.6.0] - 2021-Nov-03
 
