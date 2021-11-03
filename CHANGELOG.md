@@ -18,6 +18,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Update to Intel 2021.3
 
+## [3.5.1] - 2021-Nov-03
+
+### Fixed
+
+- Added Rome compute nodes (and tfe) to `build.csh`
+
 ## [3.5.0] - 2021-Oct-26
 
 ### Changed
