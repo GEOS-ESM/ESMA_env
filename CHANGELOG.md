@@ -12,11 +12,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
-## [3.X.0] - 2021-MMM-XX
+## [3.7.0] - 2021-Nov-03
 
 ### Changed
 
 - Update to Intel 2021.3
+
+## [3.6.0] - 2021-Nov-03
+
+### Changes
+
+- Per NAS advice, use MPT 2.25 on TOSS nodes
 
 ## [3.5.1] - 2021-Nov-03
 
