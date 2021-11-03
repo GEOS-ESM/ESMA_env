@@ -51,9 +51,10 @@ if ( ($node == dirac)   \
   || ($node =~ discover*)) then
    setenv SITE NCCS
 
-else if (($node =~ pfe*)      \
-      || ($node =~ bridge*)   \
-      || ($node =~ r[0-9]*i[0-9]*n[0-9]*)) then
+else if (($node =~ pfe*)   \
+      || ($node =~ tfe*)   \
+      || ($node =~ r[0-9]*i[0-9]*n[0-9]*) \
+      || ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
    setenv SITE NAS
 
 else
