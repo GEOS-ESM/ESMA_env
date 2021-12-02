@@ -51,9 +51,10 @@ if ( ($node == dirac)   \
   || ($node =~ discover*)) then
    setenv SITE NCCS
 
-else if (($node =~ pfe*)      \
-      || ($node =~ bridge*)   \
-      || ($node =~ r[0-9]*i[0-9]*n[0-9]*)) then
+else if (($node =~ pfe*)   \
+      || ($node =~ tfe*)   \
+      || ($node =~ r[0-9]*i[0-9]*n[0-9]*) \
+      || ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
    setenv SITE NAS
 
 else
@@ -125,6 +126,7 @@ while ($#argv)
 
    # specify node type
    #------------------
+   if ("$1" == "-rom")  set nodeTYPE = "Rome"
    if ("$1" == "-cas")  set nodeTYPE = "CascadeLake"
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
    if ("$1" == "-bro")  set nodeTYPE = "Broadwell"
@@ -257,25 +259,37 @@ endif
 # default nodeTYPE
 #-----------------
 if (! $?nodeTYPE) then
-   if ($SITE == NCCS) set nodeTYPE = "Haswell"
+   if ($SITE == NCCS) set nodeTYPE = "Skylake"
    if ($SITE == NAS)  set nodeTYPE = "Skylake"
 endif
+
+# This is a flag needed at NCCS for Cascade Lake. Default is blank
+set ntaskspernode = ''
 
 # at NCCS
 #--------
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if (($nT != has) && ($nT != sky)) then
+   if (($nT != has) && ($nT != sky) && ($nT != cas)) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
 
    if ($nT == has) @ NCPUS_DFLT = 28
    if ($nT == sky) @ NCPUS_DFLT = 40
+   if ($nT == cas) @ NCPUS_DFLT = 48
 
    if ($nT == has) set proc = 'hasw'
    if ($nT == sky) set proc = 'sky'
+   if ($nT == cas) then
+      set proc = 'cas'
+      # Adding this adds prevents a warning from NCCS about using 48
+      # tasks per node on Cascade. This script will never actually run
+      # make -j48, (usually make -j10 and only asks for 10 tasks) but
+      # this suppresses the warning.
+      set ntaskspernode = '--ntasks-per-node=45'
+   endif
 
    if ("$queue" == "") then
       set queue = '--qos=debug'
@@ -292,11 +306,12 @@ endif
 if ( $SITE == NAS ) then
 
    set nT = `echo $nodeTYPE | cut -c1-3 | tr "[A-Z]" "[a-z]"`
-   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas)) then
+   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas) && ($nT != rom)) then
       echo "ERROR. Unknown node type at NAS: $nodeTYPE"
       exit 2
    endif
 
+   if ($nT == rom) set nT = 'rom_ait:aoe=sles15'
    if ($nT == sky) set nT = 'sky_ele'
    if ($nT == cas) set nT = 'cas_ait'
    set proc = ":model=$nT"
@@ -305,6 +320,7 @@ if ( $SITE == NAS ) then
    if ($nT == bro)     @ NCPUS_DFLT = 28
    if ($nT == sky_ele) @ NCPUS_DFLT = 40
    if ($nT == cas_ait) @ NCPUS_DFLT = 40
+   if ($nT == "rom_ait:aoe=sles15") @ NCPUS_DFLT = 128
 
    # TMPDIR needs to be reset
    #-------------------------
@@ -472,6 +488,10 @@ if ( ($SITE == NCCS) || ($SITE == NAS) ) then
    if ( (! $oncompnode) && $interactive) then
       # If we aren't don't use all the cores
       if ($numjobs_val > 6) @ numjobs_val = 6
+   else
+      # Just use 10 CPUs at most. GEOS doesn't support more
+      # parallelism in the build
+      if ($numjobs_val > 10) @ numjobs_val = 10
    endif
    echo ""
    echo -n "The build will proceed with $numjobs_val parallel processes on $ncpus_val CPUs"
@@ -627,7 +647,7 @@ else if ( $SITE == NAS ) then
         -l select=1:ncpus=${ncpus}:mpiprocs=${numjobs}$proc \
         -l walltime=$walltime  \
         -S /bin/csh            \
-        -V -j oe               \
+        -V -j oe -k oed        \
         $0
    unset echo
    sleep 1
@@ -641,6 +661,7 @@ else if ( $SITE == NCCS ) then
         --output=$jobname.o%j  \
         --nodes=1              \
         --ntasks=${numjobs}    \
+        $ntaskspernode         \
         --time=$walltime       \
         $0
    unset echo
@@ -774,7 +795,7 @@ else
    setenv HYDROBUILD ''
 endif
 
-set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD}"
+set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=ON"
 set cmd2 = "make --jobs=$numjobs install $verbose"
 echo1 "" 
 echo1 ""
@@ -837,8 +858,9 @@ flagged options
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
-   -cas                 compile on Cascade Lake nodes (only at NAS)
-   -sky                 compile on Skylake nodes (default at NAS)
+   -rom                 compile on Rome nodes (only at NAS)
+   -cas                 compile on Cascade Lake nodes
+   -sky                 compile on Skylake nodes (default)
    -bro                 compile on Broadwell nodes (only at NAS)
-   -has                 compile on Haswell nodes (default at NCCS)
+   -has                 compile on Haswell nodes
 EOF
