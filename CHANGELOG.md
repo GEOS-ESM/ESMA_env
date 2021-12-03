@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+
+- Update to use a module that loads both Python 2 and Python 3 at the same time.
+
 ### Fixed
 ### Removed
 ### Added
