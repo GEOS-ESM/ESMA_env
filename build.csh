@@ -230,7 +230,7 @@ while ($#argv)
 
    # set no tar option
    #------------------
-   if ("$1" == "-notar") then
+   if ("$1" == "-no-tar") then
       setenv notar 1
    endif
 
@@ -862,7 +862,7 @@ flagged options
    -esmadir dir         esmadir location
    -nocmake             do not run cmake (useful for scripting)
    -gnu                 build with gfortran
-   -notar               build with INSTALL_SOURCE_TARFILE=OFF (does not tar up source tarball, default is ON)
+   -no-tar              build with INSTALL_SOURCE_TARFILE=OFF (does not tar up source tarball, default is ON)
 
    -hydrostatic         build for hydrostatic dynamics in FV
    -nonhydrostatic      build for nonhydrostatic dynamics in FV
