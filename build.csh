@@ -402,6 +402,7 @@ if ($ddb) then
    echo "walltime = $walltime"
    echo "prompt = $prompt"
    echo "nocmake = $docmake"
+   echo "notar = $notar"
    echo "NCPUS_DFLT = $NCPUS_DFLT"
    echo "CMAKE_BUILD_TYPE = $cmake_build_type"
    echo "Build directory = $Pbuild_build_directory"
@@ -808,7 +809,7 @@ else
    setenv INSTALL_SOURCE_TARFILE "ON"
 endif
 
-set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=ON"
+set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE}"
 set cmd2 = "make --jobs=$numjobs install $verbose"
 echo1 "" 
 echo1 ""
