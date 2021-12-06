@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+- Add `build.csh` option `-notar` to turn off source tarfile generation (aka run CMake with `-DINSTALL_SOURCE_TARFILE=OFF`)
+
 ## [3.6.0] - 2021-Nov-03
 
 ### Changes

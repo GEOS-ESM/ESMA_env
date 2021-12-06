@@ -73,6 +73,7 @@ endif
 setenv esmadir     ""
 setenv docmake     1
 setenv usegnu      0
+setenv notar       0
 setenv usehydro    0
 setenv usenonhydro 0
 setenv ddb         0
@@ -225,6 +226,12 @@ while ($#argv)
    #---------------
    if ("$1" == "-gnu") then
       setenv usegnu 1
+   endif
+
+   # set no tar option
+   #------------------
+   if ("$1" == "-notar") then
+      setenv notar 1
    endif
 
    # set hydrostatic option
@@ -795,6 +802,12 @@ else
    setenv HYDROBUILD ''
 endif
 
+if ($notar) then
+   setenv INSTALL_SOURCE_TARFILE "OFF"
+else
+   setenv INSTALL_SOURCE_TARFILE "ON"
+endif
+
 set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=ON"
 set cmd2 = "make --jobs=$numjobs install $verbose"
 echo1 "" 
@@ -848,6 +861,7 @@ flagged options
    -esmadir dir         esmadir location
    -nocmake             do not run cmake (useful for scripting)
    -gnu                 build with gfortran
+   -notar               build with INSTALL_SOURCE_TARFILE=OFF (does not tar up source tarball, default is ON)
 
    -hydrostatic         build for hydrostatic dynamics in FV
    -nonhydrostatic      build for nonhydrostatic dynamics in FV
