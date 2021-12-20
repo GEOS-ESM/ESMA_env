@@ -318,7 +318,7 @@ if ( $SITE == NAS ) then
       exit 2
    endif
 
-   if ($nT == rom) set nT = 'rom_ait:aoe=sles15'
+   if ($nT == rom) set nT = 'rom_ait'
    if ($nT == sky) set nT = 'sky_ele'
    if ($nT == cas) set nT = 'cas_ait'
    set proc = ":model=$nT"
@@ -327,7 +327,7 @@ if ( $SITE == NAS ) then
    if ($nT == bro)     @ NCPUS_DFLT = 28
    if ($nT == sky_ele) @ NCPUS_DFLT = 40
    if ($nT == cas_ait) @ NCPUS_DFLT = 40
-   if ($nT == "rom_ait:aoe=sles15") @ NCPUS_DFLT = 128
+   if ($nT == rom_ait) @ NCPUS_DFLT = 128
 
    # TMPDIR needs to be reset
    #-------------------------
