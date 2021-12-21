@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [3.10.0] - 2021-Dec-21
+
+### Changed
+
+- Moved the default walltime at NAS to 1:30:00 due to observed slowness
+
 ## [3.9.0] - 2021-Dec-20
 
 ### Changed

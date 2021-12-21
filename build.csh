@@ -648,7 +648,7 @@ endif
 if ($interactive) then
    goto build
 else if ( $SITE == NAS ) then
-   if ("$walltime" == "") setenv walltime "1:00:00"
+   if ("$walltime" == "") setenv walltime "1:30:00"
    set echo
    qsub  $groupflag $queue     \
         -N $jobname            \
