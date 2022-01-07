@@ -73,6 +73,7 @@ endif
 setenv esmadir     ""
 setenv docmake     1
 setenv usegnu      0
+setenv notar       0
 setenv usehydro    0
 setenv usenonhydro 0
 setenv ddb         0
@@ -227,6 +228,12 @@ while ($#argv)
       setenv usegnu 1
    endif
 
+   # set no tar option
+   #------------------
+   if ("$1" == "-no-tar") then
+      setenv notar 1
+   endif
+
    # set hydrostatic option
    #-----------------------
    if ("$1" == "-hydrostatic") then
@@ -311,7 +318,7 @@ if ( $SITE == NAS ) then
       exit 2
    endif
 
-   if ($nT == rom) set nT = 'rom_ait:aoe=sles15'
+   if ($nT == rom) set nT = 'rom_ait'
    if ($nT == sky) set nT = 'sky_ele'
    if ($nT == cas) set nT = 'cas_ait'
    set proc = ":model=$nT"
@@ -320,7 +327,7 @@ if ( $SITE == NAS ) then
    if ($nT == bro)     @ NCPUS_DFLT = 28
    if ($nT == sky_ele) @ NCPUS_DFLT = 40
    if ($nT == cas_ait) @ NCPUS_DFLT = 40
-   if ($nT == "rom_ait:aoe=sles15") @ NCPUS_DFLT = 128
+   if ($nT == rom_ait) @ NCPUS_DFLT = 128
 
    # TMPDIR needs to be reset
    #-------------------------
@@ -395,6 +402,7 @@ if ($ddb) then
    echo "walltime = $walltime"
    echo "prompt = $prompt"
    echo "nocmake = $docmake"
+   echo "notar = $notar"
    echo "NCPUS_DFLT = $NCPUS_DFLT"
    echo "CMAKE_BUILD_TYPE = $cmake_build_type"
    echo "Build directory = $Pbuild_build_directory"
@@ -640,7 +648,7 @@ endif
 if ($interactive) then
    goto build
 else if ( $SITE == NAS ) then
-   if ("$walltime" == "") setenv walltime "1:00:00"
+   if ("$walltime" == "") setenv walltime "1:30:00"
    set echo
    qsub  $groupflag $queue     \
         -N $jobname            \
@@ -795,7 +803,13 @@ else
    setenv HYDROBUILD ''
 endif
 
-set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=ON"
+if ($notar) then
+   setenv INSTALL_SOURCE_TARFILE "OFF"
+else
+   setenv INSTALL_SOURCE_TARFILE "ON"
+endif
+
+set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE}"
 set cmd2 = "make --jobs=$numjobs install $verbose"
 echo1 "" 
 echo1 ""
@@ -848,6 +862,7 @@ flagged options
    -esmadir dir         esmadir location
    -nocmake             do not run cmake (useful for scripting)
    -gnu                 build with gfortran
+   -no-tar              build with INSTALL_SOURCE_TARFILE=OFF (does not tar up source tarball, default is ON)
 
    -hydrostatic         build for hydrostatic dynamics in FV
    -nonhydrostatic      build for nonhydrostatic dynamics in FV
