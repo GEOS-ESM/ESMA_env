@@ -134,9 +134,9 @@ if ( $site == NCCS ) then
    set mod1 = GEOSenv
 
    set mod2 = comp/gcc/10.1.0
-   set mod3 = comp/intel/2021.2.0
+   set mod3 = comp/intel/2021.4.0
 
-   set mod4 = mpi/impi/2021.2.0
+   set mod4 = mpi/impi/2021.4.0
 
    set mod5 = python/GEOSpyD/Min4.8.3_py2.7
 
