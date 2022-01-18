@@ -136,7 +136,7 @@ if ( $site == NCCS ) then
    set mod2 = comp/gcc/11.2.0
    set mod3 = lib/mkl/19.1.3.304
    set mod4 = mpi/openmpi/4.0.6/gcc-11.2.0
-   set mod5 = python/gtfv3-py3.8-gcc11.2.0-mkl19.1.3.304-ompi4.0.6
+   set mod5 = pchakrab/python/3.8/gcc11.2.0-openmpi4.0.6-cas
 
    set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.8/x86_64-pc-linux-gnu/gfortran_11.2.0-openmpi_4.0.6-gtfv3py
 
@@ -145,7 +145,7 @@ if ( $site == NCCS ) then
    set loadmodules = 0
 
    set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
-   set usemod2 = /discover/nobackup/pchakrab/code/modulefiles
+   set usemod2 = /discover/nobackup/pchakrab/sw/modulefiles
 
    set usemods = ( $usemod1 $usemod2 )
    set usemodules = 1
