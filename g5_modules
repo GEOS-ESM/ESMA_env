@@ -81,18 +81,6 @@ else if (($node =~ pfe*) || ($node =~ tfe*) || \
    # We are on NAS...
    set site = "NAS"
 
-   # Now what OS...
-   if (-e /etc/redhat-release) then
-      set nasos = "TOSS3"
-   else
-      # If not TOSS, we might be 15 or 12
-      if ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*) then
-         set nasos = "SLES15"
-      else
-         set nasos = "SLES12"
-      endif
-   endif
-
 else if ($node =~ janus*) then
    set site = "GMAO.janus"
 
@@ -165,27 +153,13 @@ if ( $site == NCCS ) then
 #=======#
 else if ( $site == NAS ) then
 
-   if ( $nasos == TOSS3 ) then
-      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.8/x86_64-pc-linux-gnu/ifort_2021.3.0-mpt_2.25-TOSS3
-   else if ( $nasos == SLES15 ) then
-      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.8/x86_64-pc-linux-gnu/ifort_2021.3.0-mpt_2.23-ROME-SLES15
-   else
-      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.8/x86_64-pc-linux-gnu/ifort_2021.3.0-mpt_2.23-SLES12
-   endif
+   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.8/x86_64-pc-linux-gnu/ifort_2021.3.0-mpt_2.25-TOSS3
 
    set mod1 = GEOSenv
 
-   if ( $nasos == TOSS3 ) then
-      set mod2 = gcc/10.2
-   else
-      set mod2 = comp-gcc/10.2.0
-   endif
+   set mod2 = gcc/10.2
    set mod3 = comp-intel/2021.3.0
-   if ( $nasos == TOSS3 ) then
-      set mod4 = mpi-hpe/mpt.2.25
-   else
-      set mod4 = mpi-hpe/mpt.2.23
-   endif
+   set mod4 = mpi-hpe/mpt.2.25
    set mod5 = python/GEOSpyD/Min4.8.3_py2.7
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )

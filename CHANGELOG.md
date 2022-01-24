@@ -12,50 +12,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
-## [3.10.0] - 2021-Dec-21
+## [3.11.0] - 2022-01-24
+
+### Removed
+
+- Removed support for SLES 12 and SLES 15 at NAS
+
+### Changed
+
+- Changed dates in CHANGELOG to conform to ISO 8601
+
+## [3.10.0] - 2021-12-21
 
 ### Changed
 
 - Moved the default walltime at NAS to 1:30:00 due to observed slowness
 
-## [3.9.0] - 2021-Dec-20
+## [3.9.0] - 2021-12-20
 
 ### Changed
 
 - Updated the Rome code in `build.csh` to not use SLES15
 
-## [3.8.0] - 2021-Dec-16
+## [3.8.0] - 2021-12-16
 
 ### Changed
 
 - Update to Intel 2021.3
   - Note: This is non-zero-diff for GEOSgcm vs Intel 2021.2
 
-## [3.7.0] - 2021-Dec-06
+## [3.7.0] - 2021-12-06
 
 ### Added
 
 - Add `build.csh` option `-no-tar` to turn off source tarfile generation (aka run CMake with `-DINSTALL_SOURCE_TARFILE=OFF`)
 
-## [3.6.0] - 2021-Nov-03
+## [3.6.0] - 2021-11-03
 
 ### Changes
 
 - Per NAS advice, use MPT 2.25 on TOSS nodes
 
-## [3.5.1] - 2021-Nov-03
+## [3.5.1] - 2021-11-03
 
 ### Fixed
 
 - Added Rome compute nodes (and tfe) to `build.csh`
 
-## [3.5.0] - 2021-Oct-26
+## [3.5.0] - 2021-10-26
 
 ### Changed
 
 - Update to Baselibs 6.2.8
 
-## [3.4.1] - 2021-Oct-15
+## [3.4.1] - 2021-10-15
 
 ### Fixed
 
@@ -65,7 +75,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add CMake option to install source tarfile by default in `build.csh`
 
-## [3.4.0] - 2021-Oct-01
+## [3.4.0] - 2021-10-01
 
 ### Changed
 
@@ -79,76 +89,76 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added Changelog enforcer
 
-## [3.3.1] - 2021-Aug-27
+## [3.3.1] - 2021-08-27
 
 ### Added
 
 - Add `-rom` option to build script
 
-## [3.3.0] - 2021-Jun-08
+## [3.3.0] - 2021-06-08
 
 ### Changed
 
 - Update to Baselibs 6.2.4 (for GFE CMake Namespace)
   - NOTE: This should be used in conjunction with ESMA_cmake v3.5.0
 
-## [3.2.2] - 2021-May-26
+## [3.2.2] - 2021-05-26
 
 ### Changed
 
 - Updates for different mepo styles
 
-## [3.2.1] - 2021-Apr-16
+## [3.2.1] - 2021-04-16
 
 ### Added
 
 - Add `XTRAMODS2LOAD` to `g5_modules`
 
-## [3.2.0] - 2021-Apr-05
+## [3.2.0] - 2021-04-05
 
 ### Changed
 
 - Move to ESMF 8.1.0 (Baselibs 6.1.0)
 
-## [3.1.4] - 2021-Apr-02
+## [3.1.4] - 2021-04-02
 
 ### Added
 
 - Add option for non-hydrostatic build
 
-## [3.1.3] - 2021-Jan-05
+## [3.1.3] - 2021-01-05
 
 ### Changed
 
 - Update to Baselibs 6.0.27
   - This release updates to Baselibs 6.0.27 which is a minor update to the current 6.0.22. The differences were mainly in the build system, though an important update is the yaFyaml for some work being done in MAPL.
 
-## [3.1.2] - 2020-Dec-10
+## [3.1.2] - 2020-12-10
 
 ### Added
 
 - Add hidden aggressive `CMAKE_BUILD_TYPE`
 
-## [3.1.1] - 2020-Nov-23
+## [3.1.1] - 2020-11-23
 
 ### Removed
 
 - As we remove support for manage_externals, remove the reference in `build.csh`. No change to actual scripting.
 
-## [3.1.0] - 2020-Nov-17
+## [3.1.0] - 2020-11-17
 
 ### Changed
 
 - Update to Intel 19.1.3 and Baselibs 6.0.22
   - This release updates from Intel 19.1.2 to 19.1.3. This is zero-diff in all testing save for MOM6 (which was tested by @yvikhlya said is not wrong, just different).
 
-## [3.0.1] - 2020-Oct-14
+## [3.0.1] - 2020-10-14
 
 ### Changed
 
 - Reduce number of make jobs with `build.csh`
 
-## [3.0.0] - 2020-Sep-23
+## [3.0.0] - 2020-09-23
 
 ### Changed
 
@@ -185,13 +195,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    | pFlogger  | 1.4.2  | 1.4.5  |
    | yaFyaml   | 0.3.3  | 0.4.1  |
 
-## [2.1.6] - 2020-Jun-25
+## [2.1.6] - 2020-06-25
 
 ### Added
 
 - This release adds a new file, `BUILD_MODULES.rc`, which will contain the environment modules/Lua modules used during building (if environment/Lua modules are found).
 
-## [2.1.5] - 2020-May-27
+## [2.1.5] - 2020-05-27
 
 ### Changed
 
@@ -218,19 +228,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    * Fix for detection for `--enable-dap` with netcdf
 
 
-## [2.1.4] - 2020-May-18
+## [2.1.4] - 2020-05-18
 
 ### Added
 
 - Add `g5_modules.zsh`
 
-## [2.1.3] - 2020-May-04
+## [2.1.3] - 2020-05-04
 
 ### Changed
 
 - Update to Baselibs 6.0.12
 
-## [2.1.2] - 2020-Apr-27
+## [2.1.2] - 2020-04-27
 
 ### Fixed
 
@@ -240,13 +250,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Add `-nocmake` option for scripting
 
-## [2.1.1] - 2020-Apr-20
+## [2.1.1] - 2020-04-20
 
 ### Changed
 
 - Update to Baselibs 6.0.11
 
-## [2.1.0] - 2020-Apr-15
+## [2.1.0] - 2020-04-15
 
 ### Changed
 
@@ -266,31 +276,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
   - Also, NAS installed 18.0.5 so this matches what is used at NCCS.
 
-## [2.0.4] - 2020-Mar-11
+## [2.0.4] - 2020-03-11
 
 ### Fixed
 
 - Fix usage statement
 
-## [2.0.3] - 2020-Feb-26
+## [2.0.3] - 2020-02-26
 
 ### Added
 
 - Add Skylake Build capability at NCCS
 
-## [2.0.2] - 2020-Feb-26
+## [2.0.2] - 2020-02-26
 
 ### Changed
 
 - Use Intel MPI 19.1 on SLES 12
 
-## [2.0.1] - 2020-Feb-21
+## [2.0.1] - 2020-02-21
 
 ### Changed
 
 - Combined SLES11 + SLES12 `g5_modules`
 
-## [2.0.0] - 2020-Feb-10
+## [2.0.0] - 2020-02-10
 
 ### Changed
 
@@ -308,7 +318,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
       - Move to Intel 18.0.5
       - Move to Open MPI 4.0.0
 
-## [1.4.1] - 2020-Jan-07
+## [1.4.1] - 2020-01-07
 
 ### Changed
 
@@ -327,38 +337,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Source GEOSenv after SIVO-PyD
   - This is a small change due to the structure of MOM6. The libcurl in SIVO-PyD was interfering with git's ability to do a submodule clone in MOM6 (no support for https). But, if GEOSenv is loaded after SIVO-PyD, it seems to fix this issue by letting git's libcurl (built by Bhat) to win and that seems to work.
 
-## [1.3.2] - 2019-Aug-13
+## [1.3.2] - 2019-08-13
 
 ### Fixed
 
 - Detect CPU count on macOS correctly
   - The `build.csh` script was assuming `/proc/cpuinfo` existed on all systems. macOS does not have it.
 
-## [1.3.1] - 2019-Jul-25
+## [1.3.1] - 2019-07-25
 
 ### Changed
 
 - Enable additional parallelism in build script
 
-## [1.3.0] - 2019-Jul-24
+## [1.3.0] - 2019-07-24
 
 ### Changed
 
 - Revert Python back to SIVO-PyD
 
-## [1.2.2] - 2019-Jul-23
+## [1.2.2] - 2019-07-23
 
 ### Changed
 
 - Change location of SI Team modulefiles on NCCS
 
-## [1.2.1] - 2019-Jul-23
+## [1.2.1] - 2019-07-23
 
 ### Changed
 
 - At build time, the ESMA_env will now create two files `CMAKE_RELEASE.rc` and `GIT_VERSION.rc` that will have information on what versions of CMake and Git built this install.
 
-## [1.2.0] - 2019-Jul-18
+## [1.2.0] - 2019-07-18
 
 ### Changed
 
@@ -369,25 +379,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Also move `SITE.rc.in` and `BASEDIR.rc.in` from fixture to here.
 
-## [1.1.2] - 2019-Jul-08
+## [1.1.2] - 2019-07-08
 
 ### Changed
 
 - This moves installation of `g5_modules` etc. from the fixture to this repo
 
-## [1.1.1] - 2019-Jul-05
+## [1.1.1] - 2019-07-05
 
 ### Fixed
 
 - This was a bad copy-and-paste. Correct the basedir to point to the one for MPT
 
-## [1.1.0] - 2019-Jul-05
+## [1.1.0] - 2019-07-05
 
 ### Added
 
 - Due to the sheer number of `g5_modules` references in GEOS, for now restore this script
 
-## [1.0.0] - 2019-Jul-03
+## [1.0.0] - 2019-07-03
 
 ### Added
 
