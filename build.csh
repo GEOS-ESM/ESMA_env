@@ -51,9 +51,10 @@ if ( ($node == dirac)   \
   || ($node =~ discover*)) then
    setenv SITE NCCS
 
-else if (($node =~ pfe*)      \
-      || ($node =~ bridge*)   \
-      || ($node =~ r[0-9]*i[0-9]*n[0-9]*)) then
+else if (($node =~ pfe*)   \
+      || ($node =~ tfe*)   \
+      || ($node =~ r[0-9]*i[0-9]*n[0-9]*) \
+      || ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
    setenv SITE NAS
 
 else
@@ -72,6 +73,7 @@ endif
 setenv esmadir     ""
 setenv docmake     1
 setenv usegnu      0
+setenv notar       0
 setenv usehydro    0
 setenv usenonhydro 0
 setenv ddb         0
@@ -226,6 +228,12 @@ while ($#argv)
       setenv usegnu 1
    endif
 
+   # set no tar option
+   #------------------
+   if ("$1" == "-no-tar") then
+      setenv notar 1
+   endif
+
    # set hydrostatic option
    #-----------------------
    if ("$1" == "-hydrostatic") then
@@ -258,25 +266,37 @@ endif
 # default nodeTYPE
 #-----------------
 if (! $?nodeTYPE) then
-   if ($SITE == NCCS) set nodeTYPE = "Haswell"
+   if ($SITE == NCCS) set nodeTYPE = "Skylake"
    if ($SITE == NAS)  set nodeTYPE = "Skylake"
 endif
+
+# This is a flag needed at NCCS for Cascade Lake. Default is blank
+set ntaskspernode = ''
 
 # at NCCS
 #--------
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if (($nT != has) && ($nT != sky)) then
+   if (($nT != has) && ($nT != sky) && ($nT != cas)) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
 
    if ($nT == has) @ NCPUS_DFLT = 28
    if ($nT == sky) @ NCPUS_DFLT = 40
+   if ($nT == cas) @ NCPUS_DFLT = 48
 
    if ($nT == has) set proc = 'hasw'
    if ($nT == sky) set proc = 'sky'
+   if ($nT == cas) then
+      set proc = 'cas'
+      # Adding this adds prevents a warning from NCCS about using 48
+      # tasks per node on Cascade. This script will never actually run
+      # make -j48, (usually make -j10 and only asks for 10 tasks) but
+      # this suppresses the warning.
+      set ntaskspernode = '--ntasks-per-node=45'
+   endif
 
    if ("$queue" == "") then
       set queue = '--qos=debug'
@@ -298,7 +318,7 @@ if ( $SITE == NAS ) then
       exit 2
    endif
 
-   if ($nT == rom) set nT = 'rom_ait:aoe=sles15'
+   if ($nT == rom) set nT = 'rom_ait'
    if ($nT == sky) set nT = 'sky_ele'
    if ($nT == cas) set nT = 'cas_ait'
    set proc = ":model=$nT"
@@ -307,7 +327,7 @@ if ( $SITE == NAS ) then
    if ($nT == bro)     @ NCPUS_DFLT = 28
    if ($nT == sky_ele) @ NCPUS_DFLT = 40
    if ($nT == cas_ait) @ NCPUS_DFLT = 40
-   if ($nT == "rom_ait:aoe=sles15") @ NCPUS_DFLT = 128
+   if ($nT == rom_ait) @ NCPUS_DFLT = 128
 
    # TMPDIR needs to be reset
    #-------------------------
@@ -382,6 +402,7 @@ if ($ddb) then
    echo "walltime = $walltime"
    echo "prompt = $prompt"
    echo "nocmake = $docmake"
+   echo "notar = $notar"
    echo "NCPUS_DFLT = $NCPUS_DFLT"
    echo "CMAKE_BUILD_TYPE = $cmake_build_type"
    echo "Build directory = $Pbuild_build_directory"
@@ -627,7 +648,7 @@ endif
 if ($interactive) then
    goto build
 else if ( $SITE == NAS ) then
-   if ("$walltime" == "") setenv walltime "1:00:00"
+   if ("$walltime" == "") setenv walltime "1:30:00"
    set echo
    qsub  $groupflag $queue     \
         -N $jobname            \
@@ -648,6 +669,7 @@ else if ( $SITE == NCCS ) then
         --output=$jobname.o%j  \
         --nodes=1              \
         --ntasks=${numjobs}    \
+        $ntaskspernode         \
         --time=$walltime       \
         $0
    unset echo
@@ -781,7 +803,13 @@ else
    setenv HYDROBUILD ''
 endif
 
-set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD}"
+if ($notar) then
+   setenv INSTALL_SOURCE_TARFILE "OFF"
+else
+   setenv INSTALL_SOURCE_TARFILE "ON"
+endif
+
+set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE}"
 set cmd2 = "make --jobs=$numjobs install $verbose"
 echo1 "" 
 echo1 ""
@@ -834,6 +862,7 @@ flagged options
    -esmadir dir         esmadir location
    -nocmake             do not run cmake (useful for scripting)
    -gnu                 build with gfortran
+   -no-tar              build with INSTALL_SOURCE_TARFILE=OFF (does not tar up source tarball, default is ON)
 
    -hydrostatic         build for hydrostatic dynamics in FV
    -nonhydrostatic      build for nonhydrostatic dynamics in FV
@@ -845,8 +874,8 @@ flagged options
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
    -rom                 compile on Rome nodes (only at NAS)
-   -cas                 compile on Cascade Lake nodes (only at NAS)
-   -sky                 compile on Skylake nodes (default at NAS)
+   -cas                 compile on Cascade Lake nodes
+   -sky                 compile on Skylake nodes (default)
    -bro                 compile on Broadwell nodes (only at NAS)
-   -has                 compile on Haswell nodes (default at NCCS)
+   -has                 compile on Haswell nodes
 EOF
