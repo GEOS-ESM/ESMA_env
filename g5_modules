@@ -160,22 +160,24 @@ else if ( $site == NAS ) then
    if ( $nasos == SLES15 ) then
       set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.7/x86_64-pc-linux-gnu/gfortran_11.2.0-mpt_2.23-ROME-SLES15
    else
-      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.7/x86_64-pc-linux-gnu/gfortran_11.2.0-mpt_2.23
+      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.8/x86_64-pc-linux-gnu/gfortran_9.3.0-cuda_11.0-mpt_2.25-gtfv3py-TOSS3
    endif
 
-   set mod2 = comp-gcc/11.2.0
-   set mod3 = mpi-hpe/mpt.2.23
-   set mod4 = mpi-mpt/2.23/gcc/11.2.0
-   set mod5 = math-mkl/2020.4.304
-   set mod6 = python/GEOSpyD/Min4.8.3_py2.7
+   set mod2 = comp-gcc/9.3.0-TOSS3
+   set mod3 = mpi-hpe/mpt.2.25
+   set mod4 = mpi-mpt/2.25/gcc/9.3.0-TOSS3
+   set mod5 = cuda/11.0
+   set mod6 = math-mkl/2020.4.304
+   set mod7 = pchakrab/python/3.8/gcc9.3.0-cuda11.0-mpt2.25-toss3
 
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 )
    set modinit = /usr/share/modules/init/tcsh
    set loadmodules = 0
 
    set usemod1 = /u/scicon/tools/modulefiles
    set usemod2 = /nobackup/gmao_SIteam/modulefiles
-   set usemods = ( $usemod1 $usemod2 )
+   set usemod3 = /nobackup/pchakrab/sw/modulefiles
+   set usemods = ( $usemod1 $usemod2 $usemod3 )
    set usemodules = 1
 
 #=========#
