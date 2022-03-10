@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [3.12.0] - 2022-03-09
+
+## Changed
+
+- Update to Baselibs 6.2.13
+- Move to have both Python2 and Python3 loaded at the same time
+
 ## [3.11.0] - 2022-01-24
 
 ### Removed
