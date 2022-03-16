@@ -74,14 +74,11 @@ if (($node =~ discover*) || ($node =~ borg*)  || \
 
    set site = "NCCS"
 
-else if (($node =~ pfe*) || \
-         ($node =~ r[0-9]*i[0-9]*n[0-9]*)) then
-   set site = "NAS"
-   set nasos = "SLES12"
+else if (($node =~ pfe*) || ($node =~ tfe*) || \
+         ($node =~ r[0-9]*i[0-9]*n[0-9]*) || \
+         ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
 
-else if (($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
    set site = "NAS"
-   set nasos = "SLES15"
 
 else if ($node =~ janus*) then
    set site = "GMAO.janus"
@@ -155,17 +152,13 @@ if ( $site == NCCS ) then
 #=======#
 else if ( $site == NAS ) then
 
-   if ( $nasos == SLES15 ) then
-      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.4/x86_64-pc-linux-gnu/ifort_2020.4.304-mpt_2.23-gcc_8.4.0-ROME-SLES15
-   else
-      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.4/x86_64-pc-linux-gnu/ifort_2020.4.304-mpt_2.23-gcc_8.4.0
-   endif
+   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.4/x86_64-pc-linux-gnu/ifort_2020.4.304-mpt_2.25-gcc_8.4.0-TOSS3
 
    set mod1 = GEOSenv
 
-   set mod2 = comp-gcc/8.4.0
+   set mod2 = gcc/8.4
    set mod3 = comp-intel/2020.4.304
-   set mod4 = mpi-hpe/mpt.2.23
+   set mod4 = mpi-hpe/mpt.2.25
    set mod5 = math-mkl/2020.4.304
    set mod6 = python/GEOSpyD/Min4.8.3_py2.7
 
