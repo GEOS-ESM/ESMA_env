@@ -8,13 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-
-- Change `build.csh` to only have `clean` or `no clean` options. The `clean` option now always does a full remove-build-and-install
-  followed by a cmake.
-
 ### Fixed
 ### Removed
 ### Added
+
+## [3.13.0] - 2022-03-17
+
+### Changed
+
+- Change `build.csh` to only have `clean` or `no clean` options. The `clean` option now always does a full remove-build-and-install
+  followed by a cmake.
 
 ## [3.12.0] - 2022-03-09
 
