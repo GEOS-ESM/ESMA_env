@@ -560,14 +560,15 @@ if ($status == 0) then
    if ($prompt) then
       echo ''
       echo 'Previous build detected - Do you want to clean?'
-      echo '(c)     clean: runs "make clean"'
-      echo '(r) realclean: removes build directory and re-runs CMake'
+      echo '(c)     clean: Removes build and install directories, and rebuilds'
       echo '(n)  no clean'
       echo ''
-      echo -n 'Select (c,r,n) <<c>> '
+      echo "  Note: if you have changed MAPL, we recommend doing a clean for safety's sake"
+      echo ''
+      echo -n 'Select (c,n) <<c>> '
 
       set do_clean = $<
-      if ("$do_clean" != "r" && "$do_clean" != "n") then
+      if ("$do_clean" != "n") then
          set do_clean = "c"
       endif
    else
@@ -576,10 +577,7 @@ if ($status == 0) then
 
    if ("$do_clean" == "c") then
       setenv cleanFLAG clean
-      echo  "make clean before rebuild"
-   else if ("$do_clean" == "r") then
-      setenv cleanFLAG realclean
-      echo  "remove build directory and re-run CMake before rebuild"
+      echo  "Removing build and install directories and re-running CMake before rebuild"
    else
       echo "No clean before rebuild"
    endif 
@@ -688,7 +686,7 @@ build:
 #                             BUILD SYSTEM
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-if ( $cleanFLAG == "realclean" ) then
+if ( $cleanFLAG == "clean" ) then
    rm -rf $Pbuild_build_directory
    rm -rf $Pbuild_install_directory
 
@@ -775,19 +773,6 @@ echo1 "======================================"
 #===============
 # build system
 #===============
-if ( $cleanFLAG == "clean" ) then
-    echo1 ""
-    echo1 "--------------------------------------"
-    date1
-    echo1  "make $cleanFLAG"
-    make $cleanFLAG 
-    set buildstatus = $status
-    echo1 "clean complete; status = $buildstatus"
-    date1
-    echo1 "--------------------------------------"
-    time >> $buildinfo
-endif
-
 if ($usegnu) then
    setenv FORTRAN_COMPILER 'gfortran'
 else
