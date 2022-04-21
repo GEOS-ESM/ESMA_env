@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.0.0] - 2022-04-21
+
+### Changed
+
+- Update to Baselibs v7.0.0
+  - NOTE: This is a major tick because the yaFyaml in Baselibs 7 is incompatible with code that used yaFyaml in Baselibs 6. This is
+    MAPL for GEOS. Upcoming code changes will require the use of these new yaFyaml interfaces
+
 ## [3.13.0] - 2022-03-17
 
 ### Changed
