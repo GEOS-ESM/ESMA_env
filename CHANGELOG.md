@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+
+- Update to Baselibs 6.3.0 (with FMS)
+
 ### Fixed
 ### Removed
 ### Added
