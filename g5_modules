@@ -332,6 +332,8 @@ else
    setenv LD_LIBRARY_PATH $BASEDIR/$arch/lib
 endif
 
+setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:/discover/swdev/gmao_SIteam/other/SLES12.3/xgboost/0.81/ifort_18.0.5.274/lib
+
 # add individual $ld_libraries to LD_LIBRARY_PATH, if not already there
 #----------------------------------------------------------------------
 if ($?ld_libraries) then
