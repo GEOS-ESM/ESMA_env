@@ -103,6 +103,7 @@ alias echo2  "echo \!* > /dev/stderr"
 # get values
 #-----------
 if ($mach == x86_64) goto X86_64
+if ($mach == arm64)  goto ARM64
 
 # ERROR -- unknown architecture/machine
 #--------------------------------------
@@ -250,6 +251,20 @@ else if ( $site == GMAO.desktop ) then
 endif
 
 goto ACTION
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#                     ARM64 values
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+ARM64:
+
+#=================#
+#  ARM64 default  #
+#=================#
+
+set modinit = DUMMY
+
+set loadmodules = 0
+set usemodules = 0
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #              perform requested action
