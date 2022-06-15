@@ -15,6 +15,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.1.0] - 2022-06-15
+
+### Changed
+
+- Moved to Baselibs 7.3.1
+  - Added
+    - xgboost v1.6.0
+  - Updated
+    - ESMF v8.3.0
+    - GFE v1.3.1
+    - HDF5 1.10.9
+    - curl 7.83.1
+    - HDF5 1.10.9
+    - NCO 5.0.7
+    - CDO 2.0.5
+- Added Arm64 section to `g5_modules`
+
+### Added
+
+- Added `.editorconfig` file
+
 ## [4.0.0] - 2022-04-21
 
 ### Changed
