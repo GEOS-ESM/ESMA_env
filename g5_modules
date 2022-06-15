@@ -41,7 +41,7 @@
 #  21Jul2008  Takacs   New modules and BASEDIR on discover after OS upgrade
 #  13Apr2009  Stassi   Updated for pleiades
 #  22Apr2010  Kokron   Updated for Fortuna-2.1 on pleiades
-#  21Jul2011  Kokron   Overlay older MKL module as on discover to gain reproducible results from dgeev in GSI 
+#  21Jul2011  Kokron   Overlay older MKL module as on discover to gain reproducible results from dgeev in GSI
 #  24Aug2012  Stassi   Added sh option to write bash source-able file
 #  03Nov2016  Thompson Remove JIBB
 ########################################################################
@@ -103,6 +103,7 @@ alias echo2  "echo \!* > /dev/stderr"
 # get values
 #-----------
 if ($mach == x86_64) goto X86_64
+if ($mach == arm64)  goto ARM64
 
 # ERROR -- unknown architecture/machine
 #--------------------------------------
@@ -199,11 +200,11 @@ else if ( $site == GMAO.janus ) then
 #  Bender   #
 #===========#
 else if ( $site == ACDL.bender ) then
-    set basedir=/ford1/share/gmao_SIteam/Baselibs/GMAO-Baselibs-5_0_0/x86_64-pc-linux-gnu/ifort_13.1.1.163-openmpi_1.8.1    
+    set basedir=/ford1/share/gmao_SIteam/Baselibs/GMAO-Baselibs-5_0_0/x86_64-pc-linux-gnu/ifort_13.1.1.163-openmpi_1.8.1
     set BASEBIN=$basedir/$arch/bin
     set PYBIN = /share/dasilva/epd/epd-7.3-2-rh5-x86_64/bin
     set IFCBIN = /opt/intel/composer_xe_2013.5.192/bin
-    set MPIBIN = /ford1/share/gmao_SIteam/MPI/openmpi-1.8.1-ifort-13.1.1.163/bin 
+    set MPIBIN = /ford1/share/gmao_SIteam/MPI/openmpi-1.8.1-ifort-13.1.1.163/bin
     source $IFCBIN/ifortvars.csh intel64
     setenv MKLPATH $MKLROOT/lib
     set path = ( $BASEBIN $MPIBIN $PYBIN $path )
@@ -250,6 +251,20 @@ else if ( $site == GMAO.desktop ) then
 endif
 
 goto ACTION
+
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+#                     ARM64 values
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
+ARM64:
+
+#=================#
+#  ARM64 default  #
+#=================#
+
+set modinit = DUMMY
+
+set loadmodules = 0
+set usemodules = 0
 
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 #              perform requested action
@@ -434,7 +449,7 @@ DESCRIPTION
      add the BASEDIR lib directory to LD_LIBRARY_PATH (if necessary), and will
      load library modules when sourced.
 
-     If the script is called with "basedir", "modules", "modinit", or 
+     If the script is called with "basedir", "modules", "modinit", or
      "loadmodules", then it will echo the values to standard output without
      modifying the environment.
 
