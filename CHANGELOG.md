@@ -8,12 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-
-- Added Arm64 section to `g5_modules`
-
 ### Fixed
 ### Removed
 ### Added
+
+## [4.2.0] - 2022-07-01
+
+### Changed
+
+- Moved to Baselibs 7.5.0
+  - Updated
+    - GFE v1.4.0
 
 ## [4.1.0] - 2022-06-15
 
