@@ -15,6 +15,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.2.0] - 2022-07-01
+
+### Changed
+
+- Moved to Baselibs 7.5.0
+  - Updated
+    - GFE v1.4.0
+
+## [4.1.0] - 2022-06-15
+
+### Changed
+
+- Moved to Baselibs 7.3.1
+  - Added
+    - xgboost v1.6.0
+  - Updated
+    - ESMF v8.3.0
+    - GFE v1.3.1
+    - HDF5 1.10.9
+    - curl 7.83.1
+    - HDF5 1.10.9
+    - NCO 5.0.7
+    - CDO 2.0.5
+- Added Arm64 section to `g5_modules`
+
+### Added
+
+- Added `.editorconfig` file
+
+## [4.0.0] - 2022-04-21
+
+### Changed
+
+- Update to Baselibs v7.0.0
+  - NOTE: This is a major tick because the yaFyaml in Baselibs 7 is incompatible with code that used yaFyaml in Baselibs 6. This is
+    MAPL for GEOS. Upcoming code changes will require the use of these new yaFyaml interfaces
+
 ## [3.13.0] - 2022-03-17
 
 ### Changed
@@ -197,11 +234,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
        * Open MPI 4.0.4
    * Remove the `NCCS/` directory as it was out-of-date
    * Add `-gnu` flag to `build.csh` for easier building with GCC at NAS
-   
+
    #### Baselibs Changes
 
    The change to Baselibs 6.0.16 from 6.0.13 involves the following:
-   
+
    | Library   | 6.0.13 | 6.0.16 |
    |-----------|--------|--------|
    | cURL      | 7.70.0 | 7.72.0 |
@@ -237,7 +274,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
    * yaFyaml v0.3.3
 
    #### Fixed
-   
+
    * Fixes for GCC 10
      * Added patch for netcdf issue with GCC 10
      * Added flag for HDF4 when using GCC 10
