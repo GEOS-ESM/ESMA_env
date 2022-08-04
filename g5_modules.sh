@@ -1,7 +1,7 @@
 #!/usr/bin/sh
 #=======================================================================
 # name - g5_modules.bash
-# purpose - 
+# purpose -
 #   This script can be "sourced" from the bash shell to set environment
 #   variables and modules needed for building and running the GEOS system.
 #
@@ -23,6 +23,9 @@ fi
 # Basedir
 export BASEDIR=$(csh $g5modules basedir)
 
+# HDF5_PLUGIN_PATH
+export HDF5_PLUGIN_PATH=$(csh $g5modules hdf5_plugin_path)
+
 # Modules
 source $MODULESHOME/init/bash
 module purge
@@ -36,3 +39,6 @@ for mymod in $(csh $g5modules modules); do
     module load $mymod
 done
 
+# Add Baselibs to LD_LIBRARY_PATH
+arch=$(uname -s)
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${BASEDIR}/${arch}/lib

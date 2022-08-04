@@ -41,7 +41,7 @@
 #  21Jul2008  Takacs   New modules and BASEDIR on discover after OS upgrade
 #  13Apr2009  Stassi   Updated for pleiades
 #  22Apr2010  Kokron   Updated for Fortuna-2.1 on pleiades
-#  21Jul2011  Kokron   Overlay older MKL module as on discover to gain reproducible results from dgeev in GSI 
+#  21Jul2011  Kokron   Overlay older MKL module as on discover to gain reproducible results from dgeev in GSI
 #  24Aug2012  Stassi   Added sh option to write bash source-able file
 #  03Nov2016  Thompson Remove JIBB
 ########################################################################
@@ -130,7 +130,7 @@ if ( $site == NCCS ) then
 
    set mod5 = python/GEOSpyD/Min4.11.0_py3.9_AND_Min4.8.3_py2.7
 
-   set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.5.0/x86_64-pc-linux-gnu/ifort_2021.3.0-intelmpi_2021.3.0
+   set basedir = /discover/swdev/gmao_SIteam/Baselibs/TmpBaselibs/ESMA-Baselibs-7.6.0-TEST/x86_64-pc-linux-gnu/ifort_2021.3.0-intelmpi_2021.3.0
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
    set modinit = /usr/share/modules/init/csh
@@ -211,6 +211,12 @@ goto ACTION
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 ACTION:
 
+#==================#
+# HDF5_PLUGIN_PATH #
+#==================#
+
+set hdf5_plugin_path=$basedir/$arch/lib/hdf5_plugins
+
 #===================#
 #   ECHO VALUE(s)   #
 #===================#
@@ -232,8 +238,8 @@ if ( $#argv > 0 ) then
    else if ( $1 == usemodules ) then
       echo $usemods
 
-   else if ( $1 == ESMA_FC ) then
-      echo $ESMA_FC
+   else if ( $1 == hdf5_plugin_path ) then
+      echo $hdf5_plugin_path
 
    else if ( $1 == site ) then
       echo $site
@@ -274,6 +280,19 @@ else
    echo
    echo "BASEDIR not found in environment or set by ${scriptname}"
    exit 3
+endif
+
+# setenv HDF5_PLUGIN_PATH
+#------------------------
+if ($?hdf5_plugin_path) then
+   if (! $wrapper) echo -n " and HDF5_PLUGIN_PATH"
+   setenv HDF5_PLUGIN_PATH $hdf5_plugin_path
+else if ($?HDF5_PLUGIN_PATH) then
+   if (! $wrapper) echo -n "and HDF5_PLUGIN_PATH found in environment"
+else
+   echo
+   echo "HDF5_PLUGIN_PATH not found in environment or set by ${scriptname}"
+   exit 4
 endif
 
 # add BASEDIR lib to LD_LIBRARY_PATH, if not already there
@@ -342,6 +361,9 @@ if ($wrapper) then
    if ($?BASEDIR) then
       echo "export BASEDIR=$BASEDIR"                     >! $outfil
    endif
+   if ($?HDF5_PLUGIN_PATH) then
+      echo "export HDF5_PLUGIN_PATH=$HDF5_PLUGIN_PATH"   >! $outfil
+   endif
    if ($?LD_LIBRARY_PATH) then
       echo "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH"     >> $outfil
    endif
@@ -389,7 +411,7 @@ DESCRIPTION
      add the BASEDIR lib directory to LD_LIBRARY_PATH (if necessary), and will
      load library modules when sourced.
 
-     If the script is called with "basedir", "modules", "modinit", or 
+     If the script is called with "basedir", "modules", "modinit", or
      "loadmodules", then it will echo the values to standard output without
      modifying the environment.
 
@@ -414,7 +436,7 @@ OPTIONS
                               is needed prior to loading other modules
      usemodules          echo logical indicating whether "module use directory(s)"
                               is needed prior to loading other modules
-     ESMA_FC             echo value of ESMA_FC if set
+     HDF5_PLUGIN_PATH    echo value of HDF5_PLUGIN_PATH if set
      site                echo site as detected by $scriptname
      sh                  write sh version of g5_modules to file named, ".g5_modules.sh"
 
