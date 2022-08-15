@@ -266,7 +266,7 @@ endif
 # default nodeTYPE
 #-----------------
 if (! $?nodeTYPE) then
-   if ($SITE == NCCS) set nodeTYPE = "Skylake"
+   if ($SITE == NCCS) set nodeTYPE = "CascadeLake"
    if ($SITE == NAS)  set nodeTYPE = "Skylake"
 endif
 
@@ -299,11 +299,11 @@ if ($SITE == NCCS) then
    endif
 
    if ("$queue" == "") then
-      set queue = '--qos=debug'
+     #set queue = '--qos=debug'
    endif
 
    if ("$partition" == "") then
-      set partition = '--partition=compute'
+      set partition = '--partition=geosgms'
    endif
 
 endif
