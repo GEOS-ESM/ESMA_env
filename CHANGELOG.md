@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.3.0] - 2022-08-19
+
+### Changed
+
+- Update to Intel 2022.1
+
 ## [4.2.0] - 2022-07-01
 
 ### Changed
