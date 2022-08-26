@@ -81,6 +81,14 @@ else if (($node =~ pfe*) || ($node =~ tfe*) || \
    # We are on NAS...
    set site = "NAS"
 
+   # Are we on TOSS4
+   set LSB_RELEASE = `lsb_release -sr | cut -d'.' -f 1`
+   if ($LSB_RELEASE == '8') then
+      set nasos = "TOSS4"
+   else
+      set nasos = "TOSS3"
+   endif
+
 else if ( -d /ford1/share/gmao_SIteam/ && -d /ford1/local/ && $arch == Linux ) then
    set site = "GMAO.desktop"
 
@@ -145,7 +153,11 @@ if ( $site == NCCS ) then
 #=======#
 else if ( $site == NAS ) then
 
-   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-7.5.0/x86_64-pc-linux-gnu/ifort_2022.1.0-mpt_2.25
+   if ( $nasos == TOSS3 ) then
+      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-7.5.0/x86_64-pc-linux-gnu/ifort_2022.1.0-mpt_2.25
+   else
+      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-7.5.0/x86_64-pc-linux-gnu/ifort_2022.1.0-mpt_2.25-TOSS4-BuiltOnRome
+   endif
 
    set mod1 = GEOSenv
    set mod2 = gcc/10.2
