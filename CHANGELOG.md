@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.4.0] - 2022-08-26
+
+### Added
+
+- Add support for TOSS4 at NAS in `g5_modules`
+
 ## [4.3.0] - 2022-08-19
 
 ### Changed
