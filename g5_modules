@@ -41,7 +41,7 @@
 #  21Jul2008  Takacs   New modules and BASEDIR on discover after OS upgrade
 #  13Apr2009  Stassi   Updated for pleiades
 #  22Apr2010  Kokron   Updated for Fortuna-2.1 on pleiades
-#  21Jul2011  Kokron   Overlay older MKL module as on discover to gain reproducible results from dgeev in GSI 
+#  21Jul2011  Kokron   Overlay older MKL module as on discover to gain reproducible results from dgeev in GSI
 #  24Aug2012  Stassi   Added sh option to write bash source-able file
 #  03Nov2016  Thompson Remove JIBB
 ########################################################################
@@ -131,21 +131,26 @@ if ( $site == NCCS ) then
 
    set mod1 = GEOSenv
 
-   set mod2 = comp/gcc/10.3.0
-   set mod3 = comp/intel/2021.6.0
+   set mod2 = miniconda/3.9.7
+   set mod3 = stack-intel/2022.0.1
+   set mod4 = stack-intel-oneapi-mpi/2021.5.0
+   set mod5 = stack-python/3.9.7
+   set mod6 = py-numpy/1.22.3
+   set mod7 = esmf/8.3.0
+   set mod8 = flap/geos
+   set mod9 = gftl/1.8.1
+   set mod10 = gftl-shared/1.5.0
+   set mod11 = yafyaml/1.0.4
+   set mod12 = pflogger/1.9.1
 
-   set mod4 = mpi/impi/2021.6.0
-
-   set mod5 = python/GEOSpyD/Min4.11.0_py3.9_AND_Min4.8.3_py2.7
-
-   set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.5.0/x86_64-pc-linux-gnu/ifort_2021.6.0-intelmpi_2021.6.0
-
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 $mod8 $mod9 $mod10 $mod11 $mod12 )
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
 
    set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
-   set usemods = ( $usemod1 )
+   set usemod2 = /discover/swdev/jcsda/spack-stack/modulefiles
+   set usemod3 = /discover/nobackup/mathomp4/spack-stack/envs/geosgcm.discover/install/modulefiles/Core
+   set usemods = ( $usemod1 $usemod2 $usemod3 )
    set usemodules = 1
 
 #=======#
@@ -284,11 +289,11 @@ else if ($?BASEDIR) then
 else
    echo
    echo "BASEDIR not found in environment or set by ${scriptname}"
-   exit 3
 endif
 
 # add BASEDIR lib to LD_LIBRARY_PATH, if not already there
 #---------------------------------------------------------
+if ($?BASEDIR) then
 if ($?LD_LIBRARY_PATH) then
    echo $LD_LIBRARY_PATH | grep $BASEDIR/$arch/lib > /dev/null
    if ($status) then  #  == 1, if not found
@@ -308,11 +313,13 @@ if ($?ld_libraries) then
    end
 endif
 
+if ($?BASEDIR) then
 if ($?LD_LIBRARY64_PATH) then
    echo $LD_LIBRARY64_PATH | grep $BASEDIR/$arch/lib > /dev/null
    if ($status) then  #  == 1, if not found
       setenv LD_LIBRARY64_PATH ${LD_LIBRARY64_PATH}:$BASEDIR/$arch/lib
    endif
+endif
 endif
 
 # load library modules
@@ -400,7 +407,7 @@ DESCRIPTION
      add the BASEDIR lib directory to LD_LIBRARY_PATH (if necessary), and will
      load library modules when sourced.
 
-     If the script is called with "basedir", "modules", "modinit", or 
+     If the script is called with "basedir", "modules", "modinit", or
      "loadmodules", then it will echo the values to standard output without
      modifying the environment.
 
