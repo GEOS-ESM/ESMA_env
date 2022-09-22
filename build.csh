@@ -161,6 +161,13 @@ while ($#argv)
       setenv INSTALLDIR $1
    endif
 
+   # set GMI_MECHANISM
+   #------------------
+   if ("$1" == "-gmi_mechanism") then
+      shift; if (! $#argv) goto usage
+      setenv GMI_MECHANISM $1
+   endif
+
    # run job interactively
    #----------------------
    if ("$1" == "-i") set interactive = 1
@@ -390,6 +397,9 @@ if ($ddb) then
    echo "verbose = $verbose"
    if ($?nodeTYPE) then
       echo "nodeTYPE = $nodeTYPE"
+   endif
+   if ($?GMI_MECHANISM) then
+      echo "GMI_MECHANISM = $GMI_MECHANISM"
    endif
    echo "tmpdir = $tmpdir"
    echo "proc = $proc"
@@ -794,7 +804,13 @@ else
    setenv INSTALL_SOURCE_TARFILE "ON"
 endif
 
-set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE}"
+if ($?GMI_MECHANISM) then
+   setenv GMI_MECHANISM_FLAG "-DGMI_MECHANISM=$GMI_MECHANISM"
+else
+   setenv GMI_MECHANISM_FLAG ""
+endif
+
+set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE} ${GMI_MECHANISM_FLAG}"
 set cmd2 = "make --jobs=$numjobs install $verbose"
 echo1 "" 
 echo1 ""
