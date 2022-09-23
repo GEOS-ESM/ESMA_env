@@ -303,7 +303,7 @@ if ($SITE == NCCS) then
    endif
 
    if ("$partition" == "") then
-      set partition = '--partition=geosgms'
+      set partition = '--partition=compute'
    endif
 
 endif
