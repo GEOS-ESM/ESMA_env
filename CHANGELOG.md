@@ -11,7 +11,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 ### Removed
 ### Added
-- Multiple GMI Mechanisms build command line option
+
+## [4.5.0] - 2022-10-25
+
+### Added
+
+- Added `-gmi_mechanism` option to `build.csh` for use with multiple GMI mechanism
 
 ## [4.4.0] - 2022-08-26
 
