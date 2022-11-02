@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.6.0] - 2022-11-02
+
+### Added
+
 - Add ability to pass in arbitrary CMake options to `build.csh`
 
 ## [4.5.0] - 2022-10-25
