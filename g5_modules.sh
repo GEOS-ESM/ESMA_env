@@ -1,7 +1,7 @@
 #!/usr/bin/sh
 #=======================================================================
 # name - g5_modules.bash
-# purpose - 
+# purpose -
 #   This script can be "sourced" from the bash shell to set environment
 #   variables and modules needed for building and running the GEOS system.
 #
@@ -21,7 +21,10 @@ if [ ! -e $g5modules ]; then
 fi
 
 # Basedir
-export BASEDIR=$(csh $g5modules basedir)
+if csh $g5modules basedir 2> /dev/null
+then
+   BASEDIR=$(csh $g5modules basedir)
+fi
 
 # Modules
 source $MODULESHOME/init/bash
