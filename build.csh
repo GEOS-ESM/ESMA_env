@@ -20,11 +20,11 @@
 # 05Aug2009  Stassi  Added -debug and -tmpdir flags
 # 19Aug2010  Stassi  Added -walltime flag
 # 01Apr2011  Stassi  Added clean and realclean options
-# 04Nov2014  MAT     Moved to sbatch on discover, added Haswell 
+# 04Nov2014  MAT     Moved to sbatch on discover, added Haswell
 #                    as an option, removed some older batch systems
 # 07Jul2016  MAT     Added Broadwell at NAS. Removed Westmere. Made
 #                    Broadwell default at NAS.
-# 10Oct2017  MAT     Added Skylake at NAS. Added option to pass in 
+# 10Oct2017  MAT     Added Skylake at NAS. Added option to pass in
 #                    account
 # 08Jul2019  MAT     Changes for git-based GEOSadas
 #------------------------------------------------------------------------
@@ -42,7 +42,7 @@ set time = ( 1000 "%Uu %Ss %E" )
 set NCPUs_min = 6
 
 #=====================
-# determine the site 
+# determine the site
 #=====================
 set node = `uname -n`
 if ( ($node == dirac)   \
@@ -89,6 +89,7 @@ setenv account     ""
 setenv tmpdir      ""
 setenv walltime    ""
 setenv cmake_build_type "Release"
+setenv EXTRA_CMAKE_FLAGS ""
 
 # Detect if on compute node already
 # ---------------------------------
@@ -253,6 +254,16 @@ while ($#argv)
       setenv usenonhydro 1
    endif
 
+   # If a user passes in '-- ' then everything after that is passed
+   # into EXTRA_CMAKE_FLAGS and we are done parsing arguments
+   #--------------------------------------------------------------
+   if ("$1" == "--") then
+      shift
+      setenv EXTRA_CMAKE_FLAGS "$*"
+      set argv = ()
+      break
+   endif
+
    shift
 end
 
@@ -415,6 +426,7 @@ if ($ddb) then
    echo "notar = $notar"
    echo "NCPUS_DFLT = $NCPUS_DFLT"
    echo "CMAKE_BUILD_TYPE = $cmake_build_type"
+   echo "EXTRA_CMAKE_FLAGS = $EXTRA_CMAKE_FLAGS"
    echo "Build directory = $Pbuild_build_directory"
    echo "Install directory = $Pbuild_install_directory"
    exit
@@ -438,7 +450,7 @@ if ("$tmpdir" != "") then
    # ... check that it is writeable
    #-------------------------------
    if (! -w $tmpdir) then
-      echo ">> Error << TMPDIR is not writeable: $tmpdir"  
+      echo ">> Error << TMPDIR is not writeable: $tmpdir"
       exit 4
    endif
    echo ""
@@ -590,7 +602,7 @@ if ($status == 0) then
       echo  "Removing build and install directories and re-running CMake before rebuild"
    else
       echo "No clean before rebuild"
-   endif 
+   endif
 endif
 
 #==============
@@ -744,7 +756,7 @@ echo "Writing LOG and info files to directory: $bldlogdir:t"
 echo2 ""
 
 #================
-# set environment  
+# set environment
 #================
 if ( -d ${ESMADIR}/@env ) then
    source $ESMADIR/@env/g5_modules
@@ -810,9 +822,9 @@ else
    setenv GMI_MECHANISM_FLAG ""
 endif
 
-set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE} ${GMI_MECHANISM_FLAG}"
+set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE} ${GMI_MECHANISM_FLAG} ${EXTRA_CMAKE_FLAGS}"
 set cmd2 = "make --jobs=$numjobs install $verbose"
-echo1 "" 
+echo1 ""
 echo1 ""
 if ($docmake) then
 echo1 "--------------------------------------"
@@ -879,4 +891,18 @@ flagged options
    -sky                 compile on Skylake nodes (default)
    -bro                 compile on Broadwell nodes (only at NAS)
    -has                 compile on Haswell nodes
+
+extra cmake options
+
+   To pass in additional CMake options not covered by the above flags,
+   after all your flags, add -- and then the options. For example:
+
+     $scriptname -debug -- -DSTRATCHEM_REDUCED_MECHANISM=ON -DUSE_CODATA_2018_CONSTANTS=ON
+
+   and these options will be appended to the CMake command.
+
+   NOTE: Once you use --, you cannot use any more flags. All options
+   after -- will be passed to CMake and if not a valid CMake option,
+   could cause the build to fail.
+
 EOF
