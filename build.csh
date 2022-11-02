@@ -264,8 +264,6 @@ while ($#argv)
       break
    endif
 
-   echo "argv = $argv"
-
    shift
 end
 
