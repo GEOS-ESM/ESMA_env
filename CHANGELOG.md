@@ -12,6 +12,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.7.0] - 2022-11-09
+
+### Changed
+
+- Moved to Baselibs 7.6.0
+  - Updated
+    - ESMF v8.4.0
+    - zlib 1.2.13
+    - curl 7.86.0
+    - netCDF-C 4.9.0
+    - netCDF-Fortran 4.6.0
+    - NCO 5.1.1
+    - CDO 2.1.0
+
 ## [4.6.0] - 2022-11-02
 
 ### Added
