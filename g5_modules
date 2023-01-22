@@ -131,21 +131,22 @@ if ( $site == NCCS ) then
 
    set mod1 = GEOSenv
 
-   set mod2 = comp/gcc/10.3.0
-   set mod3 = comp/intel/2021.6.0
+   set mod2 = pchakrab/cuda/11.7.0-spack
+   set mod3 = pchakrab/intel-mkl/2020.4.304-spack.lua
+   set mod4 = pchakrab/gcc/cuda11.7.0/11.2.0nvptx-spack
+   set mod5 = pchakrab/mpi/openmpi/cuda11.7.0-gcc11.2.0nvptx/4.0.6
+   set mod6 = pchakrab/python/cuda11.7.0-gcc11.2.0nvptx-openmpi4.0.6/3.8
 
-   set mod4 = mpi/impi/2021.6.0
+   set basedir = /discover/nobackup/pchakrab/sw/baselibs/ESMA-Baselibs-7.5.0/x86_64-pc-linux-gnu/gfortran11.2.0-nvptx-cuda11.7.0-openmpi4.0.6
 
-   set mod5 = python/GEOSpyD/Min4.11.0_py3.9_AND_Min4.8.3_py2.7
-
-   set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.5.0/x86_64-pc-linux-gnu/ifort_2021.6.0-intelmpi_2021.6.0
-
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
 
    set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
-   set usemods = ( $usemod1 )
+   set usemod2 = /discover/nobackup/pchakrab/sw/modulefiles
+
+   set usemods = ( $usemod1 $usemod2 )
    set usemodules = 1
 
 #=======#
