@@ -132,14 +132,14 @@ if ( $site == NCCS ) then
    set mod1 = GEOSenv
 
    set mod2 = pchakrab/cuda/11.7.0-spack
-   set mod3 = pchakrab/intel-mkl/2020.4.304-spack.lua
-   set mod4 = pchakrab/gcc/cuda11.7.0/11.2.0nvptx-spack
-   set mod5 = pchakrab/mpi/openmpi/cuda11.7.0-gcc11.2.0nvptx/4.0.6
-   set mod6 = pchakrab/python/cuda11.7.0-gcc11.2.0nvptx-openmpi4.0.6/3.8
+   set mod3 = pchakrab/gcc/cuda11.7.0/11.2.0nvptx-spack
+   set mod4 = pchakrab/mpi/openmpi/cuda11.7.0-gcc11.2.0nvptx/4.0.6
+   set mod5 = pchakrab/python/cuda11.7.0-gcc11.2.0nvptx-openmpi4.0.6/3.8
+   set mod6 = pchakrab/intel-mkl/2020.4.304-spack.lua
 
    set basedir = /discover/nobackup/pchakrab/sw/baselibs/ESMA-Baselibs-7.5.0/x86_64-pc-linux-gnu/gfortran11.2.0-nvptx-cuda11.7.0-openmpi4.0.6
 
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
+   set mods = ( $mod2 $mod3 $mod4 $mod5 $mod6 $mod1 ) # we don't want cmake from the python dist
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
 
