@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.10.0] - 2023-01-26
+
+### Changed
+
+- Moved to Baselibs 7.9.0
+  - ESMF v8.5.0b13
+    - NOTE: This is a non-zero-diff change for GEOSgcm to precision changes in grid generation.
+
 ## [4.9.0] - 2023-01-26
 
 ### Changed
