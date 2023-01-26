@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - NCO 5.1.4
   - CDO 2.1.1
     - NOTE: CDO now requires C++17 so this means if you are building with Intel C++ (Classic), you should use GCC 11.1 or higher as the backing GCC compiler [per the Intel docs](https://www.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference/top/compiler-reference/compiler-options/language-options/std-qstd.html)
+- Move to use GCC 11 at NCCS and NAS as needed above
 - Moved to use GitHub Actions for label enforcement
 
 ## [4.8.0] - 2022-11-29
