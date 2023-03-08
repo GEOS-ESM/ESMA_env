@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.9.1] - 2023-03-08
+
+### Changed
+
+- Moved to Baselibs 7.8.1
+  - Updated
+    - ESMF v8.4.1
+      - This is a bug-fix against ESMF 8.4.1 and is a recommended update
+
 ## [4.9.0] - 2023-01-26
 
 ### Changed
