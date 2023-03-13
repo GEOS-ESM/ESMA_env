@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+- Add `-wait` option for waiting for batch jobs
+
 ## [4.12.0] - 2023-03-08
 
 ### Changed
