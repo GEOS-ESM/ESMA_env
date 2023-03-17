@@ -81,6 +81,7 @@ setenv debug       0
 setenv aggressive  0
 setenv verbose     ""
 setenv interactive 0
+setenv do_wait     0
 setenv proc        ""
 setenv prompt      1
 setenv queue       ""
@@ -173,10 +174,14 @@ while ($#argv)
    #----------------------
    if ("$1" == "-i") set interactive = 1
 
-   # run job interactively
-   #----------------------
+   # set verbose flag
+   #-----------------
    if ("$1" == "-verbose") set verbose = "VERBOSE=1"
    if ("$1" == "-v") set verbose = "VERBOSE=1"
+
+   # run job interactively
+   #----------------------
+   if ("$1" == "-wait") set do_wait = 1
 
    # submit batch job to alternative queue/qos
    #------------------------------------------
@@ -415,6 +420,7 @@ if ($ddb) then
    echo "tmpdir = $tmpdir"
    echo "proc = $proc"
    echo "interactive = $interactive"
+   echo "do_wait = $do_wait"
    echo "queue = $queue"
    if ($SITE == NCCS) then
       echo "partition = $partition"
@@ -665,6 +671,15 @@ else if (-e `which getsponsor` && (! $interactive)) then
    set groupflag = "--account=$group"
 endif
 
+set waitflag = ""
+if ($do_wait) then
+   if ($SITE == NAS) then
+      set waitflag = "-W block=true"
+   else if ($SITE == NCCS) then
+      set waitflag = "--wait"
+   endif
+endif
+
 if ($interactive) then
    goto build
 else if ( $SITE == NAS ) then
@@ -676,14 +691,17 @@ else if ( $SITE == NAS ) then
         -l walltime=$walltime  \
         -S /bin/csh            \
         -V -j oe -k oed        \
+        $waitflag              \
         $0
    unset echo
-   sleep 1
-   qstat -a | grep $USER
+   if ("$waitflag" == "") then
+      sleep 1
+      qstat -a | grep $USER
+   endif
 else if ( $SITE == NCCS ) then
    if ("$walltime" == "") setenv walltime "1:00:00"
    set echo
-   sbatch $groupflag $partition $queue    \
+   sbatch $groupflag $partition $queue \
         --constraint=$proc     \
         --job-name=$jobname    \
         --output=$jobname.o%j  \
@@ -691,11 +709,14 @@ else if ( $SITE == NCCS ) then
         --ntasks=${numjobs}    \
         $ntaskspernode         \
         --time=$walltime       \
+        $waitflag              \
         $0
    unset echo
-   sleep 1
-   # Add a longer format for the job name for scripting purposes
-   squeue -a -o "%.10i %.12P %.10q %.30j %.8u %.8T %.10M %.9l %.6D %.6C %R" -u $USER
+   if ("$waitflag" == "") then
+      sleep 1
+      # Add a longer format for the job name for scripting purposes
+      squeue -a -o "%.10i %.12P %.10q %.30j %.8u %.8T %.10M %.9l %.6D %.6C %R" -u $USER
+   endif
 else
    echo $scriptname": batch procedures are not yet defined for node=$node at site=$SITE"
 endif
@@ -875,6 +896,7 @@ flagged options
    -esmadir dir         esmadir location
    -nocmake             do not run cmake (useful for scripting)
    -gnu                 build with gfortran
+   -wait                wait when run as a batch job
    -no-tar              build with INSTALL_SOURCE_TARFILE=OFF (does not tar up source tarball, default is ON)
 
    -hydrostatic         build for hydrostatic dynamics in FV
