@@ -694,8 +694,10 @@ else if ( $SITE == NAS ) then
         $waitflag              \
         $0
    unset echo
-   sleep 1
-   qstat -a | grep $USER
+   if ("$waitflag" == "") then
+      sleep 1
+      qstat -a | grep $USER
+   endif
 else if ( $SITE == NCCS ) then
    if ("$walltime" == "") setenv walltime "1:00:00"
    set echo
@@ -710,9 +712,11 @@ else if ( $SITE == NCCS ) then
         $waitflag              \
         $0
    unset echo
-   sleep 1
-   # Add a longer format for the job name for scripting purposes
-   squeue -a -o "%.10i %.12P %.10q %.30j %.8u %.8T %.10M %.9l %.6D %.6C %R" -u $USER
+   if ("$waitflag" == "") then
+      sleep 1
+      # Add a longer format for the job name for scripting purposes
+      squeue -a -o "%.10i %.12P %.10q %.30j %.8u %.8T %.10M %.9l %.6D %.6C %R" -u $USER
+   endif
 else
    echo $scriptname": batch procedures are not yet defined for node=$node at site=$SITE"
 endif
