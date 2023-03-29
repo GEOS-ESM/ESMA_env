@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.14.0] - 2023-03-29
+
+### Removed
+
+- Removed the `-hydrostatic` and `non-hydrostatic` options from `build.csh` as they are no longer needed as GEOS now
+  builds both by default
+
 ## [4.13.0] - 2023-03-17
 
 ### Added
