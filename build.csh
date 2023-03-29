@@ -74,8 +74,6 @@ setenv esmadir     ""
 setenv docmake     1
 setenv usegnu      0
 setenv notar       0
-setenv usehydro    0
-setenv usenonhydro 0
 setenv ddb         0
 setenv debug       0
 setenv aggressive  0
@@ -247,18 +245,6 @@ while ($#argv)
       setenv notar 1
    endif
 
-   # set hydrostatic option
-   #-----------------------
-   if ("$1" == "-hydrostatic") then
-      setenv usehydro 1
-   endif
-
-   # set hydrostatic option
-   #-----------------------
-   if ("$1" == "-nonhydrostatic") then
-      setenv usenonhydro 1
-   endif
-
    # If a user passes in '-- ' then everything after that is passed
    # into EXTRA_CMAKE_FLAGS and we are done parsing arguments
    #--------------------------------------------------------------
@@ -276,13 +262,6 @@ end
 # --------------------------------------
 if ( ($aggressive) && ($debug) ) then
    echo "ERROR. Only one of -debug and -aggressive is allowed"
-   exit 1
-endif
-
-# Only allow one of hydrostatic and nonhydrostatic
-# ------------------------------------------------
-if ( ($usehydro) && ($usenonhydro) ) then
-   echo "ERROR. Only one of -hydrostatic and -nonhydrostatic is allowed"
    exit 1
 endif
 
@@ -822,15 +801,6 @@ else
    setenv FORTRAN_COMPILER 'ifort'
 endif
 
-if ($usehydro) then
-   setenv HYDROBUILD '-DHYDROSTATIC=ON'
-else if ($usenonhydro) then
-   setenv HYDROBUILD '-DHYDROSTATIC=OFF'
-else
-   # If no option is passed, use the default in the model
-   setenv HYDROBUILD ''
-endif
-
 if ($notar) then
    setenv INSTALL_SOURCE_TARFILE "OFF"
 else
@@ -843,7 +813,7 @@ else
    setenv GMI_MECHANISM_FLAG ""
 endif
 
-set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE} ${GMI_MECHANISM_FLAG} ${EXTRA_CMAKE_FLAGS}"
+set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE} ${GMI_MECHANISM_FLAG} ${EXTRA_CMAKE_FLAGS}"
 set cmd2 = "make --jobs=$numjobs install $verbose"
 echo1 ""
 echo1 ""
@@ -898,9 +868,6 @@ flagged options
    -gnu                 build with gfortran
    -wait                wait when run as a batch job
    -no-tar              build with INSTALL_SOURCE_TARFILE=OFF (does not tar up source tarball, default is ON)
-
-   -hydrostatic         build for hydrostatic dynamics in FV
-   -nonhydrostatic      build for nonhydrostatic dynamics in FV
 
    -i                   run interactively rather than queuing job
    -q qos/queue         send batch job to qos/queue
