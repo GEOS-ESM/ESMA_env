@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update to Baselibs 8.0.0 (with FMS)
+- Update to Baselibs 8.0.0
+  - Has FMS 2023.1 and libyaml 0.2.5
 
 ### Fixed
 ### Removed
