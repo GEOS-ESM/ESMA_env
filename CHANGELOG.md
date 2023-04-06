@@ -15,6 +15,90 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.14.0] - 2023-03-29
+
+### Removed
+
+- Removed the `-hydrostatic` and `non-hydrostatic` options from `build.csh` as they are no longer needed as GEOS now
+  builds both by default
+
+## [4.13.0] - 2023-03-17
+
+### Added
+
+- Add `-wait` option for waiting for batch jobs
+
+## [4.12.0] - 2023-03-08
+
+### Changed
+
+- Moved to Baselibs 7.11.0
+  - ESMF v8.5.0b18
+
+## [4.11.0] - 2023-03-03
+
+### Changed
+
+- Moved to Baselibs 7.10.0
+  - GFE v1.9.0
+  - curl v7.88.1
+
+## [4.10.0] - 2023-01-26
+
+### Changed
+
+- Moved to Baselibs 7.9.0
+  - ESMF v8.5.0b13
+    - NOTE: This is a non-zero-diff change for GEOSgcm to precision changes in grid generation.
+
+## [4.9.0] - 2023-01-26
+
+### Changed
+
+- Moved to Baselibs 7.8.0
+  - curl 7.87.0
+  - NCO 5.1.4
+  - CDO 2.1.1
+    - NOTE: CDO now requires C++17 so this means if you are building with Intel C++ (Classic), you should use GCC 11.1 or higher as the backing GCC compiler [per the Intel docs](https://www.intel.com/content/www/us/en/develop/documentation/cpp-compiler-developer-guide-and-reference/top/compiler-reference/compiler-options/language-options/std-qstd.html)
+- Move to use GCC 11 at NCCS and NAS as needed above
+- Moved to use GitHub Actions for label enforcement
+
+## [4.8.0] - 2022-11-29
+
+### Changed
+
+- Moved to Baselibs 7.7.0
+  - Updated
+    - GFE v1.8.0
+      - fArgParse v1.4.1
+      - pFUnit v4.6.1
+
+## [4.7.0] - 2022-11-09
+
+### Changed
+
+- Moved to Baselibs 7.6.0
+  - Updated
+    - ESMF v8.4.0
+    - zlib 1.2.13
+    - curl 7.86.0
+    - netCDF-C 4.9.0
+    - netCDF-Fortran 4.6.0
+    - NCO 5.1.1
+    - CDO 2.1.0
+
+## [4.6.0] - 2022-11-02
+
+### Added
+
+- Add ability to pass in arbitrary CMake options to `build.csh`
+
+## [4.5.0] - 2022-10-25
+
+### Added
+
+- Added `-gmi_mechanism` option to `build.csh` for use with multiple GMI mechanism
+
 ## [4.4.0] - 2022-08-26
 
 ### Added

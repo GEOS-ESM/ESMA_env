@@ -20,11 +20,11 @@
 # 05Aug2009  Stassi  Added -debug and -tmpdir flags
 # 19Aug2010  Stassi  Added -walltime flag
 # 01Apr2011  Stassi  Added clean and realclean options
-# 04Nov2014  MAT     Moved to sbatch on discover, added Haswell 
+# 04Nov2014  MAT     Moved to sbatch on discover, added Haswell
 #                    as an option, removed some older batch systems
 # 07Jul2016  MAT     Added Broadwell at NAS. Removed Westmere. Made
 #                    Broadwell default at NAS.
-# 10Oct2017  MAT     Added Skylake at NAS. Added option to pass in 
+# 10Oct2017  MAT     Added Skylake at NAS. Added option to pass in
 #                    account
 # 08Jul2019  MAT     Changes for git-based GEOSadas
 #------------------------------------------------------------------------
@@ -42,7 +42,7 @@ set time = ( 1000 "%Uu %Ss %E" )
 set NCPUs_min = 6
 
 #=====================
-# determine the site 
+# determine the site
 #=====================
 set node = `uname -n`
 if ( ($node == dirac)   \
@@ -74,13 +74,12 @@ setenv esmadir     ""
 setenv docmake     1
 setenv usegnu      0
 setenv notar       0
-setenv usehydro    0
-setenv usenonhydro 0
 setenv ddb         0
 setenv debug       0
 setenv aggressive  0
 setenv verbose     ""
 setenv interactive 0
+setenv do_wait     0
 setenv proc        ""
 setenv prompt      1
 setenv queue       ""
@@ -89,6 +88,7 @@ setenv account     ""
 setenv tmpdir      ""
 setenv walltime    ""
 setenv cmake_build_type "Release"
+setenv EXTRA_CMAKE_FLAGS ""
 
 # Detect if on compute node already
 # ---------------------------------
@@ -161,14 +161,25 @@ while ($#argv)
       setenv INSTALLDIR $1
    endif
 
+   # set GMI_MECHANISM
+   #------------------
+   if ("$1" == "-gmi_mechanism") then
+      shift; if (! $#argv) goto usage
+      setenv GMI_MECHANISM $1
+   endif
+
    # run job interactively
    #----------------------
    if ("$1" == "-i") set interactive = 1
 
-   # run job interactively
-   #----------------------
+   # set verbose flag
+   #-----------------
    if ("$1" == "-verbose") set verbose = "VERBOSE=1"
    if ("$1" == "-v") set verbose = "VERBOSE=1"
+
+   # run job interactively
+   #----------------------
+   if ("$1" == "-wait") set do_wait = 1
 
    # submit batch job to alternative queue/qos
    #------------------------------------------
@@ -234,16 +245,14 @@ while ($#argv)
       setenv notar 1
    endif
 
-   # set hydrostatic option
-   #-----------------------
-   if ("$1" == "-hydrostatic") then
-      setenv usehydro 1
-   endif
-
-   # set hydrostatic option
-   #-----------------------
-   if ("$1" == "-nonhydrostatic") then
-      setenv usenonhydro 1
+   # If a user passes in '-- ' then everything after that is passed
+   # into EXTRA_CMAKE_FLAGS and we are done parsing arguments
+   #--------------------------------------------------------------
+   if ("$1" == "--") then
+      shift
+      setenv EXTRA_CMAKE_FLAGS "$*"
+      set argv = ()
+      break
    endif
 
    shift
@@ -253,13 +262,6 @@ end
 # --------------------------------------
 if ( ($aggressive) && ($debug) ) then
    echo "ERROR. Only one of -debug and -aggressive is allowed"
-   exit 1
-endif
-
-# Only allow one of hydrostatic and nonhydrostatic
-# ------------------------------------------------
-if ( ($usehydro) && ($usenonhydro) ) then
-   echo "ERROR. Only one of -hydrostatic and -nonhydrostatic is allowed"
    exit 1
 endif
 
@@ -391,9 +393,13 @@ if ($ddb) then
    if ($?nodeTYPE) then
       echo "nodeTYPE = $nodeTYPE"
    endif
+   if ($?GMI_MECHANISM) then
+      echo "GMI_MECHANISM = $GMI_MECHANISM"
+   endif
    echo "tmpdir = $tmpdir"
    echo "proc = $proc"
    echo "interactive = $interactive"
+   echo "do_wait = $do_wait"
    echo "queue = $queue"
    if ($SITE == NCCS) then
       echo "partition = $partition"
@@ -405,6 +411,7 @@ if ($ddb) then
    echo "notar = $notar"
    echo "NCPUS_DFLT = $NCPUS_DFLT"
    echo "CMAKE_BUILD_TYPE = $cmake_build_type"
+   echo "EXTRA_CMAKE_FLAGS = $EXTRA_CMAKE_FLAGS"
    echo "Build directory = $Pbuild_build_directory"
    echo "Install directory = $Pbuild_install_directory"
    exit
@@ -428,7 +435,7 @@ if ("$tmpdir" != "") then
    # ... check that it is writeable
    #-------------------------------
    if (! -w $tmpdir) then
-      echo ">> Error << TMPDIR is not writeable: $tmpdir"  
+      echo ">> Error << TMPDIR is not writeable: $tmpdir"
       exit 4
    endif
    echo ""
@@ -580,7 +587,7 @@ if ($status == 0) then
       echo  "Removing build and install directories and re-running CMake before rebuild"
    else
       echo "No clean before rebuild"
-   endif 
+   endif
 endif
 
 #==============
@@ -643,6 +650,15 @@ else if (-e `which getsponsor` && (! $interactive)) then
    set groupflag = "--account=$group"
 endif
 
+set waitflag = ""
+if ($do_wait) then
+   if ($SITE == NAS) then
+      set waitflag = "-W block=true"
+   else if ($SITE == NCCS) then
+      set waitflag = "--wait"
+   endif
+endif
+
 if ($interactive) then
    goto build
 else if ( $SITE == NAS ) then
@@ -654,14 +670,17 @@ else if ( $SITE == NAS ) then
         -l walltime=$walltime  \
         -S /bin/csh            \
         -V -j oe -k oed        \
+        $waitflag              \
         $0
    unset echo
-   sleep 1
-   qstat -a | grep $USER
+   if ("$waitflag" == "") then
+      sleep 1
+      qstat -a | grep $USER
+   endif
 else if ( $SITE == NCCS ) then
    if ("$walltime" == "") setenv walltime "1:00:00"
    set echo
-   sbatch $groupflag $partition $queue    \
+   sbatch $groupflag $partition $queue \
         --constraint=$proc     \
         --job-name=$jobname    \
         --output=$jobname.o%j  \
@@ -669,11 +688,14 @@ else if ( $SITE == NCCS ) then
         --ntasks=${numjobs}    \
         $ntaskspernode         \
         --time=$walltime       \
+        $waitflag              \
         $0
    unset echo
-   sleep 1
-   # Add a longer format for the job name for scripting purposes
-   squeue -a -o "%.10i %.12P %.10q %.30j %.8u %.8T %.10M %.9l %.6D %.6C %R" -u $USER
+   if ("$waitflag" == "") then
+      sleep 1
+      # Add a longer format for the job name for scripting purposes
+      squeue -a -o "%.10i %.12P %.10q %.30j %.8u %.8T %.10M %.9l %.6D %.6C %R" -u $USER
+   endif
 else
    echo $scriptname": batch procedures are not yet defined for node=$node at site=$SITE"
 endif
@@ -734,7 +756,7 @@ echo "Writing LOG and info files to directory: $bldlogdir:t"
 echo2 ""
 
 #================
-# set environment  
+# set environment
 #================
 if ( -d ${ESMADIR}/@env ) then
    source $ESMADIR/@env/g5_modules
@@ -779,24 +801,21 @@ else
    setenv FORTRAN_COMPILER 'ifort'
 endif
 
-if ($usehydro) then
-   setenv HYDROBUILD '-DHYDROSTATIC=ON'
-else if ($usenonhydro) then
-   setenv HYDROBUILD '-DHYDROSTATIC=OFF'
-else
-   # If no option is passed, use the default in the model
-   setenv HYDROBUILD ''
-endif
-
 if ($notar) then
    setenv INSTALL_SOURCE_TARFILE "OFF"
 else
    setenv INSTALL_SOURCE_TARFILE "ON"
 endif
 
-set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE}"
+if ($?GMI_MECHANISM) then
+   setenv GMI_MECHANISM_FLAG "-DGMI_MECHANISM=$GMI_MECHANISM"
+else
+   setenv GMI_MECHANISM_FLAG ""
+endif
+
+set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE} ${GMI_MECHANISM_FLAG} ${EXTRA_CMAKE_FLAGS}"
 set cmd2 = "make --jobs=$numjobs install $verbose"
-echo1 "" 
+echo1 ""
 echo1 ""
 if ($docmake) then
 echo1 "--------------------------------------"
@@ -847,10 +866,8 @@ flagged options
    -esmadir dir         esmadir location
    -nocmake             do not run cmake (useful for scripting)
    -gnu                 build with gfortran
+   -wait                wait when run as a batch job
    -no-tar              build with INSTALL_SOURCE_TARFILE=OFF (does not tar up source tarball, default is ON)
-
-   -hydrostatic         build for hydrostatic dynamics in FV
-   -nonhydrostatic      build for nonhydrostatic dynamics in FV
 
    -i                   run interactively rather than queuing job
    -q qos/queue         send batch job to qos/queue
@@ -863,4 +880,18 @@ flagged options
    -sky                 compile on Skylake nodes (default)
    -bro                 compile on Broadwell nodes (only at NAS)
    -has                 compile on Haswell nodes
+
+extra cmake options
+
+   To pass in additional CMake options not covered by the above flags,
+   after all your flags, add -- and then the options. For example:
+
+     $scriptname -debug -- -DSTRATCHEM_REDUCED_MECHANISM=ON -DUSE_CODATA_2018_CONSTANTS=ON
+
+   and these options will be appended to the CMake command.
+
+   NOTE: Once you use --, you cannot use any more flags. All options
+   after -- will be passed to CMake and if not a valid CMake option,
+   could cause the build to fail.
+
 EOF
