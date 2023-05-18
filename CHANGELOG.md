@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.9.2] - 2023-05-18
+
+### Changed
+
+- Updated to use MPT 2.28 at NAS per their recommendation for running on new TOSS4 nodes
+  - This is done through the `mpi-hpt/mpt` module which resolves to `mpi-hpe/mpt.2.28_25Apr23_rhel87`
+
 ## [4.9.1] - 2023-03-08
 
 ### Changed
