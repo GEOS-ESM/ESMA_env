@@ -9,11 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 ### Fixed
-
-- Fixed issue with tmpdir at NAS
-
 ### Removed
 ### Added
+
+## [4.16.1] - 2023-05-24
+
+### Fixed
+
+- Fixed issue with tmpdir at NAS
 
 ## [4.16.0] - 2023-05-18
 
