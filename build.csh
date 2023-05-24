@@ -349,7 +349,7 @@ if ( $SITE == NAS ) then
 
    # TMPDIR needs to be reset
    #-------------------------
-   if (! "$tmpdir") then
+   if ($tmpdir == '') then
       set tmpdirDFLT = "/nobackup/$USER/scratch/"
       if ($prompt) then
          echo ""
@@ -358,6 +358,8 @@ if ( $SITE == NAS ) then
          echo -n "TMPDIR [$tmpdirDFLT] "
          setenv tmpdir $<
          if ("$tmpdir" == "") setenv tmpdir $tmpdirDFLT
+      else
+         setenv tmpdir $tmpdirDFLT
       endif
    endif
    echo "TMPDIR: $tmpdir"
