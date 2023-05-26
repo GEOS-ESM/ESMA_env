@@ -141,14 +141,14 @@ if ( $site == NCCS ) then
    set mod7 = pchakrab/intel-mkl/2020.4.304-spack
    set mod8 = cmake/3.23.1
 
-   set basedir = /discover/nobackup/pchakrab/sw/baselibs/ESMA-Baselibs-6.2.8/x86_64-pc-linux-gnu/cuda11.2.2-gcc10.4.0nvptx-openmpi4.1.4
+   set basedir = /discover/nobackup/projects/geosongpu/sw/baselibs/v6.2.8/x86_64-pc-linux-gnu/cuda11.2.2-gcc10.4.0nvptx-openmpi4.1.4
 
    set mods = ( $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 $mod1 $mod8 )
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
 
    set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
-   set usemod2 = /discover/nobackup/pchakrab/sw/modulefiles
+   set usemod2 = /discover/nobackup/projects/geosongpu/sw/modulefiles
 
    set usemods = ( $usemod1 $usemod2 )
    set usemodules = 1
