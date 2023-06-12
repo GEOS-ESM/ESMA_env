@@ -16,6 +16,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.17.0] - 2023-05-25
+
+### Changed
+
+- Moved to Baselibs 7.13.0
+  - esmf v8.5.0b22
+  - curl 8.1.1
+  - HDF5 1.10.10
+  - netCDF-C 4.9.2
+  - netCDF-Fortran 4.6.1
+  - CDO 2.2.0
+
+## [4.16.1] - 2023-05-24
+
+### Fixed
+
+- Fixed issue with tmpdir at NAS
+
+## [4.16.0] - 2023-05-18
+
+### Changed
+
+- Updated to use MPT 2.28 at NAS per their recommendation for running on new TOSS4 nodes
+  - This is done through the `mpi-hpt/mpt` module which resolves to `mpi-hpe/mpt.2.28_25Apr23_rhel87`
+
+## [4.15.0] - 2023-04-19
+
+### Changed
+
+- Moved to Baselibs 7.12.0
+  - GFE v1.10.0
+  - curl 8.0.1
+  - NCO 5.1.5
+
 ## [4.14.0] - 2023-03-29
 
 ### Removed
