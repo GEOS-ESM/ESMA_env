@@ -140,7 +140,7 @@ if ( $site == NCCS ) then
 
    set basedir = /discover/nobackup/projects/geosongpu/sw/baselibs/v7.8.2/x86_64-pc-linux-gnu/cuda11.2.2-gcc10.4.0nvptx-openmpi4.1.4
 
-   set mods = ( $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 $mod1 ) # load cmake (part of GEOSenv last)
+   set mods = ( $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 $mod1 $mod4 ) # re-load cmake and gcc again to avoid versions in Python dist
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
 
