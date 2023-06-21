@@ -92,6 +92,9 @@ else if (($node =~ pfe*) || ($node =~ tfe*) || \
 else if ( -d /ford1/share/gmao_SIteam/ && -d /ford1/local/ && $arch == Linux ) then
    set site = "GMAO.desktop"
 
+else if ( -d /pscratch/sd/p ) then
+   set site = "NERSC.Perlmutter"
+
 else
    set site = $node
 
@@ -148,6 +151,27 @@ if ( $site == NCCS ) then
    set usemod2 = /discover/nobackup/projects/geosongpu/sw/modulefiles
 
    set usemods = ( $usemod1 $usemod2 )
+   set usemodules = 1
+
+#======================#
+#  NERSC - Perlmutter  #
+#======================#
+else if ( $site == NERSC.Perlmutter ) then
+
+   set mod1 = PrgEnv-gnu/8.3.3
+   set mod2 = cudatoolkit/11.7
+   set mod3 = pchakrab/python/cuda11.7.0-gcc11.2.0-craympich8.1.25/gt4py@4be34ec
+   set mod4 = pchakrab/intel-mkl/2020.4.304-spack
+
+   set basedir = /global/common/software/m4379/sw/baselibs/v6.2.8/x86_64-pc-linux-gnu/cuda11.7.0-gcc11.2.0-craympich8.1.25
+
+   set mods = ( $mod1 $mod2 $mod3 $mod4 )
+   set modinit = /usr/share/modules/init/csh
+   set loadmodules = 0
+
+   set usemod1 = /global/common/software/m4379/sw/modulefiles
+
+   set usemods = ( $usemod1 )
    set usemodules = 1
 
 #=======#
