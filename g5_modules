@@ -165,7 +165,7 @@ else if ( $site == NERSC.Perlmutter ) then
    set mod4 = pchakrab/python/cuda11.7.0-gcc11.2.0-craympich8.1.25/gt4py@4be34ec
    set mod5 = pchakrab/intel-mkl/2020.4.304-spack
 
-   set basedir = /global/common/software/m4379/sw/baselibs/v6.2.8/x86_64-pc-linux-gnu/cuda11.7.0-gcc11.2.0-craympich8.1.25
+   set basedir = /global/common/software/m4379/sw/baselibs/v7.8.2/x86_64-pc-linux-gnu/cuda11.7.0-gcc11.2.0-craympich8.1.25
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod2 ) # re-load gcc again to avoid version in Python dist
    set modinit = /usr/share/modules/init/csh
