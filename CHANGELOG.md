@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.18.0] - 2023-07-10
+
+### Changed
+
+- Removed Haswell as build node option at NCCS (no longer available)
+- Added an "any" option for the build node at NCCS which will submit to any available node type
+
 ## [4.17.0] - 2023-05-25
 
 ### Changed

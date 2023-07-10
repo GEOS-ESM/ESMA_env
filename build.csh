@@ -132,6 +132,7 @@ while ($#argv)
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
    if ("$1" == "-bro")  set nodeTYPE = "Broadwell"
    if ("$1" == "-has")  set nodeTYPE = "Haswell"
+   if ("$1" == "-any")  set nodeTYPE = "Any node"
 
    # reset Fortran TMPDIR
    #---------------------
@@ -268,36 +269,34 @@ endif
 # default nodeTYPE
 #-----------------
 if (! $?nodeTYPE) then
-   if ($SITE == NCCS) set nodeTYPE = "Skylake"
+   if ($SITE == NCCS) set nodeTYPE = "Any"
    if ($SITE == NAS)  set nodeTYPE = "Skylake"
 endif
-
-# This is a flag needed at NCCS for Cascade Lake. Default is blank
-set ntaskspernode = ''
 
 # at NCCS
 #--------
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if (($nT != has) && ($nT != sky) && ($nT != cas)) then
+   if (($nT != sky) && ($nT != cas) && ($nT != any)) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
 
-   if ($nT == has) @ NCPUS_DFLT = 28
+   # For the any node, set the default to 40 cores as
+   # this is the least number of cores you will get
+   if ($nT == any) @ NCPUS_DFLT = 40
    if ($nT == sky) @ NCPUS_DFLT = 40
    if ($nT == cas) @ NCPUS_DFLT = 48
 
-   if ($nT == has) set proc = 'hasw'
    if ($nT == sky) set proc = 'sky'
-   if ($nT == cas) then
-      set proc = 'cas'
-      # Adding this adds prevents a warning from NCCS about using 48
-      # tasks per node on Cascade. This script will never actually run
-      # make -j48, (usually make -j10 and only asks for 10 tasks) but
-      # this suppresses the warning.
-      set ntaskspernode = '--ntasks-per-node=45'
+   if ($nT == cas) set proc = 'cas'
+   if ($nT == cas) set proc = 'any'
+
+   if ($nT == any) then
+      set slurm_constraint = ""
+   else
+      set slurm_constraint = "--constraint=$proc"
    endif
 
    if ("$queue" == "") then
@@ -683,12 +682,11 @@ else if ( $SITE == NCCS ) then
    if ("$walltime" == "") setenv walltime "1:00:00"
    set echo
    sbatch $groupflag $partition $queue \
-        --constraint=$proc     \
+        $slurm_constraint      \
         --job-name=$jobname    \
         --output=$jobname.o%j  \
         --nodes=1              \
         --ntasks=${numjobs}    \
-        $ntaskspernode         \
         --time=$walltime       \
         $waitflag              \
         $0
@@ -879,9 +877,10 @@ flagged options
 
    -rom                 compile on Rome nodes (only at NAS)
    -cas                 compile on Cascade Lake nodes
-   -sky                 compile on Skylake nodes (default)
+   -sky                 compile on Skylake nodes (default at NAS)
    -bro                 compile on Broadwell nodes (only at NAS)
-   -has                 compile on Haswell nodes
+   -has                 compile on Haswell nodes (only at NAS)
+   -any                 compile on any node (only at NCCS with SLURM, default at NCCS)
 
 extra cmake options
 
