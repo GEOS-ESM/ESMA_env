@@ -410,6 +410,7 @@ if ($ddb) then
    echo "queue = $queue"
    if ($SITE == NCCS) then
       echo "partition = $partition"
+      echo "slurm_constraint = $slurm_constraint"
    endif
    echo "account = $account"
    echo "walltime = $walltime"
