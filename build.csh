@@ -260,6 +260,14 @@ while ($#argv)
    shift
 end
 
+# Check if the ESMA_NOTAR environment variable is set
+# If so, then set notar to 1
+# --------------------------------------------------
+if ($?ESMA_NOTAR) then
+   echo "ESMA_NOTAR is set, so not creating tar file"
+   setenv notar 1
+endif
+
 # Only allow one of debug and aggressive
 # --------------------------------------
 if ( ($aggressive) && ($debug) ) then
