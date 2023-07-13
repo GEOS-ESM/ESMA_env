@@ -293,8 +293,14 @@ if ($SITE == NCCS) then
    if ($nT == cas) set proc = 'cas'
    if ($nT == cas) set proc = 'any'
 
-   if ($nT == any) then
-      set slurm_constraint = ""
+   # If we are using GNU at NCCS, we can*only* use the cas queue
+   # as OpenMPI is only built for Infiniband
+   if ($usegnu) then
+      echo "Using GNU at NCCS, setting queue to cas"
+      set proc = 'cas'
+      set slurm_constraint = "--constraint=$proc"
+   else if ($nT == any) then
+      set slurm_constraint = "--constraint=[sky|cas]"
    else
       set slurm_constraint = "--constraint=$proc"
    endif
