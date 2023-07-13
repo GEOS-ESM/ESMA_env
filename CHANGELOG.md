@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed Haswell as build node option at NCCS (no longer available)
 - Added an "any" option for the build node at NCCS which will submit to any available node type
+  - At NCCS with GNU, Cascade Lake is forced as Open MPI is built only for Infiniband
 
 ## [4.17.0] - 2023-05-25
 

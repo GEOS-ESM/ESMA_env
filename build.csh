@@ -87,6 +87,7 @@ setenv partition   ""
 setenv account     ""
 setenv tmpdir      ""
 setenv walltime    ""
+setenv slurm_constraint  ""
 setenv cmake_build_type "Release"
 setenv EXTRA_CMAKE_FLAGS ""
 
@@ -259,6 +260,14 @@ while ($#argv)
    shift
 end
 
+# Check if the ESMA_NOTAR environment variable is set
+# If so, then set notar to 1
+# --------------------------------------------------
+if ($?ESMA_NOTAR) then
+   echo "ESMA_NOTAR is set, so not creating tar file"
+   setenv notar 1
+endif
+
 # Only allow one of debug and aggressive
 # --------------------------------------
 if ( ($aggressive) && ($debug) ) then
@@ -289,12 +298,18 @@ if ($SITE == NCCS) then
    if ($nT == sky) @ NCPUS_DFLT = 40
    if ($nT == cas) @ NCPUS_DFLT = 48
 
+   if ($nT == any) set proc = 'any'
    if ($nT == sky) set proc = 'sky'
    if ($nT == cas) set proc = 'cas'
-   if ($nT == cas) set proc = 'any'
 
-   if ($nT == any) then
-      set slurm_constraint = ""
+   # If we are using GNU at NCCS, we can*only* use the cas queue
+   # as OpenMPI is only built for Infiniband
+   if ($usegnu) then
+      echo "Using GNU at NCCS, setting queue to cas"
+      set proc = 'cas'
+      set slurm_constraint = "--constraint=$proc"
+   else if ($nT == any) then
+      set slurm_constraint = "--constraint=sky|cas"
    else
       set slurm_constraint = "--constraint=$proc"
    endif
@@ -404,6 +419,7 @@ if ($ddb) then
    echo "queue = $queue"
    if ($SITE == NCCS) then
       echo "partition = $partition"
+      echo "slurm_constraint = $slurm_constraint"
    endif
    echo "account = $account"
    echo "walltime = $walltime"
