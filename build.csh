@@ -87,6 +87,7 @@ setenv partition   ""
 setenv account     ""
 setenv tmpdir      ""
 setenv walltime    ""
+setenv slurm_constraint  ""
 setenv cmake_build_type "Release"
 setenv EXTRA_CMAKE_FLAGS ""
 
@@ -289,9 +290,9 @@ if ($SITE == NCCS) then
    if ($nT == sky) @ NCPUS_DFLT = 40
    if ($nT == cas) @ NCPUS_DFLT = 48
 
+   if ($nT == any) set proc = 'any'
    if ($nT == sky) set proc = 'sky'
    if ($nT == cas) set proc = 'cas'
-   if ($nT == cas) set proc = 'any'
 
    # If we are using GNU at NCCS, we can*only* use the cas queue
    # as OpenMPI is only built for Infiniband
@@ -300,7 +301,7 @@ if ($SITE == NCCS) then
       set proc = 'cas'
       set slurm_constraint = "--constraint=$proc"
    else if ($nT == any) then
-      set slurm_constraint = "--constraint=[sky|cas]"
+      set slurm_constraint = "--constraint=sky|cas"
    else
       set slurm_constraint = "--constraint=$proc"
    endif
