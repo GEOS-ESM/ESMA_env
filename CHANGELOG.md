@@ -12,6 +12,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.19.0] - 2023-07-27
+
+### Changed
+
+- Moved to Baselibs 7.14.0
+  - ESMF v8.5.0
+  - GFE v1.11.0
+    - gFTL-shared v1.6.1
+    - pFUnit v4.7.3
+  - curl 8.2.1
+  - NCO 5.1.7
+  - CDO 2.2.1
+
 ## [4.18.0] - 2023-07-13
 
 ### Changed
