@@ -135,15 +135,15 @@ if ( $site == NCCS ) then
    set mod1 = GEOSenv
 
    set mod2 = pchakrab/cuda/11.2.2-spack
-   set mod3 = pchakrab/ucx/cuda11.2.2/1.10.0
-   set mod4 = pchakrab/gcc/cuda11.2.2/10.4.0nvptx-spack
-   set mod5 = pchakrab/mpi/openmpi/cuda11.2.2-gcc10.4.0nvptx/4.1.4
-   set mod6 = pchakrab/python/cuda11.2.2-gcc10.4.0nvptx-openmpi4.1.4/gt4py@1717d3c-dace@892d614/3.8
+   set mod3 = pchakrab/python/gt4py@1717d3c-dace@892d614/3.8
+   set mod4 = pchakrab/ucx/cuda11.2.2/1.10.0
+   set mod5 = pchakrab/gcc/cuda11.2.2/10.4.0nvptx-spack
+   set mod6 = pchakrab/mpi/openmpi/cuda11.2.2-gcc10.4.0nvptx/4.1.4
    set mod7 = pchakrab/intel-mkl/2020.4.304-spack
 
    set basedir = /discover/nobackup/projects/geosongpu/sw/baselibs/v7.8.2/x86_64-pc-linux-gnu/cuda11.2.2-gcc10.4.0nvptx-openmpi4.1.4
 
-   set mods = ( $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 $mod1 $mod4 ) # re-load cmake and gcc again to avoid versions in Python dist
+   set mods = ( $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 $mod1 ) # load GEOSenv at the end to avoid versions in Python dist
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
 
