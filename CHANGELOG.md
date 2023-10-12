@@ -12,7 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.20.0] - 2023-10-14
+
+### Added
+
 - Added support for Milan at NCCS
+  - Uses Open MPI 4.1.5 on SCU17 rather than Intel MPI due to issues with Intel MPI
 
 ## [4.19.0] - 2023-07-27
 
