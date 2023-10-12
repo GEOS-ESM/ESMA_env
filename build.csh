@@ -321,10 +321,7 @@ if ($SITE == NCCS) then
       set queue = '--qos=debug'
    endif
 
-   # Milan's must be submitted to the scutest partition
-   if ($nT == mil) then
-      set partition = '--partition=scutest'
-   else if ("$partition" == "") then
+   if ("$partition" == "") then
       set partition = '--partition=compute'
    endif
 
