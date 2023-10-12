@@ -128,6 +128,7 @@ while ($#argv)
 
    # specify node type
    #------------------
+   if ("$1" == "-mil")  set nodeTYPE = "Milan"
    if ("$1" == "-rom")  set nodeTYPE = "Rome"
    if ("$1" == "-cas")  set nodeTYPE = "CascadeLake"
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
@@ -297,10 +298,12 @@ if ($SITE == NCCS) then
    if ($nT == any) @ NCPUS_DFLT = 40
    if ($nT == sky) @ NCPUS_DFLT = 40
    if ($nT == cas) @ NCPUS_DFLT = 48
+   if ($nT == mil) @ NCPUS_DFLT = 128
 
    if ($nT == any) set proc = 'any'
    if ($nT == sky) set proc = 'sky'
    if ($nT == cas) set proc = 'cas'
+   if ($nT == mil) set proc = 'mil'
 
    # If we are using GNU at NCCS, we can*only* use the cas queue
    # as OpenMPI is only built for Infiniband
@@ -891,6 +894,7 @@ flagged options
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
+   -mil                 compile on Milan nodes (only at NCCS)
    -rom                 compile on Rome nodes (only at NAS)
    -cas                 compile on Cascade Lake nodes
    -sky                 compile on Skylake nodes (default at NAS)

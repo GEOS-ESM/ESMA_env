@@ -74,6 +74,9 @@ if (($node =~ discover*) || ($node =~ borg*)  || \
 
    set site = "NCCS"
 
+   # NCCS now has both SLES15 and SLES12 machines
+   set OS_VERSION=`grep VERSION_ID /etc/os-release | cut -d= -f2 | cut -d. -f1 | sed 's/"//g'`
+
 else if (($node =~ pfe*) || ($node =~ tfe*) || \
          ($node =~ r[0-9]*i[0-9]*n[0-9]*) || \
          ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
@@ -123,20 +126,30 @@ if ( $site == NCCS ) then
 
    set mod1 = GEOSenv
 
-   set mod2 = comp/gcc/11.2.0
-   set mod3 = comp/intel/2021.6.0
+   if ( $OS_VERSION == 12 ) then
 
-   set mod4 = mpi/impi/2021.6.0
+      set mod2 = comp/gcc/11.2.0
+      set mod3 = comp/intel/2021.6.0
+      set mod4 = mpi/impi/2021.6.0
+      set mod5 = python/GEOSpyD/Min4.11.0_py3.9_AND_Min4.8.3_py2.7
+      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.14.0/x86_64-pc-linux-gnu/ifort_2021.6.0-intelmpi_2021.6.0
+      set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
 
-   set mod5 = python/GEOSpyD/Min4.11.0_py3.9_AND_Min4.8.3_py2.7
+   else
 
-   set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.14.0/x86_64-pc-linux-gnu/ifort_2021.6.0-intelmpi_2021.6.0
+      set mod2 = comp/gcc/12.3.0
+      set mod3 = comp/intel/2021.6.0
+      set mod4 = mpi/openmpi/4.1.5/intel-2021.6.0
+      set mod5 = python/GEOSpyD/Min23.5.2-0_py3.11
+      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.14.0/x86_64-pc-linux-gnu/ifort_2021.6.0-openmpi_4.1.5-SLES15
+      set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES15
+
+   endif
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
 
-   set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
    set usemods = ( $usemod1 )
    set usemodules = 1
 
