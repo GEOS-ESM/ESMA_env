@@ -12,7 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.9.4] - 2023-10-XX
+
+### Added
+
 - Added support for SCU17/SLES15 at NCCS
+  - Uses Open MPI 4.1.5 on SCU17 rather than Intel MPI due to issues with Intel MPI
 
 ## [4.9.3] - 2023-05-24
 
