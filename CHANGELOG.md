@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.20.2] - 2023-10-23
+
+### Fixed
+
+- Append `-SLES12` or `-SLES15` on the build and install directories at NCCS when using `build.csh` to make it clear to users
+
 ## [4.20.1] - 2023-10-23
 
 ### Fixed
