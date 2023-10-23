@@ -288,7 +288,7 @@ endif
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if (($nT != sky) && ($nT != cas) && ($nT != any)) then
+   if (($nT != sky) && ($nT != cas) && ($nT != mil) && ($nT != any)) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
@@ -305,11 +305,16 @@ if ($SITE == NCCS) then
    if ($nT == cas) set proc = 'cas'
    if ($nT == mil) set proc = 'mil'
 
-   # If we are using GNU at NCCS, we can*only* use the cas queue
+   # If we are using GNU at NCCS, we can*only* use the cas or mil processors
    # as OpenMPI is only built for Infiniband
    if ($usegnu) then
-      echo "Using GNU at NCCS, setting queue to cas"
-      set proc = 'cas'
+      if ($nT == mil) then
+         echo "Using GNU at NCCS, setting queue to cas"
+         set proc = 'mil'
+      else
+         echo "Using GNU at NCCS, setting queue to cas"
+         set proc = 'cas'
+      endif
       set slurm_constraint = "--constraint=$proc"
    else if ($nT == any) then
       set slurm_constraint = "--constraint=sky|cas"
@@ -900,7 +905,7 @@ flagged options
    -sky                 compile on Skylake nodes (default at NAS)
    -bro                 compile on Broadwell nodes (only at NAS)
    -has                 compile on Haswell nodes (only at NAS)
-   -any                 compile on any node (only at NCCS with SLURM, default at NCCS)
+   -any                 compile on either Sky or Cascade Lake node (only at NCCS with SLURM, default at NCCS)
 
 extra cmake options
 
