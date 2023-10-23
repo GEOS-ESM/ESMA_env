@@ -62,12 +62,6 @@ else
    set NCPUs_min = 1
 endif
 
-# if batch, then skip over job submission
-#----------------------------------------
-if ($?Parallel_build_bypass_flag) then
-   goto build
-endif
-
 # set defaults
 #-------------
 setenv esmadir     ""
@@ -288,7 +282,7 @@ endif
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if (($nT != sky) && ($nT != cas) && ($nT != any)) then
+   if (($nT != sky) && ($nT != cas) && ($nT != mil) && ($nT != any)) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
@@ -305,11 +299,16 @@ if ($SITE == NCCS) then
    if ($nT == cas) set proc = 'cas'
    if ($nT == mil) set proc = 'mil'
 
-   # If we are using GNU at NCCS, we can*only* use the cas queue
+   # If we are using GNU at NCCS, we can*only* use the cas or mil processors
    # as OpenMPI is only built for Infiniband
    if ($usegnu) then
-      echo "Using GNU at NCCS, setting queue to cas"
-      set proc = 'cas'
+      if ($nT == mil) then
+         echo "Using GNU at NCCS, setting queue to cas"
+         set proc = 'mil'
+      else
+         echo "Using GNU at NCCS, setting queue to cas"
+         set proc = 'cas'
+      endif
       set slurm_constraint = "--constraint=$proc"
    else if ($nT == any) then
       set slurm_constraint = "--constraint=sky|cas"
@@ -475,15 +474,6 @@ echo "    PARALLEL BUILD "
 echo "   ================"
 echo ""
 
-# set environment variables
-#--------------------------
-if ( -d ${ESMADIR}/@env ) then
-   source $ESMADIR/@env/g5_modules
-else if ( -d ${ESMADIR}/env@ ) then
-   source $ESMADIR/env@/g5_modules
-else if ( -d ${ESMADIR}/env ) then
-   source $ESMADIR/env/g5_modules
-endif
 setenv Pbuild_source_directory  $ESMADIR
 
 # Make the BUILD directory
@@ -497,7 +487,6 @@ if (! -d $Pbuild_build_directory) then
    endif
 endif
 
-setenv Parallel_build_bypass_flag
 set jobname = "parallel_build"
 
 #===========================
@@ -700,6 +689,10 @@ else if ( $SITE == NAS ) then
 else if ( $SITE == NCCS ) then
    if ("$walltime" == "") setenv walltime "1:00:00"
    set echo
+   # NOTE: The weird long export line below is needed at NCCS because of the
+   #       two OSs. For some reason, if you submit a Milan job from a SLES12
+   #       headnode, it was seeing SLES12 module paths. We believe this is
+   #       because SLURM by default exports all the environment
    sbatch $groupflag $partition $queue \
         $slurm_constraint      \
         --job-name=$jobname    \
@@ -707,6 +700,7 @@ else if ( $SITE == NCCS ) then
         --nodes=1              \
         --ntasks=${numjobs}    \
         --time=$walltime       \
+        --export ESMADIR,BUILDDIR,INSTALLDIR,GMI_MECHANISM,cmake_build_type,EXTRA_CMAKE_FLAGS,FORTRAN_COMPILER,INSTALL_SOURCE_TARFILE,verbose,GMI_MECHANISM_FLAG \
         $waitflag              \
         $0
    unset echo
@@ -777,6 +771,7 @@ echo2 ""
 #================
 # set environment
 #================
+
 if ( -d ${ESMADIR}/@env ) then
    source $ESMADIR/@env/g5_modules
 else if ( -d ${ESMADIR}/env@ ) then
@@ -900,7 +895,7 @@ flagged options
    -sky                 compile on Skylake nodes (default at NAS)
    -bro                 compile on Broadwell nodes (only at NAS)
    -has                 compile on Haswell nodes (only at NAS)
-   -any                 compile on any node (only at NCCS with SLURM, default at NCCS)
+   -any                 compile on either Sky or Cascade Lake node (only at NCCS with SLURM, default at NCCS)
 
 extra cmake options
 
