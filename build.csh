@@ -62,12 +62,6 @@ else
    set NCPUs_min = 1
 endif
 
-# if batch, then skip over job submission
-#----------------------------------------
-if ($?Parallel_build_bypass_flag) then
-   goto build
-endif
-
 # set defaults
 #-------------
 setenv esmadir     ""
@@ -480,15 +474,6 @@ echo "    PARALLEL BUILD "
 echo "   ================"
 echo ""
 
-# set environment variables
-#--------------------------
-if ( -d ${ESMADIR}/@env ) then
-   source $ESMADIR/@env/g5_modules
-else if ( -d ${ESMADIR}/env@ ) then
-   source $ESMADIR/env@/g5_modules
-else if ( -d ${ESMADIR}/env ) then
-   source $ESMADIR/env/g5_modules
-endif
 setenv Pbuild_source_directory  $ESMADIR
 
 # Make the BUILD directory
@@ -502,7 +487,6 @@ if (! -d $Pbuild_build_directory) then
    endif
 endif
 
-setenv Parallel_build_bypass_flag
 set jobname = "parallel_build"
 
 #===========================
@@ -705,6 +689,10 @@ else if ( $SITE == NAS ) then
 else if ( $SITE == NCCS ) then
    if ("$walltime" == "") setenv walltime "1:00:00"
    set echo
+   # NOTE: The weird long export line below is needed at NCCS because of the
+   #       two OSs. For some reason, if you submit a Milan job from a SLES12
+   #       headnode, it was seeing SLES12 module paths. We believe this is
+   #       because SLURM by default exports all the environment
    sbatch $groupflag $partition $queue \
         $slurm_constraint      \
         --job-name=$jobname    \
@@ -712,6 +700,7 @@ else if ( $SITE == NCCS ) then
         --nodes=1              \
         --ntasks=${numjobs}    \
         --time=$walltime       \
+        --export ESMADIR,BUILDDIR,INSTALLDIR,GMI_MECHANISM,cmake_build_type,EXTRA_CMAKE_FLAGS,FORTRAN_COMPILER,INSTALL_SOURCE_TARFILE,verbose,GMI_MECHANISM_FLAG \
         $waitflag              \
         $0
    unset echo
@@ -782,6 +771,7 @@ echo2 ""
 #================
 # set environment
 #================
+
 if ( -d ${ESMADIR}/@env ) then
    source $ESMADIR/@env/g5_modules
 else if ( -d ${ESMADIR}/env@ ) then
