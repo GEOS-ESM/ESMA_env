@@ -401,6 +401,23 @@ else
    setenv Pbuild_install_directory $ESMADIR/install
 endif
 
+# If we are at NCCS, because of the dual OSs, we decorate the build and
+# install directory with the OS name. If we submit to Milan, we will add
+# -SLES15, otherwise -SLES12 to the build and install directories.  But,
+# we only do this if the user has not specified a build directory or
+# install directory
+# ---------------------------------------------------------------------
+
+if ($SITE == NCCS) then
+   if ($nT == mil) then
+      set OS_VERSION = SLES15
+   else
+      set OS_VERSION = SLES12
+   endif
+   if (! $?BUILDDIR) setenv Pbuild_build_directory ${Pbuild_build_directory}-${OS_VERSION}
+   if (! $?INSTALLDIR) setenv Pbuild_install_directory ${Pbuild_install_directory}-${OS_VERSION}
+endif
+
 # developer's debug
 #------------------
 if ($ddb) then
