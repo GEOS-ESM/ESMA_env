@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.20.3] - 2023-10-24
+
+### Fixed
+
+- Fixed issue with OS versioning when inside SLURM (has to be detected differently)
+
 ## [4.20.2] - 2023-10-23
 
 ### Fixed

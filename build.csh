@@ -409,13 +409,23 @@ endif
 # ---------------------------------------------------------------------
 
 if ($SITE == NCCS) then
-   if ($nT == mil) then
-      set OS_VERSION = SLES15
+   # We now have to handle this in two ways. One if we are on a compute node and one if we aren't.
+   # This is because of how this script works where it sort of submits itself to the batch system
+   # and many of the variables known by the script before submission are lost after submission.
+   # So if we are on a compute node, we detect the OS version directly, but if we are just submitting on a
+   # head node, we instead have to just use the processor type passed in. We'll use oncompnode to detect
+   # which case we are in.
+   if ($oncompnode) then
+      set OS_VERSION=`grep VERSION_ID /etc/os-release | cut -d= -f2 | cut -d. -f1 | sed 's/"//g'`
    else
-      set OS_VERSION = SLES12
+      if ($nT == mil) then
+         set OS_VERSION = 15
+      else
+         set OS_VERSION = 12
+      endif
    endif
-   if (! $?BUILDDIR) setenv Pbuild_build_directory ${Pbuild_build_directory}-${OS_VERSION}
-   if (! $?INSTALLDIR) setenv Pbuild_install_directory ${Pbuild_install_directory}-${OS_VERSION}
+   if (! $?BUILDDIR) setenv Pbuild_build_directory ${Pbuild_build_directory}-SLES${OS_VERSION}
+   if (! $?INSTALLDIR) setenv Pbuild_install_directory ${Pbuild_install_directory}-SLES${OS_VERSION}
 endif
 
 # developer's debug
@@ -717,7 +727,7 @@ else if ( $SITE == NCCS ) then
         --nodes=1              \
         --ntasks=${numjobs}    \
         --time=$walltime       \
-        --export ESMADIR,BUILDDIR,INSTALLDIR,GMI_MECHANISM,cmake_build_type,EXTRA_CMAKE_FLAGS,FORTRAN_COMPILER,INSTALL_SOURCE_TARFILE,verbose,GMI_MECHANISM_FLAG \
+        --export ESMADIR,BUILDDIR,INSTALLDIR,GMI_MECHANISM,cmake_build_type,EXTRA_CMAKE_FLAGS,FORTRAN_COMPILER,INSTALL_SOURCE_TARFILE,verbose,GMI_MECHANISM_FLAG,Pbuild_build_directory,Pbuild_install_directory,usegnu,notar,GMI_MECHANISM,tmpdir,docmake \
         $waitflag              \
         $0
    unset echo
