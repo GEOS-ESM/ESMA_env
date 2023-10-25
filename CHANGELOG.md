@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.20.4] - 2023-10-25
+
+### Fixed
+
+- Fixed breakage of debug, aggressive and many many other options
+
 ## [4.20.3] - 2023-10-24
 
 ### Fixed

@@ -64,26 +64,27 @@ endif
 
 # set defaults
 #-------------
-setenv esmadir     ""
-setenv docmake     1
-setenv usegnu      0
-setenv notar       0
-setenv ddb         0
-setenv debug       0
-setenv aggressive  0
-setenv verbose     ""
-setenv interactive 0
-setenv do_wait     0
-setenv proc        ""
-setenv prompt      1
-setenv queue       ""
-setenv partition   ""
-setenv account     ""
-setenv tmpdir      ""
-setenv walltime    ""
-setenv slurm_constraint  ""
-setenv cmake_build_type "Release"
-setenv EXTRA_CMAKE_FLAGS ""
+if (! $?ESMADIR)           setenv ESMADIR           ""
+if (! $?docmake)           setenv docmake           1
+if (! $?usegnu)            setenv usegnu            0
+if (! $?notar)             setenv notar             0
+if (! $?ddb)               setenv ddb               0
+if (! $?debug)             setenv debug             0
+if (! $?aggressive)        setenv aggressive        0
+if (! $?verbose)           setenv verbose           ""
+if (! $?interactive)       setenv interactive       0
+if (! $?do_wait)           setenv do_wait           0
+if (! $?proc)              setenv proc              ""
+if (! $?prompt)            setenv prompt            1
+if (! $?queue)             setenv queue             ""
+if (! $?partition)         setenv partition         ""
+if (! $?account)           setenv account           ""
+if (! $?tmpdir)            setenv tmpdir            ""
+if (! $?walltime)          setenv walltime          ""
+if (! $?slurm_constraint)  setenv slurm_constraint  ""
+if (! $?cmake_build_type)  setenv cmake_build_type  "Release"
+if (! $?EXTRA_CMAKE_FLAGS) setenv EXTRA_CMAKE_FLAGS ""
+if (! $?FORTRAN_COMPILER)  setenv FORTRAN_COMPILER  ""
 
 # Detect if on compute node already
 # ---------------------------------
@@ -110,14 +111,14 @@ while ($#argv)
    #-------------------
    if (("$1" == "-debug") || ("$1" == "-db")) then
       setenv cmake_build_type "Debug"
-      set debug = 1
+      setenv debug 1
    endif
 
    # compile with aggressive
    #------------------------
    if ("$1" == "-aggressive") then
       setenv cmake_build_type "Aggressive"
-      set aggressive = 1
+      setenv aggressive 1
    endif
 
    # specify node type
@@ -379,26 +380,30 @@ endif
 
 # set Pbuild_build_directory
 # --------------------------
-if ($?BUILDDIR) then
-   setenv Pbuild_build_directory   $ESMADIR/$BUILDDIR
-else if ($debug) then
-   setenv Pbuild_build_directory   $ESMADIR/build-Debug
-else if ($aggressive) then
-   setenv Pbuild_build_directory   $ESMADIR/build-Aggressive
-else
-   setenv Pbuild_build_directory   $ESMADIR/build
+if (! $?Pbuild_build_directory) then
+   if ($?BUILDDIR) then
+      setenv Pbuild_build_directory   $ESMADIR/$BUILDDIR
+   else if ($debug) then
+      setenv Pbuild_build_directory   $ESMADIR/build-Debug
+   else if ($aggressive) then
+      setenv Pbuild_build_directory   $ESMADIR/build-Aggressive
+   else
+      setenv Pbuild_build_directory   $ESMADIR/build
+   endif
 endif
 
 # set Pbuild_install_directory
 # ----------------------------
-if ($?INSTALLDIR) then
-   setenv Pbuild_install_directory $ESMADIR/$INSTALLDIR
-else if ($debug) then
-   setenv Pbuild_install_directory $ESMADIR/install-Debug
-else if ($aggressive) then
-   setenv Pbuild_install_directory $ESMADIR/install-Aggressive
-else
-   setenv Pbuild_install_directory $ESMADIR/install
+if (! $?Pbuild_install_directory) then
+   if ($?INSTALLDIR) then
+      setenv Pbuild_install_directory $ESMADIR/$INSTALLDIR
+   else if ($debug) then
+      setenv Pbuild_install_directory $ESMADIR/install-Debug
+   else if ($aggressive) then
+      setenv Pbuild_install_directory $ESMADIR/install-Aggressive
+   else
+      setenv Pbuild_install_directory $ESMADIR/install
+   endif
 endif
 
 # If we are at NCCS, because of the dual OSs, we decorate the build and
@@ -424,8 +429,41 @@ if ($SITE == NCCS) then
          set OS_VERSION = 12
       endif
    endif
-   if (! $?BUILDDIR) setenv Pbuild_build_directory ${Pbuild_build_directory}-SLES${OS_VERSION}
-   if (! $?INSTALLDIR) setenv Pbuild_install_directory ${Pbuild_install_directory}-SLES${OS_VERSION}
+   # We also check if we already appended SLES
+   if (! $?BUILDDIR) then
+      if ($Pbuild_build_directory !~ "*-SLES${OS_VERSION}") then
+         setenv Pbuild_build_directory ${Pbuild_build_directory}-SLES${OS_VERSION}
+      endif
+   endif
+   if (! $?INSTALLDIR) then
+      if ($Pbuild_install_directory !~ "*-SLES${OS_VERSION}") then
+         setenv Pbuild_install_directory ${Pbuild_install_directory}-SLES${OS_VERSION}
+      endif
+   endif
+endif
+
+if ("$FORTRAN_COMPILER" == "") then
+   if ($usegnu) then
+      setenv FORTRAN_COMPILER 'gfortran'
+   else
+      setenv FORTRAN_COMPILER 'ifort'
+   endif
+endif
+
+if (! $?INSTALL_SOURCE_TARFILE) then
+   if ($notar) then
+      setenv INSTALL_SOURCE_TARFILE "OFF"
+   else
+      setenv INSTALL_SOURCE_TARFILE "ON"
+   endif
+endif
+
+if (! $?GMI_MECHANISM_FLAG) then
+   if ($?GMI_MECHANISM) then
+      setenv GMI_MECHANISM_FLAG "-DGMI_MECHANISM=$GMI_MECHANISM"
+   else
+      setenv GMI_MECHANISM_FLAG ""
+   endif
 endif
 
 # developer's debug
@@ -460,6 +498,10 @@ if ($ddb) then
    echo "EXTRA_CMAKE_FLAGS = $EXTRA_CMAKE_FLAGS"
    echo "Build directory = $Pbuild_build_directory"
    echo "Install directory = $Pbuild_install_directory"
+   echo "usegnu = $usegnu"
+   echo "FORTRAN_COMPILER = $FORTRAN_COMPILER"
+   echo "INSTALL_SOURCE_TARFILE = $INSTALL_SOURCE_TARFILE"
+   echo "GMI_MECHANISM_FLAG = $GMI_MECHANISM_FLAG"
    exit
 endif
 
@@ -727,7 +769,7 @@ else if ( $SITE == NCCS ) then
         --nodes=1              \
         --ntasks=${numjobs}    \
         --time=$walltime       \
-        --export ESMADIR,BUILDDIR,INSTALLDIR,GMI_MECHANISM,cmake_build_type,EXTRA_CMAKE_FLAGS,FORTRAN_COMPILER,INSTALL_SOURCE_TARFILE,verbose,GMI_MECHANISM_FLAG,Pbuild_build_directory,Pbuild_install_directory,usegnu,notar,GMI_MECHANISM,tmpdir,docmake \
+        --export ESMADIR=${ESMADIR},cmake_build_type=${cmake_build_type},EXTRA_CMAKE_FLAGS=${EXTRA_CMAKE_FLAGS},FORTRAN_COMPILER=${FORTRAN_COMPILER},INSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE},verbose=${verbose},GMI_MECHANISM_FLAG=${GMI_MECHANISM_FLAG},Pbuild_build_directory=${Pbuild_build_directory},Pbuild_install_directory=${Pbuild_install_directory},usegnu=${usegnu},notar=${notar},tmpdir=${tmpdir},docmake=${docmake},debug=${debug},aggressive=${aggressive} \
         $waitflag              \
         $0
    unset echo
@@ -836,23 +878,6 @@ echo1 "======================================"
 #===============
 # build system
 #===============
-if ($usegnu) then
-   setenv FORTRAN_COMPILER 'gfortran'
-else
-   setenv FORTRAN_COMPILER 'ifort'
-endif
-
-if ($notar) then
-   setenv INSTALL_SOURCE_TARFILE "OFF"
-else
-   setenv INSTALL_SOURCE_TARFILE "ON"
-endif
-
-if ($?GMI_MECHANISM) then
-   setenv GMI_MECHANISM_FLAG "-DGMI_MECHANISM=$GMI_MECHANISM"
-else
-   setenv GMI_MECHANISM_FLAG ""
-endif
 
 set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE} ${GMI_MECHANISM_FLAG} ${EXTRA_CMAKE_FLAGS}"
 set cmd2 = "make --jobs=$numjobs install $verbose"
