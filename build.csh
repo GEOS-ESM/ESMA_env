@@ -62,12 +62,6 @@ else
    set NCPUs_min = 1
 endif
 
-# if batch, then skip over job submission
-#----------------------------------------
-if ($?Parallel_build_bypass_flag) then
-   goto build
-endif
-
 # set defaults
 #-------------
 setenv esmadir     ""
@@ -81,6 +75,7 @@ setenv debug       0
 setenv aggressive  0
 setenv verbose     ""
 setenv interactive 0
+setenv do_wait     0
 setenv proc        ""
 setenv prompt      1
 setenv queue       ""
@@ -88,6 +83,7 @@ setenv partition   ""
 setenv account     ""
 setenv tmpdir      ""
 setenv walltime    ""
+setenv slurm_constraint  ""
 setenv cmake_build_type "Release"
 setenv EXTRA_CMAKE_FLAGS ""
 
@@ -128,11 +124,13 @@ while ($#argv)
 
    # specify node type
    #------------------
+   if ("$1" == "-mil")  set nodeTYPE = "Milan"
    if ("$1" == "-rom")  set nodeTYPE = "Rome"
    if ("$1" == "-cas")  set nodeTYPE = "CascadeLake"
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
    if ("$1" == "-bro")  set nodeTYPE = "Broadwell"
    if ("$1" == "-has")  set nodeTYPE = "Haswell"
+   if ("$1" == "-any")  set nodeTYPE = "Any node"
 
    # reset Fortran TMPDIR
    #---------------------
@@ -173,10 +171,14 @@ while ($#argv)
    #----------------------
    if ("$1" == "-i") set interactive = 1
 
-   # run job interactively
-   #----------------------
+   # set verbose flag
+   #-----------------
    if ("$1" == "-verbose") set verbose = "VERBOSE=1"
    if ("$1" == "-v") set verbose = "VERBOSE=1"
+
+   # run job interactively
+   #----------------------
+   if ("$1" == "-wait") set do_wait = 1
 
    # submit batch job to alternative queue/qos
    #------------------------------------------
@@ -267,6 +269,14 @@ while ($#argv)
    shift
 end
 
+# Check if the ESMA_NOTAR environment variable is set
+# If so, then set notar to 1
+# --------------------------------------------------
+if ($?ESMA_NOTAR) then
+   echo "ESMA_NOTAR is set, so not creating tar file"
+   setenv notar 1
+endif
+
 # Only allow one of debug and aggressive
 # --------------------------------------
 if ( ($aggressive) && ($debug) ) then
@@ -284,36 +294,47 @@ endif
 # default nodeTYPE
 #-----------------
 if (! $?nodeTYPE) then
-   if ($SITE == NCCS) set nodeTYPE = "Skylake"
+   if ($SITE == NCCS) set nodeTYPE = "Any"
    if ($SITE == NAS)  set nodeTYPE = "Skylake"
 endif
-
-# This is a flag needed at NCCS for Cascade Lake. Default is blank
-set ntaskspernode = ''
 
 # at NCCS
 #--------
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if (($nT != has) && ($nT != sky) && ($nT != cas)) then
+   if (($nT != sky) && ($nT != cas) && ($nT != mil) && ($nT != any)) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
 
-   if ($nT == has) @ NCPUS_DFLT = 28
+   # For the any node, set the default to 40 cores as
+   # this is the least number of cores you will get
+   if ($nT == any) @ NCPUS_DFLT = 40
    if ($nT == sky) @ NCPUS_DFLT = 40
    if ($nT == cas) @ NCPUS_DFLT = 48
+   if ($nT == mil) @ NCPUS_DFLT = 128
 
-   if ($nT == has) set proc = 'hasw'
+   if ($nT == any) set proc = 'any'
    if ($nT == sky) set proc = 'sky'
-   if ($nT == cas) then
-      set proc = 'cas'
-      # Adding this adds prevents a warning from NCCS about using 48
-      # tasks per node on Cascade. This script will never actually run
-      # make -j48, (usually make -j10 and only asks for 10 tasks) but
-      # this suppresses the warning.
-      set ntaskspernode = '--ntasks-per-node=45'
+   if ($nT == cas) set proc = 'cas'
+   if ($nT == mil) set proc = 'mil'
+
+   # If we are using GNU at NCCS, we can*only* use the cas or mil processors
+   # as OpenMPI is only built for Infiniband
+   if ($usegnu) then
+      if ($nT == mil) then
+         echo "Using GNU at NCCS, setting queue to cas"
+         set proc = 'mil'
+      else
+         echo "Using GNU at NCCS, setting queue to cas"
+         set proc = 'cas'
+      endif
+      set slurm_constraint = "--constraint=$proc"
+   else if ($nT == any) then
+      set slurm_constraint = "--constraint=sky|cas"
+   else
+      set slurm_constraint = "--constraint=$proc"
    endif
 
    if ("$queue" == "") then
@@ -401,6 +422,33 @@ else
    setenv Pbuild_install_directory $ESMADIR/install
 endif
 
+# If we are at NCCS, because of the dual OSs, we decorate the build and
+# install directory with the OS name. If we submit to Milan, we will add
+# -SLES15, otherwise -SLES12 to the build and install directories.  But,
+# we only do this if the user has not specified a build directory or
+# install directory
+# ---------------------------------------------------------------------
+
+if ($SITE == NCCS) then
+   # We now have to handle this in two ways. One if we are on a compute node and one if we aren't.
+   # This is because of how this script works where it sort of submits itself to the batch system
+   # and many of the variables known by the script before submission are lost after submission.
+   # So if we are on a compute node, we detect the OS version directly, but if we are just submitting on a
+   # head node, we instead have to just use the processor type passed in. We'll use oncompnode to detect
+   # which case we are in.
+   if ($oncompnode) then
+      set OS_VERSION=`grep VERSION_ID /etc/os-release | cut -d= -f2 | cut -d. -f1 | sed 's/"//g'`
+   else
+      if ($nT == mil) then
+         set OS_VERSION = 15
+      else
+         set OS_VERSION = 12
+      endif
+   endif
+   if (! $?BUILDDIR) setenv Pbuild_build_directory ${Pbuild_build_directory}-SLES${OS_VERSION}
+   if (! $?INSTALLDIR) setenv Pbuild_install_directory ${Pbuild_install_directory}-SLES${OS_VERSION}
+endif
+
 # developer's debug
 #------------------
 if ($ddb) then
@@ -417,9 +465,11 @@ if ($ddb) then
    echo "tmpdir = $tmpdir"
    echo "proc = $proc"
    echo "interactive = $interactive"
+   echo "do_wait = $do_wait"
    echo "queue = $queue"
    if ($SITE == NCCS) then
       echo "partition = $partition"
+      echo "slurm_constraint = $slurm_constraint"
    endif
    echo "account = $account"
    echo "walltime = $walltime"
@@ -472,15 +522,6 @@ echo "    PARALLEL BUILD "
 echo "   ================"
 echo ""
 
-# set environment variables
-#--------------------------
-if ( -d ${ESMADIR}/@env ) then
-   source $ESMADIR/@env/g5_modules
-else if ( -d ${ESMADIR}/env@ ) then
-   source $ESMADIR/env@/g5_modules
-else if ( -d ${ESMADIR}/env ) then
-   source $ESMADIR/env/g5_modules
-endif
 setenv Pbuild_source_directory  $ESMADIR
 
 # Make the BUILD directory
@@ -494,7 +535,6 @@ if (! -d $Pbuild_build_directory) then
    endif
 endif
 
-setenv Parallel_build_bypass_flag
 set jobname = "parallel_build"
 
 #===========================
@@ -667,6 +707,15 @@ else if (-e `which getsponsor` && (! $interactive)) then
    set groupflag = "--account=$group"
 endif
 
+set waitflag = ""
+if ($do_wait) then
+   if ($SITE == NAS) then
+      set waitflag = "-W block=true"
+   else if ($SITE == NCCS) then
+      set waitflag = "--wait"
+   endif
+endif
+
 if ($interactive) then
    goto build
 else if ( $SITE == NAS ) then
@@ -678,26 +727,36 @@ else if ( $SITE == NAS ) then
         -l walltime=$walltime  \
         -S /bin/csh            \
         -V -j oe -k oed        \
+        $waitflag              \
         $0
    unset echo
-   sleep 1
-   qstat -a | grep $USER
+   if ("$waitflag" == "") then
+      sleep 1
+      qstat -a | grep $USER
+   endif
 else if ( $SITE == NCCS ) then
    if ("$walltime" == "") setenv walltime "1:00:00"
    set echo
-   sbatch $groupflag $partition $queue    \
-        --constraint=$proc     \
+   # NOTE: The weird long export line below is needed at NCCS because of the
+   #       two OSs. For some reason, if you submit a Milan job from a SLES12
+   #       headnode, it was seeing SLES12 module paths. We believe this is
+   #       because SLURM by default exports all the environment
+   sbatch $groupflag $partition $queue \
+        $slurm_constraint      \
         --job-name=$jobname    \
         --output=$jobname.o%j  \
         --nodes=1              \
         --ntasks=${numjobs}    \
-        $ntaskspernode         \
         --time=$walltime       \
+        --export ESMADIR,BUILDDIR,INSTALLDIR,GMI_MECHANISM,cmake_build_type,EXTRA_CMAKE_FLAGS,FORTRAN_COMPILER,INSTALL_SOURCE_TARFILE,verbose,GMI_MECHANISM_FLAG,Pbuild_build_directory,Pbuild_install_directory,usegnu,notar,GMI_MECHANISM,tmpdir,docmake,HYDROBUILD \
+        $waitflag              \
         $0
    unset echo
-   sleep 1
-   # Add a longer format for the job name for scripting purposes
-   squeue -a -o "%.10i %.12P %.10q %.30j %.8u %.8T %.10M %.9l %.6D %.6C %R" -u $USER
+   if ("$waitflag" == "") then
+      sleep 1
+      # Add a longer format for the job name for scripting purposes
+      squeue -a -o "%.10i %.12P %.10q %.30j %.8u %.8T %.10M %.9l %.6D %.6C %R" -u $USER
+   endif
 else
    echo $scriptname": batch procedures are not yet defined for node=$node at site=$SITE"
 endif
@@ -760,6 +819,7 @@ echo2 ""
 #================
 # set environment
 #================
+
 if ( -d ${ESMADIR}/@env ) then
    source $ESMADIR/@env/g5_modules
 else if ( -d ${ESMADIR}/env@ ) then
@@ -877,6 +937,7 @@ flagged options
    -esmadir dir         esmadir location
    -nocmake             do not run cmake (useful for scripting)
    -gnu                 build with gfortran
+   -wait                wait when run as a batch job
    -no-tar              build with INSTALL_SOURCE_TARFILE=OFF (does not tar up source tarball, default is ON)
 
    -hydrostatic         build for hydrostatic dynamics in FV
@@ -888,11 +949,13 @@ flagged options
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
+   -mil                 compile on Milan nodes (only at NCCS)
    -rom                 compile on Rome nodes (only at NAS)
    -cas                 compile on Cascade Lake nodes
-   -sky                 compile on Skylake nodes (default)
+   -sky                 compile on Skylake nodes (default at NAS)
    -bro                 compile on Broadwell nodes (only at NAS)
-   -has                 compile on Haswell nodes
+   -has                 compile on Haswell nodes (only at NAS)
+   -any                 compile on either Sky or Cascade Lake node (only at NCCS with SLURM, default at NCCS)
 
 extra cmake options
 

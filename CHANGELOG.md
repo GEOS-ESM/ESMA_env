@@ -19,6 +19,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added support for SCU17/SLES15 at NCCS
   - Uses Open MPI 4.1.5 on SCU17 rather than Intel MPI due to issues with Intel MPI
 
+### Fixed
+
+- Fixed issue with OS versioning when inside SLURM (has to be detected differently)
+- Append `-SLES12` or `-SLES15` on the build and install directories at NCCS when using `build.csh` to make it clear to users
+- Fixed `build.csh` for using Milan at NCCS
+
 ## [4.9.3] - 2023-05-24
 
 ### Fixed
