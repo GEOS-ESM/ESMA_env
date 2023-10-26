@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.20.5] - 2023-10-26
+
+### Fixed
+
+- Fix issue with passing in build and install dirs
+
 ## [4.20.4] - 2023-10-25
 
 ### Fixed
