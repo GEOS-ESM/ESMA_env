@@ -775,7 +775,7 @@ else if ( $SITE == NCCS ) then
         --nodes=1              \
         --ntasks=${numjobs}    \
         --time=$walltime       \
-        --export ESMADIR=${ESMADIR},cmake_build_type=${cmake_build_type},EXTRA_CMAKE_FLAGS=${EXTRA_CMAKE_FLAGS},FORTRAN_COMPILER=${FORTRAN_COMPILER},INSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE},verbose=${verbose},GMI_MECHANISM_FLAG=${GMI_MECHANISM_FLAG},Pbuild_build_directory=${Pbuild_build_directory},Pbuild_install_directory=${Pbuild_install_directory},usegnu=${usegnu},notar=${notar},tmpdir=${tmpdir},docmake=${docmake},debug=${debug},aggressive=${aggressive},BUILDDIR_PASSED=${BUILDDIR_PASSED},INSTALLDIR_PASSED=${INSTALLDIR_PASSED} \
+        --export ESMADIR=${ESMADIR},cmake_build_type=${cmake_build_type},EXTRA_CMAKE_FLAGS=${EXTRA_CMAKE_FLAGS},FORTRAN_COMPILER=${FORTRAN_COMPILER},INSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE},verbose=${verbose},GMI_MECHANISM_FLAG=${GMI_MECHANISM_FLAG},Pbuild_build_directory=${Pbuild_build_directory},Pbuild_install_directory=${Pbuild_install_directory},usegnu=${usegnu},notar=${notar},tmpdir=${tmpdir},docmake=${docmake},debug=${debug},aggressive=${aggressive},BUILDDIR_PASSED=${BUILDDIR_PASSED},INSTALLDIR_PASSED=${INSTALLDIR_PASSED},queue=${queue},partition=${partition} \
         $waitflag              \
         $0
    unset echo
@@ -872,6 +872,9 @@ if ("$verbose" != "") then
 endif
 if ("$queue" != "") then
    echo1 "queue: $queue"
+endif
+if ("$partition" != "") then
+   echo1 "partition: $partition"
 endif
 if ("$account" != "") then
    echo1 "account: $account"
