@@ -85,6 +85,8 @@ if (! $?slurm_constraint)  setenv slurm_constraint  ""
 if (! $?cmake_build_type)  setenv cmake_build_type  "Release"
 if (! $?EXTRA_CMAKE_FLAGS) setenv EXTRA_CMAKE_FLAGS ""
 if (! $?FORTRAN_COMPILER)  setenv FORTRAN_COMPILER  ""
+if (! $?BUILDDIR_PASSED)   setenv BUILDDIR_PASSED   "NO"
+if (! $?INSTALLDIR_PASSED) setenv INSTALLDIR_PASSED "NO"
 
 # Detect if on compute node already
 # ---------------------------------
@@ -150,6 +152,7 @@ while ($#argv)
    if ("$1" == "-builddir") then
       shift; if (! $#argv) goto usage
       setenv BUILDDIR $1
+      setenv BUILDDIR_PASSED "YES"
    endif
 
    # set INSTALLDIR
@@ -157,6 +160,7 @@ while ($#argv)
    if ("$1" == "-installdir") then
       shift; if (! $#argv) goto usage
       setenv INSTALLDIR $1
+      setenv INSTALLDIR_PASSED "YES"
    endif
 
    # set GMI_MECHANISM
@@ -430,12 +434,12 @@ if ($SITE == NCCS) then
       endif
    endif
    # We also check if we already appended SLES
-   if (! $?BUILDDIR) then
+   if (! $?BUILDDIR && "$BUILDDIR_PASSED" == "NO") then
       if ($Pbuild_build_directory !~ "*-SLES${OS_VERSION}") then
          setenv Pbuild_build_directory ${Pbuild_build_directory}-SLES${OS_VERSION}
       endif
    endif
-   if (! $?INSTALLDIR) then
+   if (! $?INSTALLDIR && "$INSTALLDIR_PASSED" == "NO") then
       if ($Pbuild_install_directory !~ "*-SLES${OS_VERSION}") then
          setenv Pbuild_install_directory ${Pbuild_install_directory}-SLES${OS_VERSION}
       endif
@@ -502,6 +506,8 @@ if ($ddb) then
    echo "FORTRAN_COMPILER = $FORTRAN_COMPILER"
    echo "INSTALL_SOURCE_TARFILE = $INSTALL_SOURCE_TARFILE"
    echo "GMI_MECHANISM_FLAG = $GMI_MECHANISM_FLAG"
+   echo "BUILDDIR_PASSED = $BUILDDIR_PASSED"
+   echo "INSTALLDIR_PASSED = $INSTALLDIR_PASSED"
    exit
 endif
 
@@ -769,7 +775,7 @@ else if ( $SITE == NCCS ) then
         --nodes=1              \
         --ntasks=${numjobs}    \
         --time=$walltime       \
-        --export ESMADIR=${ESMADIR},cmake_build_type=${cmake_build_type},EXTRA_CMAKE_FLAGS=${EXTRA_CMAKE_FLAGS},FORTRAN_COMPILER=${FORTRAN_COMPILER},INSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE},verbose=${verbose},GMI_MECHANISM_FLAG=${GMI_MECHANISM_FLAG},Pbuild_build_directory=${Pbuild_build_directory},Pbuild_install_directory=${Pbuild_install_directory},usegnu=${usegnu},notar=${notar},tmpdir=${tmpdir},docmake=${docmake},debug=${debug},aggressive=${aggressive} \
+        --export ESMADIR=${ESMADIR},cmake_build_type=${cmake_build_type},EXTRA_CMAKE_FLAGS=${EXTRA_CMAKE_FLAGS},FORTRAN_COMPILER=${FORTRAN_COMPILER},INSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE},verbose=${verbose},GMI_MECHANISM_FLAG=${GMI_MECHANISM_FLAG},Pbuild_build_directory=${Pbuild_build_directory},Pbuild_install_directory=${Pbuild_install_directory},usegnu=${usegnu},notar=${notar},tmpdir=${tmpdir},docmake=${docmake},debug=${debug},aggressive=${aggressive},BUILDDIR_PASSED=${BUILDDIR_PASSED},INSTALLDIR_PASSED=${INSTALLDIR_PASSED},queue=${queue},partition=${partition} \
         $waitflag              \
         $0
    unset echo
@@ -867,8 +873,13 @@ endif
 if ("$queue" != "") then
    echo1 "queue: $queue"
 endif
+if ("$partition" != "") then
+   echo1 "partition: $partition"
+endif
 if ("$account" != "") then
    echo1 "account: $account"
+echo1 "Pbuild_build_directory: $Pbuild_build_directory"
+echo1 "Pbuild_install_directory: $Pbuild_install_directory"
 endif
 
 echo1 "======================================"
