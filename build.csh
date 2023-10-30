@@ -644,33 +644,36 @@ setenv bldlogdir $Pbuild_build_directory/$BUILD_LOG_DIR
 setenv cmakelog  $bldlogdir/CLOG
 setenv buildlog  $bldlogdir/LOG
 setenv buildinfo $bldlogdir/info
-setenv cleanFLAG ""
+if (! $?cleanFLAG ) setenv cleanFLAG "notset"
 
-ls $cmakelog $buildlog $buildinfo >& /dev/null
-if ($status == 0) then
-   if ($prompt) then
-      echo ''
-      echo 'Previous build detected - Do you want to clean?'
-      echo '(c)     clean: Removes build and install directories, and rebuilds'
-      echo '(n)  no clean'
-      echo ''
-      echo "  Note: if you have changed MAPL, we recommend doing a clean for safety's sake"
-      echo ''
-      echo -n 'Select (c,n) <<c>> '
+if ("$cleanFLAG" == "notset") then
+   ls $cmakelog $buildlog $buildinfo >& /dev/null
+   if ($status == 0) then
+      if ($prompt) then
+         echo ''
+         echo 'Previous build detected - Do you want to clean?'
+         echo '(c)     clean: Removes build and install directories, and rebuilds'
+         echo '(n)  no clean'
+         echo ''
+         echo "  Note: if you have changed MAPL, we recommend doing a clean for safety's sake"
+         echo ''
+         echo -n 'Select (c,n) <<c>> '
 
-      set do_clean = $<
-      if ("$do_clean" != "n") then
+         set do_clean = $<
+         if ("$do_clean" != "n") then
+            set do_clean = "c"
+         endif
+      else
          set do_clean = "c"
       endif
-   else
-      set do_clean = "c"
-   endif
 
-   if ("$do_clean" == "c") then
-      setenv cleanFLAG clean
-      echo  "Removing build and install directories and re-running CMake before rebuild"
-   else
-      echo "No clean before rebuild"
+      if ("$do_clean" == "c") then
+         setenv cleanFLAG "clean"
+         echo  "Removing build and install directories and re-running CMake before rebuild"
+      else
+         setenv cleanFLAG "noclean"
+         echo "No clean before rebuild"
+      endif
    endif
 endif
 
@@ -775,7 +778,7 @@ else if ( $SITE == NCCS ) then
         --nodes=1              \
         --ntasks=${numjobs}    \
         --time=$walltime       \
-        --export ESMADIR=${ESMADIR},cmake_build_type=${cmake_build_type},EXTRA_CMAKE_FLAGS=${EXTRA_CMAKE_FLAGS},FORTRAN_COMPILER=${FORTRAN_COMPILER},INSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE},verbose=${verbose},GMI_MECHANISM_FLAG=${GMI_MECHANISM_FLAG},Pbuild_build_directory=${Pbuild_build_directory},Pbuild_install_directory=${Pbuild_install_directory},usegnu=${usegnu},notar=${notar},tmpdir=${tmpdir},docmake=${docmake},debug=${debug},aggressive=${aggressive},BUILDDIR_PASSED=${BUILDDIR_PASSED},INSTALLDIR_PASSED=${INSTALLDIR_PASSED},queue=${queue},partition=${partition} \
+        --export ESMADIR=${ESMADIR},cmake_build_type=${cmake_build_type},EXTRA_CMAKE_FLAGS=${EXTRA_CMAKE_FLAGS},FORTRAN_COMPILER=${FORTRAN_COMPILER},INSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE},verbose=${verbose},GMI_MECHANISM_FLAG=${GMI_MECHANISM_FLAG},Pbuild_build_directory=${Pbuild_build_directory},Pbuild_install_directory=${Pbuild_install_directory},usegnu=${usegnu},notar=${notar},tmpdir=${tmpdir},docmake=${docmake},debug=${debug},aggressive=${aggressive},BUILDDIR_PASSED=${BUILDDIR_PASSED},INSTALLDIR_PASSED=${INSTALLDIR_PASSED},queue=${queue},partition=${partition},cleanFLAG=${cleanFLAG} \
         $waitflag              \
         $0
    unset echo
@@ -797,10 +800,13 @@ build:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if ( $cleanFLAG == "clean" ) then
+   echo "Removing build and install directories"
    rm -rf $Pbuild_build_directory
    rm -rf $Pbuild_install_directory
 
    mkdir -p $Pbuild_build_directory
+else
+   echo "Using existing build and install directories"
 endif
 
 chdir $Pbuild_build_directory
