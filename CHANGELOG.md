@@ -12,11 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
-## [4.20.6-gmao_aist_nr_1.0] - 2023-11-01
+## [4.20.6+gmao_aist_nr_1.0] - 2023-11-01
 
 ### Changed
 
-- Update to Baselibs v7.14.1-aist_nr_1.0
+- Update to Baselibs v7.14.1+aist_nr_1.0
 
 ## [4.20.6] - 2023-10-30
 
