@@ -1,7 +1,7 @@
 #!/usr/bin/sh
 #=======================================================================
 # name - g5_modules.bash
-# purpose - 
+# purpose -
 #   This script can be "sourced" from the bash shell to set environment
 #   variables and modules needed for building and running the GEOS system.
 #
@@ -22,6 +22,10 @@ fi
 
 # Basedir
 export BASEDIR=$(csh $g5modules basedir)
+
+# UDUNITS2_XML_PATH
+arch=$(uname -s)
+export UDUNITS2_XML_PATH=$BASEDIR/$arch/share/udunits/udunits2.xml
 
 # Modules
 source $MODULESHOME/init/bash

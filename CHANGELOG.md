@@ -12,6 +12,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.21.0] - 2023-11-07
+
+### Changed
+
+- Moved to Baselibs 7.15.1
+  - zlib 1.3
+  - curl 8.4.0
+  - HDF4 4.2.16-2
+  - HDF5 1.10.11
+  - nco 5.1.8
+  - CDO 2.2.2
+  - udunits2 2.2.28
+  - fortran\_udunits2 v1.0.0-rc.2 (GMAO-SI-Team fork)
+
+### Added
+
+- `g5_modules` now exports `UDUNITS2_XML_PATH`
+
 ## [4.20.6] - 2023-10-30
 
 ### Fixed

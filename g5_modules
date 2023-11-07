@@ -132,16 +132,16 @@ if ( $site == NCCS ) then
       set mod3 = comp/intel/2021.6.0
       set mod4 = mpi/impi/2021.6.0
       set mod5 = python/GEOSpyD/Min4.11.0_py3.9_AND_Min4.8.3_py2.7
-      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.14.0/x86_64-pc-linux-gnu/ifort_2021.6.0-intelmpi_2021.6.0
+      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.15.1/x86_64-pc-linux-gnu/ifort_2021.6.0-intelmpi_2021.6.0-SLES12
       set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
 
    else
 
       set mod2 = comp/gcc/12.3.0
       set mod3 = comp/intel/2021.6.0
-      set mod4 = mpi/openmpi/4.1.5/intel-2021.6.0
+      set mod4 = mpi/openmpi/5.0.0/intel-2021.6.0
       set mod5 = python/GEOSpyD/Min23.5.2-0_py3.11
-      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.14.0/x86_64-pc-linux-gnu/ifort_2021.6.0-openmpi_4.1.5-SLES15
+      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.15.1/x86_64-pc-linux-gnu/ifort_2021.6.0-openmpi_5.0.0-SLES15
       set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES15
 
    endif
@@ -160,9 +160,9 @@ else if ( $site == NAS ) then
 
    set mod1 = GEOSenv
 
-   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-7.14.0/x86_64-pc-linux-gnu/ifort_2022.1.0-mpt_2.28_25Apr23_rhel87-TOSS4
+   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-7.15.1/x86_64-pc-linux-gnu/ifort_2022.1.0-mpt_2.28_25Apr23_rhel87-TOSS4
    set mod2 = comp-gcc/11.2.0-TOSS4
-   set mod3 = comp-intel/2022.1.0
+   set mod3 = comp-intel/2022.1.0-nccs
    set mod4 = mpi-hpe/mpt
 
    set mod5 = python/GEOSpyD/Min4.11.0_py3.9_AND_Min4.8.3_py2.7
@@ -182,7 +182,7 @@ else if ( $site == NAS ) then
 #=================#
 else if ( $site == GMAO.desktop ) then
 
-   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-7.14.0/x86_64-pc-linux-gnu/ifort_2022.1.0-intelmpi_2022.1.0
+   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-7.15.1/x86_64-pc-linux-gnu/ifort_2022.1.0-intelmpi_2022.1.0
 
    set mod1 = GEOSenv
 
@@ -317,6 +317,10 @@ if ($?LD_LIBRARY64_PATH) then
    endif
 endif
 
+# Set UDUNITS2_XML_PATH
+# ---------------------
+setenv UDUNITS2_XML_PATH $BASEDIR/$arch/share/udunits/udunits2.xml
+
 # load library modules
 #---------------------
 if (-e $modinit) then
@@ -360,6 +364,9 @@ if ($wrapper) then
    endif
    if ($?LD_LIBRARY64_PATH) then
       echo "export LD_LIBRARY64_PATH=$LD_LIBRARY64_PATH" >> $outfil
+   endif
+   if ($?UDUNITS2_XML_PATH) then
+      echo "export UDUNITS2_XML_PATH=$UDUNITS2_XML_PATH" >> $outfil
    endif
 
    set modulecmd = `which modulecmd`
