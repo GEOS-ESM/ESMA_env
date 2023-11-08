@@ -162,7 +162,7 @@ else if ( $site == NAS ) then
 
    set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-7.15.1/x86_64-pc-linux-gnu/ifort_2022.1.0-mpt_2.28_25Apr23_rhel87-TOSS4
    set mod2 = comp-gcc/11.2.0-TOSS4
-   set mod3 = comp-intel/2022.1.0-nccs
+   set mod3 = comp-intel/2022.1.0
    set mod4 = mpi-hpe/mpt
 
    set mod5 = python/GEOSpyD/Min4.11.0_py3.9_AND_Min4.8.3_py2.7
