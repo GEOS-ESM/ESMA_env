@@ -12,10 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
-## [4.21.0] - 2023-11-07
+## [4.21.0] - 2023-11-20
 
 ### Changed
 
+- Move to Open MPI 5.0.0 on SLES15 at NCCS
 - Moved to Baselibs 7.15.1
   - zlib 1.3
   - curl 8.4.0
