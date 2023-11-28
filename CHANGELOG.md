@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+
+- Move to use Intel 2021.10 and Open MPI 4.1.6 on SLES15 at NCCS.
+
 ### Fixed
 ### Removed
 ### Added
