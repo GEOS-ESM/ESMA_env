@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.8.1] - 2023-11-30
+
+### Changed
+
+- Add support for SLES 15
+
 ## [4.8.0] - 2022-11-29
 
 ### Changed
