@@ -12,11 +12,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.23.0] - 2023-11-30
+
+### Changed
+
+- Moved to Baselibs 7.16.0
+  - ESMF v8.6.0
+  - NCO 5.1.9
+  - CDO 2.3.0
+- Move to Open MPI 4.1.6 with Intel on SLES 15 at NCCS.
+
 ## [4.22.0] - 2023-11-21
 
 ### Changed
 
-- Move back to Open MPI 4.1.5 with Intel on NCCS. This avoids a bug between GEOS' Intel debugging flags and MPI_Init with Open MPI 5.0.0 (see https://github.com/open-mpi/ompi/issues/12113)
+- Move back to Open MPI 4.1.5 with Intel on SLES 15 on NCCS. This avoids a bug between GEOS' Intel debugging flags and MPI_Init with Open MPI 5.0.0 (see https://github.com/open-mpi/ompi/issues/12113)
 
 ## [4.21.0] - 2023-11-20
 
