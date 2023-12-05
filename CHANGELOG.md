@@ -16,6 +16,118 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.24.0] - 2023-12-01
+
+### Changed
+
+- Moved to Baselibs 7.17.0
+  - GFE v1.12.0
+    - gFTL v1.11.0
+    - gFTL-shared v1.7.0
+    - fArgParse v1.6.0
+    - pFUnit v4.8.0
+    - yaFyaml v1.2.0
+    - pFlogger v1.11.0
+
+## [4.23.0] - 2023-11-30
+
+### Changed
+
+- Moved to Baselibs 7.16.0
+  - ESMF v8.6.0
+  - NCO 5.1.9
+  - CDO 2.3.0
+- Move to Open MPI 4.1.6 with Intel on SLES 15 at NCCS.
+
+## [4.22.0] - 2023-11-21
+
+### Changed
+
+- Move back to Open MPI 4.1.5 with Intel on SLES 15 on NCCS. This avoids a bug between GEOS' Intel debugging flags and MPI_Init with Open MPI 5.0.0 (see https://github.com/open-mpi/ompi/issues/12113)
+
+## [4.21.0] - 2023-11-20
+
+### Changed
+
+- Move to Open MPI 5.0.0 on SLES15 at NCCS
+- Moved to Baselibs 7.15.1
+  - zlib 1.3
+  - curl 8.4.0
+  - HDF4 4.2.16-2
+  - HDF5 1.10.11
+  - nco 5.1.8
+  - CDO 2.2.2
+  - udunits2 2.2.28
+  - fortran\_udunits2 v1.0.0-rc.2 (GMAO-SI-Team fork)
+
+### Added
+
+- `g5_modules` now exports `UDUNITS2_XML_PATH`
+
+## [4.20.6] - 2023-10-30
+
+### Fixed
+
+- Fixed issue with clean option
+
+## [4.20.5] - 2023-10-26
+
+### Fixed
+
+- Fix issue with passing in build and install dirs
+
+## [4.20.4] - 2023-10-25
+
+### Fixed
+
+- Fixed breakage of debug, aggressive and many many other options
+
+## [4.20.3] - 2023-10-24
+
+### Fixed
+
+- Fixed issue with OS versioning when inside SLURM (has to be detected differently)
+
+## [4.20.2] - 2023-10-23
+
+### Fixed
+
+- Append `-SLES12` or `-SLES15` on the build and install directories at NCCS when using `build.csh` to make it clear to users
+
+## [4.20.1] - 2023-10-23
+
+### Fixed
+
+- Fixed `build.csh` for using Milan at NCCS
+
+## [4.20.0] - 2023-10-14
+
+### Added
+
+- Added support for Milan at NCCS
+  - Uses Open MPI 4.1.5 on SCU17 rather than Intel MPI due to issues with Intel MPI
+
+## [4.19.0] - 2023-07-27
+
+### Changed
+
+- Moved to Baselibs 7.14.0
+  - ESMF v8.5.0
+  - GFE v1.11.0
+    - gFTL-shared v1.6.1
+    - pFUnit v4.7.3
+  - curl 8.2.1
+  - NCO 5.1.7
+  - CDO 2.2.1
+
+## [4.18.0] - 2023-07-13
+
+### Changed
+
+- Removed Haswell as build node option at NCCS (no longer available)
+- Added an "any" option for the build node at NCCS which will submit to any available node type
+  - At NCCS with GNU, Cascade Lake is forced as Open MPI is built only for Infiniband
+
 ## [4.17.0] - 2023-05-25
 
 ### Changed
