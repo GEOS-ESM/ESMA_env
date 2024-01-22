@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.25.0] - 2024-01-22
+
+### Changed
+
+- Moved to Baselibs 7.17.1
+  - Fix for NAG and ESMF 8.6.0
+- Update `g5_modules` to use GCC 11.4 as the backing C compiler on SLES 15 at NCCS
+  - This was done as it was discovered that xgboost was not building on SLES15 with Intel when using GCC 12. Until xgboost can be
+    updated to a newer version, this is the workaround.
+
 ## [4.24.0] - 2023-12-01
 
 ### Changed
