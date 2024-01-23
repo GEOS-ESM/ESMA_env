@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+
+## [4.25.1] - 2024-01-23
+
+### Fixed
+
+- Fix incorrect Open MPI module at NCCS SLES15
+
 ## [4.25.0] - 2024-01-22
 
 ### Changed

@@ -139,7 +139,7 @@ if ( $site == NCCS ) then
 
       set mod2 = comp/gcc/11.4.0
       set mod3 = comp/intel/2021.6.0
-      set mod4 = mpi/openmpi/4.1.6/intel-2021.6.0
+      set mod4 = mpi/openmpi/4.1.6/intel-2021.6.0-gcc-11.4.0
       set mod5 = python/GEOSpyD/Min23.5.2-0_py3.11
       set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.17.1/x86_64-pc-linux-gnu/ifort_2021.6.0-openmpi_4.1.6-SLES15
       set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES15
