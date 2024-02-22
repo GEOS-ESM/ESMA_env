@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.26.0] - 2024-02-22
+
+### Changed
+
+- Move to Baselibs 7.18.1
+  - HDF5 1.14.3
+  - curl 8.6.0
+  - zlib 1.3.1
 
 ## [4.25.1] - 2024-01-24
 
