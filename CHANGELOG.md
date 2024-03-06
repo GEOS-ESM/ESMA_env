@@ -21,6 +21,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.27.0] - 2024-03-04
+
+### Changed
+
+- Move to use GEOSpyD Min23.5.2 on GMAO desktops
+
 ## [4.26.0] - 2024-02-22
 
 ### Changed
