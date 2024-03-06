@@ -8,18 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-
-- Moved to Baselibs 7.17.1
-  - Fix for NAG and ESMF 8.6.0
-- Update to use Intel MPI 2021.10.0 with Intel Fortran 2021.6.0 on SLES 15 at NCCS
-  - NOTE: You should use the PSM3 provider at NCCS. It is currently the only stable provider on the system. This is done by setting `I_MPI_OFI_PROVIDER=psm3` which is done by default for SLES15 in GEOSgcm_App
-- Update `g5_modules` to use GCC 11.4 as the backing C compiler on SLES 15 at NCCS
-  - This was done as it was discovered that xgboost was not building on SLES15 with Intel when using GCC 12. Until xgboost can be
-    updated to a newer version, this is the workaround.
-
 ### Fixed
 ### Removed
 ### Added
+
+## [4.28.0] - 2024-03-06
+
+### Changed
+
+- Update to use Intel MPI 2021.10.0 with Intel Fortran 2021.6.0 on SLES 15 at NCCS
+  - NOTE: You should use the PSM3 provider at NCCS. It is currently the only stable provider on the system with Intel MPI. This is done by setting `I_MPI_OFI_PROVIDER=psm3` which is done by default for SLES15 in GEOSgcm_App with Intel MPI.
 
 ## [4.27.0] - 2024-03-04
 
