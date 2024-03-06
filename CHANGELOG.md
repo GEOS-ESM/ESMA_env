@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+
+- Move to use Intel Fortran 2021.11 and Intel MPI 2021.11 on SLES15 at NCCS.
+
 ### Fixed
 ### Removed
 ### Added
