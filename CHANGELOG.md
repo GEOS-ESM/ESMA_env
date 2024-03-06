@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.28.0] - 2024-03-06
+
+### Changed
+
+- Update to use Intel MPI 2021.10.0 with Intel Fortran 2021.6.0 on SLES 15 at NCCS
+  - NOTE: You should use the PSM3 provider at NCCS. It is currently the only stable provider on the system with Intel MPI. This is done by setting `I_MPI_OFI_PROVIDER=psm3` which is done by default for SLES15 in GEOSgcm_App with Intel MPI.
+
 ## [4.27.0] - 2024-03-04
 
 ### Changed
