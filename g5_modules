@@ -41,7 +41,7 @@
 #  21Jul2008  Takacs   New modules and BASEDIR on discover after OS upgrade
 #  13Apr2009  Stassi   Updated for pleiades
 #  22Apr2010  Kokron   Updated for Fortuna-2.1 on pleiades
-#  21Jul2011  Kokron   Overlay older MKL module as on discover to gain reproducible results from dgeev in GSI 
+#  21Jul2011  Kokron   Overlay older MKL module as on discover to gain reproducible results from dgeev in GSI
 #  24Aug2012  Stassi   Added sh option to write bash source-able file
 #  03Nov2016  Thompson Remove JIBB
 ########################################################################
@@ -74,20 +74,15 @@ if (($node =~ discover*) || ($node =~ borg*)  || \
 
    set site = "NCCS"
 
+   # NCCS now has both SLES15 and SLES12 machines
+   set OS_VERSION=`grep VERSION_ID /etc/os-release | cut -d= -f2 | cut -d. -f1 | sed 's/"//g'`
+
 else if (($node =~ pfe*) || ($node =~ tfe*) || \
          ($node =~ r[0-9]*i[0-9]*n[0-9]*) || \
          ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
 
    # We are on NAS...
    set site = "NAS"
-
-   # Are we on TOSS4
-   set LSB_RELEASE = `lsb_release -sr | cut -d'.' -f 1`
-   if ($LSB_RELEASE == '8') then
-      set nasos = "TOSS4"
-   else
-      set nasos = "TOSS3"
-   endif
 
 else if ( -d /ford1/share/gmao_SIteam/ && -d /ford1/local/ && $arch == Linux ) then
    set site = "GMAO.desktop"
@@ -134,44 +129,29 @@ if ( $site == NCCS ) then
 
    set mod1 = GEOSenv
 
-   set mod2 = pchakrab/cuda/11.2.2-spack
-   set mod3 = pchakrab/python/gt4py@1717d3c-dace@892d614/3.8
-   set mod4 = pchakrab/ucx/cuda11.2.2/1.10.0
-   set mod5 = pchakrab/gcc/cuda11.2.2/10.4.0nvptx-spack
-   set mod6 = pchakrab/mpi/openmpi/cuda11.2.2-gcc10.4.0nvptx/4.1.4
-   set mod7 = pchakrab/intel-mkl/2020.4.304-spack
+   if ( $OS_VERSION == 12 ) then
 
-   set basedir = /discover/nobackup/projects/geosongpu/sw/baselibs/v7.8.2/x86_64-pc-linux-gnu/cuda11.2.2-gcc10.4.0nvptx-openmpi4.1.4
+      set mod2 = comp/gcc/11.2.0
+      set mod3 = comp/intel/2021.6.0
+      set mod4 = mpi/impi/2021.6.0
+      set mod5 = python/GEOSpyD/Min4.11.0_py3.9_AND_Min4.8.3_py2.7
+      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.17.1/x86_64-pc-linux-gnu/ifort_2021.6.0-intelmpi_2021.6.0-SLES12
+      set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
 
-   set mods = ( $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 $mod1 ) # load GEOSenv at the end to avoid versions in Python dist
+   else
+
+      set mod2 = comp/gcc/11.4.0
+      set mod3 = comp/intel/2021.6.0
+      set mod4 = mpi/openmpi/4.1.6/intel-2021.6.0-gcc-11.4.0
+      set mod5 = python/GEOSpyD/Min23.5.2-0_py3.11
+      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.17.1/x86_64-pc-linux-gnu/ifort_2021.6.0-openmpi_4.1.6-SLES15
+      set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES15
+
+   endif
+
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
-
-   set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
-   set usemod2 = /discover/nobackup/projects/geosongpu/sw/modulefiles
-
-   set usemods = ( $usemod1 $usemod2 )
-   set usemodules = 1
-
-#======================#
-#  NERSC - Perlmutter  #
-#======================#
-else if ( $site == NERSC.Perlmutter ) then
-
-   set mod1 = pchakrab/mepo
-
-   set mod2 = PrgEnv-gnu/8.3.3
-   set mod3 = cudatoolkit/11.7
-   set mod4 = pchakrab/python/cuda11.7.0-gcc11.2.0-craympich8.1.25/gt4py@4be34ec
-   set mod5 = pchakrab/intel-mkl/2020.4.304-spack
-
-   set basedir = /global/common/software/m4379/sw/baselibs/v7.8.2/x86_64-pc-linux-gnu/cuda11.7.0-gcc11.2.0-craympich8.1.25
-
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod2 ) # re-load gcc again to avoid version in Python dist
-   set modinit = /usr/share/lmod/lmod/init/csh
-   set loadmodules = 0
-
-   set usemod1 = /global/common/software/m4379/sw/modulefiles
 
    set usemods = ( $usemod1 )
    set usemodules = 1
@@ -182,17 +162,11 @@ else if ( $site == NERSC.Perlmutter ) then
 else if ( $site == NAS ) then
 
    set mod1 = GEOSenv
-   if ( $nasos == TOSS3 ) then
-      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-7.8.1/x86_64-pc-linux-gnu/ifort_2022.1.0-mpt_2.25
-      set mod2 = comp-gcc/11.2.0-TOSS3
-      set mod3 = comp-intel/2022.1.0
-      set mod4 = mpi-hpe/mpt.2.25
-   else
-      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-7.8.1/x86_64-pc-linux-gnu/ifort_2022.1.0-mpt_2.28_25Apr23_rhel87-TOSS4
-      set mod2 = comp-gcc/11.2.0-TOSS4
-      set mod3 = comp-intel/2022.1.0
-      set mod4 = mpi-hpe/mpt
-   endif
+
+   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-7.17.1/x86_64-pc-linux-gnu/ifort_2022.1.0-mpt_2.28_25Apr23_rhel87-TOSS4
+   set mod2 = comp-gcc/11.2.0-TOSS4
+   set mod3 = comp-intel/2022.1.0
+   set mod4 = mpi-hpe/mpt
 
    set mod5 = python/GEOSpyD/Min4.11.0_py3.9_AND_Min4.8.3_py2.7
 
@@ -211,7 +185,7 @@ else if ( $site == NAS ) then
 #=================#
 else if ( $site == GMAO.desktop ) then
 
-   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-7.8.1/x86_64-pc-linux-gnu/ifort_2022.1.0-intelmpi_2022.1.0
+   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-7.17.1/x86_64-pc-linux-gnu/ifort_2022.1.0-intelmpi_2022.1.0
 
    set mod1 = GEOSenv
 
@@ -346,6 +320,10 @@ if ($?LD_LIBRARY64_PATH) then
    endif
 endif
 
+# Set UDUNITS2_XML_PATH
+# ---------------------
+setenv UDUNITS2_XML_PATH $BASEDIR/$arch/share/udunits/udunits2.xml
+
 # load library modules
 #---------------------
 if (-e $modinit) then
@@ -390,6 +368,9 @@ if ($wrapper) then
    if ($?LD_LIBRARY64_PATH) then
       echo "export LD_LIBRARY64_PATH=$LD_LIBRARY64_PATH" >> $outfil
    endif
+   if ($?UDUNITS2_XML_PATH) then
+      echo "export UDUNITS2_XML_PATH=$UDUNITS2_XML_PATH" >> $outfil
+   endif
 
    set modulecmd = `which modulecmd`
    if ($status) set modulecmd = "/usr/bin/modulecmd"
@@ -431,7 +412,7 @@ DESCRIPTION
      add the BASEDIR lib directory to LD_LIBRARY_PATH (if necessary), and will
      load library modules when sourced.
 
-     If the script is called with "basedir", "modules", "modinit", or 
+     If the script is called with "basedir", "modules", "modinit", or
      "loadmodules", then it will echo the values to standard output without
      modifying the environment.
 

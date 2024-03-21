@@ -8,31 +8,210 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+
 ### Fixed
+
 ### Removed
+
 ### Added
 
-## [4.9.3] - 2023-05-24
+## [4.25.1] - 2024-01-24
+
+### Fixed
+
+- Fix incorrect Open MPI module at NCCS SLES15
+
+## [4.25.0] - 2024-01-22
+
+### Changed
+
+- Moved to Baselibs 7.17.1
+  - Fix for NAG and ESMF 8.6.0
+- Update `g5_modules` to use GCC 11.4 as the backing C compiler on SLES 15 at NCCS
+  - This was done as it was discovered that xgboost was not building on SLES15 with Intel when using GCC 12. Until xgboost can be
+    updated to a newer version, this is the workaround.
+
+## [4.24.0] - 2023-12-01
+
+### Changed
+
+- Moved to Baselibs 7.17.0
+  - GFE v1.12.0
+    - gFTL v1.11.0
+    - gFTL-shared v1.7.0
+    - fArgParse v1.6.0
+    - pFUnit v4.8.0
+    - yaFyaml v1.2.0
+    - pFlogger v1.11.0
+
+## [4.23.0] - 2023-11-30
+
+### Changed
+
+- Moved to Baselibs 7.16.0
+  - ESMF v8.6.0
+  - NCO 5.1.9
+  - CDO 2.3.0
+- Move to Open MPI 4.1.6 with Intel on SLES 15 at NCCS.
+
+## [4.22.0] - 2023-11-21
+
+### Changed
+
+- Move back to Open MPI 4.1.5 with Intel on SLES 15 on NCCS. This avoids a bug between GEOS' Intel debugging flags and MPI_Init with Open MPI 5.0.0 (see <https://github.com/open-mpi/ompi/issues/12113>)
+
+## [4.21.0] - 2023-11-20
+
+### Changed
+
+- Move to Open MPI 5.0.0 on SLES15 at NCCS
+- Moved to Baselibs 7.15.1
+  - zlib 1.3
+  - curl 8.4.0
+  - HDF4 4.2.16-2
+  - HDF5 1.10.11
+  - nco 5.1.8
+  - CDO 2.2.2
+  - udunits2 2.2.28
+  - fortran\_udunits2 v1.0.0-rc.2 (GMAO-SI-Team fork)
+
+### Added
+
+- `g5_modules` now exports `UDUNITS2_XML_PATH`
+
+## [4.20.6] - 2023-10-30
+
+### Fixed
+
+- Fixed issue with clean option
+
+## [4.20.5] - 2023-10-26
+
+### Fixed
+
+- Fix issue with passing in build and install dirs
+
+## [4.20.4] - 2023-10-25
+
+### Fixed
+
+- Fixed breakage of debug, aggressive and many many other options
+
+## [4.20.3] - 2023-10-24
+
+### Fixed
+
+- Fixed issue with OS versioning when inside SLURM (has to be detected differently)
+
+## [4.20.2] - 2023-10-23
+
+### Fixed
+
+- Append `-SLES12` or `-SLES15` on the build and install directories at NCCS when using `build.csh` to make it clear to users
+
+## [4.20.1] - 2023-10-23
+
+### Fixed
+
+- Fixed `build.csh` for using Milan at NCCS
+
+## [4.20.0] - 2023-10-14
+
+### Added
+
+- Added support for Milan at NCCS
+  - Uses Open MPI 4.1.5 on SCU17 rather than Intel MPI due to issues with Intel MPI
+
+## [4.19.0] - 2023-07-27
+
+### Changed
+
+- Moved to Baselibs 7.14.0
+  - ESMF v8.5.0
+  - GFE v1.11.0
+    - gFTL-shared v1.6.1
+    - pFUnit v4.7.3
+  - curl 8.2.1
+  - NCO 5.1.7
+  - CDO 2.2.1
+
+## [4.18.0] - 2023-07-13
+
+### Changed
+
+- Removed Haswell as build node option at NCCS (no longer available)
+- Added an "any" option for the build node at NCCS which will submit to any available node type
+  - At NCCS with GNU, Cascade Lake is forced as Open MPI is built only for Infiniband
+
+## [4.17.0] - 2023-05-25
+
+### Changed
+
+- Moved to Baselibs 7.13.0
+  - esmf v8.5.0b22
+  - curl 8.1.1
+  - HDF5 1.10.10
+  - netCDF-C 4.9.2
+  - netCDF-Fortran 4.6.1
+  - CDO 2.2.0
+
+## [4.16.1] - 2023-05-24
 
 ### Fixed
 
 - Fixed issue with tmpdir at NAS
 
-## [4.9.2] - 2023-05-18
+## [4.16.0] - 2023-05-18
 
 ### Changed
 
 - Updated to use MPT 2.28 at NAS per their recommendation for running on new TOSS4 nodes
   - This is done through the `mpi-hpt/mpt` module which resolves to `mpi-hpe/mpt.2.28_25Apr23_rhel87`
 
-## [4.9.1] - 2023-03-08
+## [4.15.0] - 2023-04-19
 
 ### Changed
 
-- Moved to Baselibs 7.8.1
-  - Updated
-    - ESMF v8.4.1
-      - This is a bug-fix against ESMF 8.4.1 and is a recommended update
+- Moved to Baselibs 7.12.0
+  - GFE v1.10.0
+  - curl 8.0.1
+  - NCO 5.1.5
+
+## [4.14.0] - 2023-03-29
+
+### Removed
+
+- Removed the `-hydrostatic` and `non-hydrostatic` options from `build.csh` as they are no longer needed as GEOS now
+  builds both by default
+
+## [4.13.0] - 2023-03-17
+
+### Added
+
+- Add `-wait` option for waiting for batch jobs
+
+## [4.12.0] - 2023-03-08
+
+### Changed
+
+- Moved to Baselibs 7.11.0
+  - ESMF v8.5.0b18
+
+## [4.11.0] - 2023-03-03
+
+### Changed
+
+- Moved to Baselibs 7.10.0
+  - GFE v1.9.0
+  - curl v7.88.1
+
+## [4.10.0] - 2023-01-26
+
+### Changed
+
+- Moved to Baselibs 7.9.0
+  - ESMF v8.5.0b13
+    - NOTE: This is a non-zero-diff change for GEOSgcm to precision changes in grid generation.
 
 ## [4.9.0] - 2023-01-26
 
@@ -297,24 +476,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - This is a major release of ESMA_env. Note that with these changes ***SLES 11 Support at NCCS is Removed***
 
-   #### Changes
+#### Changes
 
-   * ESMA Baselibs 6.0.16
-   * Use a new Python Stack: GEOSpyD/Min4.8.3_py2.7
-   * Update compilers and MPI stacks
-     * NCCS
-       * Intel Fortran 19.1.2
-       * Intel MPI 19.1.2
-     * NAS
-       * Intel Fortran 2020.2.254 (aka 19.1.2)
-       * MPT 2.17 (same as before)
-     * GMAO Desktop
-       * Intel Fortran 19.1.2
-       * Open MPI 4.0.4
-   * Remove the `NCCS/` directory as it was out-of-date
-   * Add `-gnu` flag to `build.csh` for easier building with GCC at NAS
+  - ESMA Baselibs 6.0.16
+  - Use a new Python Stack: GEOSpyD/Min4.8.3_py2.7
+  - Update compilers and MPI stacks
+    - NCCS
+      - Intel Fortran 19.1.2
+      - Intel MPI 19.1.2
+    - NAS
+      - Intel Fortran 2020.2.254 (aka 19.1.2)
+      - MPT 2.17 (same as before)
+    - GMAO Desktop
+      - Intel Fortran 19.1.2
+      - Open MPI 4.0.4
+  - Remove the `NCCS/` directory as it was out-of-date
+  - Add `-gnu` flag to `build.csh` for easier building with GCC at NAS
 
-   #### Baselibs Changes
+#### Baselibs Changes
 
    The change to Baselibs 6.0.16 from 6.0.13 involves the following:
 
@@ -343,23 +522,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
    Changes in this Baselibs include:
 
-   #### Updates
+#### Updates
 
-   * ESMF 8.0.1
-   * gFTL-shared v1.0.7
-   * pFUnit v4.1.7
-   * pFlogger v1.4.2
-   * fArgParse v0.9.5
-   * yaFyaml v0.3.3
+  - ESMF 8.0.1
+  - gFTL-shared v1.0.7
+  - pFUnit v4.1.7
+  - pFlogger v1.4.2
+  - fArgParse v0.9.5
+  - yaFyaml v0.3.3
 
-   #### Fixed
+#### Fixed
 
-   * Fixes for GCC 10
-     * Added patch for netcdf issue with GCC 10
-     * Added flag for HDF4 when using GCC 10
-     * Need to pass in extra flags to ESMF when using GCC 10
-   * Fix for detection for `--enable-dap` with netcdf
-
+  - Fixes for GCC 10
+    - Added patch for netcdf issue with GCC 10
+    - Added flag for HDF4 when using GCC 10
+    - Need to pass in extra flags to ESMF when using GCC 10
+  - Fix for detection for `--enable-dap` with netcdf
 
 ## [2.1.4] - 2020-05-18
 
