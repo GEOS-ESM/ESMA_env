@@ -12,6 +12,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.28.0] - 2024-04-02
+
+### Changed
+
+- Update to Baselibs 7.23.0
+  - Reverted to HDF5 1.10.11 (odd issues on NCCS machines with HDF5 1.14, investigating)
+  - GFE v1.15.0
+    - gFTL v1.13.0
+    - gFTL-shared v1.8.0
+    - fArgParse v1.7.0
+    - pFUnit v4.9.0
+    - yaFyaml v1.3.0
+    - pFlogger v1.14.0
+  - NCO 5.2.2
+  - Various other updates
+
 ## [4.27.0] - 2024-03-04
 
 ### Changed
