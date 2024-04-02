@@ -28,6 +28,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - NCO 5.2.2
   - Various other updates
 
+### Fixed
+
+- Testing on GMAO Desktops showed that `LD_LIBRARY_PATH` could not be altered by
+  `g5_modules`. So this is disabled on GMAO Desktops
+
 ## [4.27.0] - 2024-03-04
 
 ### Changed
