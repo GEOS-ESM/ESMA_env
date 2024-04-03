@@ -140,6 +140,10 @@ if ( $site == NCCS ) then
       set basedir = /discover/nobackup/projects/geosongpu/sw_sles15/live/src/2024.03.00/install/baselibs-7.17.1/x86_64-pc-linux-gnu
       set mod2 = SMTStack/2024.03.00
       set mods = ( $mod1 $mod2 )
+      # We would like to do that, but the setenv will be reset lower
+      setenv fv_comp_dir /discover/nobackup/fgdeconi/work/git/fp/geos/src/Components/@GEOSgcm_GridComp/GEOSagcm_GridComp/GEOSsuperdyn_GridComp/@FVdycoreCubed_GridComp
+      setenv gtfv3_dir ${fv_comp_dir}/@pyFV3
+      setenv PYTHONPATH ${PYTHONPATH}:${fv_comp_dir}
 
    endif
 
