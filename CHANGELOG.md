@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.28.1] - 2024-04-03
+
+### Fixed
+
+- Move back to Open MPI 4 on SLES15 at NCCS
+  - Testing showed crashes at C360 and under various other circumstances
+
 ## [4.28.0] - 2024-04-02
 
 ### Changed
@@ -27,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - pFlogger v1.14.0
   - NCO 5.2.2
   - Various other updates
+- Move to use Open MPI 5 by default on SLES15 at NCCS
 
 ### Fixed
 
