@@ -136,15 +136,16 @@ if ( $site == NCCS ) then
 
    else
 
+      set SMTStack_ver = 2024.04.00
       set usemod1 = /discover/nobackup/projects/geosongpu/sw_sles15/live/modulefiles/
-      set basedir = /discover/nobackup/projects/geosongpu/sw_sles15/live/src/2024.03.00/install/baselibs-7.17.1/x86_64-pc-linux-gnu
-      set mod2 = SMTStack/2024.03.00
+      set basedir = /discover/nobackup/projects/geosongpu/sw_sles15/live/src/$SMTStack_ver/install/baselibs-7.17.1/x86_64-pc-linux-gnu
+      set mod2 = SMTStack/$SMTStack_ver
       set mods = ( $mod1 $mod2 )
 
    endif
 
    set modinit = /usr/share/modules/init/csh
-   set loadmodules = 0
+   set loadmodules = 1
 
    set usemods = ( $usemod1 )
    set usemodules = 1
