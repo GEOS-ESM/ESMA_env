@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.29.0] - 2024-04-25
+
+### Changed
+
+- Update to Baselibs 7.24.0
+  - ESMF v8.6.1b04
+  - NCO 5.2.4
+  - curl 8.7.1
+  - Removed udunits2_fortran and FLAP (no longer needed)
+
 ## [4.28.1] - 2024-04-03
 
 ### Fixed
