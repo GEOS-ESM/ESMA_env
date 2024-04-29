@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [3.4.0.1] - 2024-Apr-29
+
+### Changed
+ - Min4.11.0_py3.9_AND_Min4.8.3_py2.7
+
 ## [3.4.0] - 2021-Oct-01
 
 ### Changed
