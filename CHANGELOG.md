@@ -8,14 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+### Fixed
+### Removed
+### Added
+
+## [5.0.0] - 2024-05-20
+
+### Changed
 
 - Update to Baselibs 8.0.2
   - Has FMS 2024.01 and libyaml 0.2.5
 - Move to use Intel MPI 2021.12 on SLES 15 at NCCS
 - Add support for Milan processors at NAS
 
-### Fixed
-### Removed
 ### Added
 
 - Added yaml linter
