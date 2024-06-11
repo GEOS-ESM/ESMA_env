@@ -12,6 +12,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.1.0] - 2024-06-11
+
+### Changed
+
+- Update to Baselibs 8.1.0
+  - ESMF 8.6.1
+  - FMS 2024.01.01
+  - curl 8.8.0
+- Move to use Intel ifort 2021.12 on SLES 15 at NCCS, at NAS, and on GMAO Desktops
+- Update to GEOSpyD Min24.0.0 for Python3
+
 ## [5.0.0] - 2024-05-20
 
 ### Changed
