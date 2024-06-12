@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.30.0] - 2024-06-12
+
+### Changed
+
+- Moved to use GEOSpyD Min24.4.0 Python 3.11 stack
+  - NOTE: This requires using at least ESMA_cmake v3.45.2 due to f2py issues with Python 3.12 testing.
+
 ## [4.29.0] - 2024-04-25
 
 ### Changed
