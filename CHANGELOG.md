@@ -14,6 +14,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added jemalloc to `g5_modules` for use with GEOSgcm
 
+## [5.0.0] - 2024-05-20
+
+### Changed
+
+- Update to Baselibs 8.0.2
+  - Has FMS 2024.01 and libyaml 0.2.5
+- Move to use Intel MPI 2021.12 on SLES 15 at NCCS
+- Add support for Milan processors at NAS
+
+### Added
+
+- Added yaml linter
+
+## [4.29.0] - 2024-04-25
+
+### Changed
+
+- Update to Baselibs 7.24.0
+  - ESMF v8.6.1b04
+  - NCO 5.2.4
+  - curl 8.7.1
+  - Removed udunits2_fortran and FLAP (no longer needed)
+
+## [4.28.1] - 2024-04-03
+
+### Fixed
+
+- Move back to Open MPI 4 on SLES15 at NCCS
+  - Testing showed crashes at C360 and under various other circumstances
+
+## [4.28.0] - 2024-04-02
+
+### Changed
+
+- Update to Baselibs 7.23.0
+  - Reverted to HDF5 1.10.11 (odd issues on NCCS machines with HDF5 1.14, investigating)
+  - GFE v1.15.0
+    - gFTL v1.13.0
+    - gFTL-shared v1.8.0
+    - fArgParse v1.7.0
+    - pFUnit v4.9.0
+    - yaFyaml v1.3.0
+    - pFlogger v1.14.0
+  - NCO 5.2.2
+  - Various other updates
+- Move to use Open MPI 5 by default on SLES15 at NCCS
+
+### Fixed
+
+- Testing on GMAO Desktops showed that `LD_LIBRARY_PATH` could not be altered by
+  `g5_modules`. So this is disabled on GMAO Desktops
+
 ## [4.27.0] - 2024-03-04
 
 ### Changed

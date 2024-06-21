@@ -279,7 +279,7 @@ endif
 #-----------------
 if (! $?nodeTYPE) then
    if ($SITE == NCCS) set nodeTYPE = "Any"
-   if ($SITE == NAS)  set nodeTYPE = "Skylake"
+   if ($SITE == NAS)  set nodeTYPE = "CascadeLake"
 endif
 
 # at NCCS
@@ -308,7 +308,7 @@ if ($SITE == NCCS) then
    # as OpenMPI is only built for Infiniband
    if ($usegnu) then
       if ($nT == mil) then
-         echo "Using GNU at NCCS, setting queue to cas"
+         echo "Using GNU at NCCS, setting queue to mil"
          set proc = 'mil'
       else
          echo "Using GNU at NCCS, setting queue to cas"
@@ -336,11 +336,12 @@ endif
 if ( $SITE == NAS ) then
 
    set nT = `echo $nodeTYPE | cut -c1-3 | tr "[A-Z]" "[a-z]"`
-   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas) && ($nT != rom)) then
+   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas) && ($nT != rom) && ($nT != mil)) then
       echo "ERROR. Unknown node type at NAS: $nodeTYPE"
       exit 2
    endif
 
+   if ($nT == mil) set nT = 'mil_ait'
    if ($nT == rom) set nT = 'rom_ait'
    if ($nT == sky) set nT = 'sky_ele'
    if ($nT == cas) set nT = 'cas_ait'
@@ -351,6 +352,7 @@ if ( $SITE == NAS ) then
    if ($nT == sky_ele) @ NCPUS_DFLT = 40
    if ($nT == cas_ait) @ NCPUS_DFLT = 40
    if ($nT == rom_ait) @ NCPUS_DFLT = 128
+   if ($nT == mil_ait) @ NCPUS_DFLT = 128
 
    # TMPDIR needs to be reset
    #-------------------------
@@ -958,7 +960,7 @@ flagged options
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
-   -mil                 compile on Milan nodes (only at NCCS)
+   -mil                 compile on Milan nodes
    -rom                 compile on Rome nodes (only at NAS)
    -cas                 compile on Cascade Lake nodes
    -sky                 compile on Skylake nodes (default at NAS)
