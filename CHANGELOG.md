@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.2.0] - 2024-07-05
+
+### Changed
+
+- Update to Baselibs 8.4.0
+  - Restore FMS build (was erroneously removed in 8.2.0)
+  - Fixes for MPT and using icx/icpx at NAS
+- Move to use Intel ifort 2021.13 on SLES 15 at NCCS, at NAS, and on GMAO Desktops
+
 ## [5.1.0] - 2024-07-05
 
 ### Changed
