@@ -41,7 +41,7 @@
 #  21Jul2008  Takacs   New modules and BASEDIR on discover after OS upgrade
 #  13Apr2009  Stassi   Updated for pleiades
 #  22Apr2010  Kokron   Updated for Fortuna-2.1 on pleiades
-#  21Jul2011  Kokron   Overlay older MKL module as on discover to gain reproducible results from dgeev in GSI 
+#  21Jul2011  Kokron   Overlay older MKL module as on discover to gain reproducible results from dgeev in GSI
 #  24Aug2012  Stassi   Added sh option to write bash source-able file
 #  03Nov2016  Thompson Remove JIBB
 ########################################################################
@@ -73,6 +73,9 @@ if (($node =~ discover*) || ($node =~ borg*)  || \
     ($node =~ dali*)     || ($node =~ warp*)) then
 
    set site = "NCCS"
+
+   # NCCS now has both SLES15 and SLES12 machines
+   set OS_VERSION=`grep VERSION_ID /etc/os-release | cut -d= -f2 | cut -d. -f1 | sed 's/"//g'`
 
 else if (($node =~ pfe*) || ($node =~ tfe*) || \
          ($node =~ r[0-9]*i[0-9]*n[0-9]*) || \
@@ -143,20 +146,30 @@ if ( $site == NCCS ) then
 
    set mod1 = GEOSenv
 
-   set mod2 = comp/gcc/10.1.0
-   set mod3 = comp/intel/2021.2.0
+   if ( $OS_VERSION == 12 ) then
+   
+      set mod2 = comp/gcc/10.1.0
+      set mod3 = comp/intel/2021.2.0
+      set mod4 = mpi/impi/2021.2.0
+      set mod5 = python/GEOSpyD/Min4.8.3_py2.7
+      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.7/x86_64-pc-linux-gnu/ifort_2021.2.0-intelmpi_2021.2.0
+      set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
 
-   set mod4 = mpi/impi/2021.2.0
+   else
+   
+      set mod2 = comp/gcc/11.4.0
+      set mod3 = comp/intel/2021.6.0
+      set mod4 = mpi/impi/2021.13
+      set mod5 = python/GEOSpyD/Min24.4.0-0_py3.11
+      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.7/x86_64-pc-linux-gnu/ifort_2021.6.0-intelmpi_2021.13.0-SLES15
+      set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES15
 
-   set mod5 = python/GEOSpyD/Min4.8.3_py2.7
-
-   set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-6.2.7/x86_64-pc-linux-gnu/ifort_2021.2.0-intelmpi_2021.2.0
+   endif
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
    set modinit = /usr/share/modules/init/csh
    set loadmodules = 0
 
-   set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES12
    set usemods = ( $usemod1 )
    set usemodules = 1
 
@@ -456,7 +469,7 @@ DESCRIPTION
      add the BASEDIR lib directory to LD_LIBRARY_PATH (if necessary), and will
      load library modules when sourced.
 
-     If the script is called with "basedir", "modules", "modinit", or 
+     If the script is called with "basedir", "modules", "modinit", or
      "loadmodules", then it will echo the values to standard output without
      modifying the environment.
 
