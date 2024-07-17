@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.9.4] - 2024-07-17
+
+### Changed
+
+- Added support for SLES15 at NCCS. We use Intel MPI 2021.13 as the MPI stack
+
 ## [4.9.3] - 2023-05-24
 
 ### Fixed
