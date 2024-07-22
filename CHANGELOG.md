@@ -12,6 +12,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.30.0] - 2024-07-22
+
+### Changed
+
+- Update to Baselibs 7.25.0
+  - ESMF v8.6.1
+  - GFE v1.16.0
+    - gFTL v1.14.0
+    - gFTL-shared v1.9.0
+    - fArgParse v1.8.0
+    - pFUnit v4.10.0
+    - yaFyaml v1.4.0
+  - curl 8.8.0
+  - NCO 5.2.6
+  - Other various fixes from the v8 branch
+- Move to use Intel ifort 2021.13 at NCCS SLES15, NAS, and GMAO Desktops
+- Move to use Intel MPI at NCCS SLES15 and GMAO Desktops
+- Move to GEOSpyD Min24.4.4 Python 3.11
+
+
 ## [4.29.0] - 2024-04-25
 
 ### Changed
