@@ -12,6 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.3.0] - 2024-07-22
+
+### Changed
+
+- Update to Baselibs 8.5.0
+  - GFE v1.16.0
+    - gFTL v1.14.0
+    - gFTL-shared v1.9.0
+    - fArgParse v1.8.0
+    - pFUnit v4.10.0
+    - yaFyaml v1.4.0
+
 ## [5.2.0] - 2024-07-05
 
 ### Changed
