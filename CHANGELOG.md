@@ -14,6 +14,40 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added jemalloc to `g5_modules` for use with GEOSgcm
 
+## [5.3.0] - 2024-07-22
+
+### Changed
+
+- Update to Baselibs 8.5.0
+  - GFE v1.16.0
+    - gFTL v1.14.0
+    - gFTL-shared v1.9.0
+    - fArgParse v1.8.0
+    - pFUnit v4.10.0
+    - yaFyaml v1.4.0
+
+## [5.2.0] - 2024-07-05
+
+### Changed
+
+- Update to Baselibs 8.4.0
+  - Restore FMS build (was erroneously removed in 8.2.0)
+  - Fixes for MPT and using icx/icpx at NAS
+- Move to use Intel ifort 2021.13 on SLES 15 at NCCS, at NAS, and on GMAO Desktops
+
+## [5.1.0] - 2024-07-05
+
+### Changed
+
+- Update to Baselibs 8.3.1
+  - ESMF 8.6.1
+  - FMS 2024.01.02
+  - curl 8.8.0
+  - NCO 5.2.6
+  - Various make system updates for other compilers and machines
+- Move to use Intel ifort 2021.12 on SLES 15 at NCCS, at NAS, and on GMAO Desktops
+- Update to GEOSpyD Min24.0.0 for Python3
+
 ## [5.0.0] - 2024-05-20
 
 ### Changed
