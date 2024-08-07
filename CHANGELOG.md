@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.25.2] - 2024-08-07
+
+### Changed
+
+- Move to Intel MPI 2021.13 at NCCS SLES15. Testing shows this is a more stable MPI stack on the system.
 
 ## [4.25.1] - 2024-01-24
 
