@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.3.1] - 2024-09-09
+
+### Fixed
+
+- Fix issue between `g5_modules` and csh at NAS
+  - Changed order when setting `LD_LIBRARY_PATH` to avoid issues with csh and tclsh
+
 ## [5.3.0] - 2024-07-22
 
 ### Changed
