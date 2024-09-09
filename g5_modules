@@ -294,37 +294,6 @@ else
    exit 3
 endif
 
-# add BASEDIR lib to LD_LIBRARY_PATH, if not already there
-#---------------------------------------------------------
-
-if ($useldlibs) then
-   if ($?LD_LIBRARY_PATH) then
-      echo $LD_LIBRARY_PATH | grep $BASEDIR/$arch/lib > /dev/null
-      if ($status) then  #  == 1, if not found
-         setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$BASEDIR/$arch/lib
-      endif
-   else
-      setenv LD_LIBRARY_PATH $BASEDIR/$arch/lib
-   endif
-
-# add individual $ld_libraries to LD_LIBRARY_PATH, if not already there
-#----------------------------------------------------------------------
-   if ($?ld_libraries) then
-      foreach lib ( $ld_libraries )
-         if ($LD_LIBRARY_PATH !~ *$lib*) then
-            setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$lib
-         endif
-      end
-   endif
-
-   if ($?LD_LIBRARY64_PATH) then
-      echo $LD_LIBRARY64_PATH | grep $BASEDIR/$arch/lib > /dev/null
-      if ($status) then  #  == 1, if not found
-         setenv LD_LIBRARY64_PATH ${LD_LIBRARY64_PATH}:$BASEDIR/$arch/lib
-      endif
-   endif
-endif
-
 # Set UDUNITS2_XML_PATH
 # ---------------------
 setenv UDUNITS2_XML_PATH $BASEDIR/$arch/share/udunits/udunits2.xml
@@ -356,6 +325,37 @@ if (-e $modinit) then
 
 endif
 if (! $wrapper) echo " for $node"
+
+# add BASEDIR lib to LD_LIBRARY_PATH, if not already there
+#---------------------------------------------------------
+
+if ($useldlibs) then
+   if ($?LD_LIBRARY_PATH) then
+      echo $LD_LIBRARY_PATH | grep $BASEDIR/$arch/lib > /dev/null
+      if ($status) then  #  == 1, if not found
+         setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$BASEDIR/$arch/lib
+      endif
+   else
+      setenv LD_LIBRARY_PATH $BASEDIR/$arch/lib
+   endif
+
+# add individual $ld_libraries to LD_LIBRARY_PATH, if not already there
+#----------------------------------------------------------------------
+   if ($?ld_libraries) then
+      foreach lib ( $ld_libraries )
+         if ($LD_LIBRARY_PATH !~ *$lib*) then
+            setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$lib
+         endif
+      end
+   endif
+
+   if ($?LD_LIBRARY64_PATH) then
+      echo $LD_LIBRARY64_PATH | grep $BASEDIR/$arch/lib > /dev/null
+      if ($status) then  #  == 1, if not found
+         setenv LD_LIBRARY64_PATH ${LD_LIBRARY64_PATH}:$BASEDIR/$arch/lib
+      endif
+   endif
+endif
 
 # write sh commands to a .g5_modules.sh file
 #-------------------------------------------
