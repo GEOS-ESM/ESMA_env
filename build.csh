@@ -308,7 +308,7 @@ if ($SITE == NCCS) then
    # as OpenMPI is only built for Infiniband
    if ($usegnu) then
       if ($nT == mil) then
-         echo "Using GNU at NCCS, setting queue to cas"
+         echo "Using GNU at NCCS, setting queue to mil"
          set proc = 'mil'
       else
          echo "Using GNU at NCCS, setting queue to cas"
