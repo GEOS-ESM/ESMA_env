@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.31.0] - 2024-09-13
+
+### Changed
+
+- Updated the default processors for `parallel_build.csh` to Milan at NCCS and Rome at NAS
+
 ## [4.30.1] - 2024-09-09
 
 ### Fixed
