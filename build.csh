@@ -278,8 +278,8 @@ endif
 # default nodeTYPE
 #-----------------
 if (! $?nodeTYPE) then
-   if ($SITE == NCCS) set nodeTYPE = "Any"
-   if ($SITE == NAS)  set nodeTYPE = "CascadeLake"
+   if ($SITE == NCCS) set nodeTYPE = "Milan"
+   if ($SITE == NAS)  set nodeTYPE = "Rome"
 endif
 
 # at NCCS
@@ -960,13 +960,13 @@ flagged options
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
-   -mil                 compile on Milan nodes
-   -rom                 compile on Rome nodes (only at NAS)
+   -mil                 compile on Milan nodes (default at NCCS)
+   -rom                 compile on Rome nodes (default at NAS, only at NAS)
    -cas                 compile on Cascade Lake nodes
-   -sky                 compile on Skylake nodes (default at NAS)
+   -sky                 compile on Skylake nodes
    -bro                 compile on Broadwell nodes (only at NAS)
    -has                 compile on Haswell nodes (only at NAS)
-   -any                 compile on either Sky or Cascade Lake node (only at NCCS with SLURM, default at NCCS)
+   -any                 compile on either Sky or Cascade Lake node (only at NCCS)
 
 extra cmake options
 
