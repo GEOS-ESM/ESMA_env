@@ -966,7 +966,7 @@ flagged options
    -sky                 compile on Skylake nodes
    -bro                 compile on Broadwell nodes (only at NAS)
    -has                 compile on Haswell nodes (only at NAS)
-   -any                 compile on either Sky or Cascade Lake node
+   -any                 compile on either Sky or Cascade Lake node (only at NCCS)
 
 extra cmake options
 
