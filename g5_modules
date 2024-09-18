@@ -177,7 +177,7 @@ else if ( $site == NAS ) then
    set usemods = ( $usemod1 $usemod2 $usemod3 )
    set usemodules = 1
 
-   set useldlibs = 1
+   set useldlibs = 0
 
 #=================#
 #  GMAO DESKTOP   #
