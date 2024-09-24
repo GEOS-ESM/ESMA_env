@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated `g5_modules` for RHEL8 GMAO machines
   - Change Baselibs location
   - Add new `useldlibs` and turn off
+  - Move to new Miniforge GEOSpyD
 
 ## [4.8.1] - 2023-11-30
 
