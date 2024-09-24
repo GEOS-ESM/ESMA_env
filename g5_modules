@@ -7,7 +7,7 @@
 #    * provide single location for BASEDIR and module values
 #    * initialize the following:
 #      - set BASEDIR
-#      - update LD_LIBRARY_PATH with BASEDIR lib
+#      - update LD_LIBRARY_PATH with BASEDIR lib (if useldlibs is set)
 #      - load library modules
 #    * echo expected BASEDIR and library module values when queried
 #
@@ -124,8 +124,8 @@ X86_64:
 
 set modinit = DUMMY
 
-set loadmodules = 0
 set usemodules = 0
+set useldlibs = 0
 
 #========#
 #  NCCS  #
@@ -156,10 +156,11 @@ if ( $site == NCCS ) then
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
    set modinit = /usr/share/modules/init/csh
-   set loadmodules = 0
 
    set usemods = ( $usemod1 )
    set usemodules = 1
+
+   set useldlibs = 1
 
 #=======#
 #  NAS  #
@@ -180,7 +181,6 @@ else if ( $site == NAS ) then
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
    set modinit = /usr/share/modules/init/tcsh
-   set loadmodules = 0
 
    set usemod1 = /u/scicon/tools/modulefiles
    set usemod2 = /nobackup/gmao_SIteam/modulefiles
@@ -188,12 +188,14 @@ else if ( $site == NAS ) then
    set usemods = ( $usemod1 $usemod2 $usemod3 )
    set usemodules = 1
 
+   set useldlibs = 0
+
 #=================#
 #  GMAO DESKTOP   #
 #=================#
 else if ( $site == GMAO.desktop ) then
 
-   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-7.7.0/x86_64-pc-linux-gnu/ifort_2022.1.0-intelmpi_2022.1.0
+   set basedir=/ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-7.7.0/x86_64-pc-linux-gnu/ifort_2022.1.0-intelmpi_2022.1.0-RHEL8
 
    set mod1 = GEOSenv
 
@@ -204,11 +206,14 @@ else if ( $site == GMAO.desktop ) then
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
    set modinit = /usr/share/Modules/init/tcsh
-   set loadmodules = 0
 
    set usemod1 = /ford1/share/gmao_SIteam/modulefiles
    set usemods = ( $usemod1 )
    set usemodules = 1
+
+   # Testing shows adding BASEDIR lib to LD_LIBRARY_PATH
+   # causes issues with the TCL modules on the GMAO machines
+   set useldlibs = 0
 
 endif
 
@@ -225,8 +230,8 @@ ARM64:
 
 set modinit = DUMMY
 
-set loadmodules = 0
 set usemodules = 0
+set useldlibs = 0
 
 goto ACTION
 
@@ -250,11 +255,11 @@ if ( $#argv > 0 ) then
    else if ( $1 == modinit ) then
       echo $modinit
 
-   else if ( $1 == loadmodules ) then
-      echo $loadmodules
-
    else if ( $1 == usemodules ) then
       echo $usemods
+
+   else if ( $1 == useldlibs ) then
+      echo $useldlibs
 
    else if ( $1 == ESMA_FC ) then
       echo $ESMA_FC
@@ -300,34 +305,6 @@ else
    exit 3
 endif
 
-# add BASEDIR lib to LD_LIBRARY_PATH, if not already there
-#---------------------------------------------------------
-if ($?LD_LIBRARY_PATH) then
-   echo $LD_LIBRARY_PATH | grep $BASEDIR/$arch/lib > /dev/null
-   if ($status) then  #  == 1, if not found
-      setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$BASEDIR/$arch/lib
-   endif
-else
-   setenv LD_LIBRARY_PATH $BASEDIR/$arch/lib
-endif
-
-# add individual $ld_libraries to LD_LIBRARY_PATH, if not already there
-#----------------------------------------------------------------------
-if ($?ld_libraries) then
-   foreach lib ( $ld_libraries )
-      if ($LD_LIBRARY_PATH !~ *$lib*) then
-         setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$lib
-      endif
-   end
-endif
-
-if ($?LD_LIBRARY64_PATH) then
-   echo $LD_LIBRARY64_PATH | grep $BASEDIR/$arch/lib > /dev/null
-   if ($status) then  #  == 1, if not found
-      setenv LD_LIBRARY64_PATH ${LD_LIBRARY64_PATH}:$BASEDIR/$arch/lib
-   endif
-endif
-
 # load library modules
 #---------------------
 if (-e $modinit) then
@@ -335,8 +312,6 @@ if (-e $modinit) then
    if (! $wrapper) echo -n " and modules"
    source $modinit
    module purge
-
-   if ($loadmodules) module load modules
 
    if ($usemodules) then
       foreach usemod ( $usemods )
@@ -357,6 +332,37 @@ if (-e $modinit) then
 
 endif
 if (! $wrapper) echo " for $node"
+
+# add BASEDIR lib to LD_LIBRARY_PATH, if not already there
+#---------------------------------------------------------
+
+if ($useldlibs) then
+   if ($?LD_LIBRARY_PATH) then
+      echo $LD_LIBRARY_PATH | grep $BASEDIR/$arch/lib > /dev/null
+      if ($status) then  #  == 1, if not found
+         setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$BASEDIR/$arch/lib
+      endif
+   else
+      setenv LD_LIBRARY_PATH $BASEDIR/$arch/lib
+   endif
+
+   # add individual $ld_libraries to LD_LIBRARY_PATH, if not already there
+   #----------------------------------------------------------------------
+   if ($?ld_libraries) then
+      foreach lib ( $ld_libraries )
+         if ($LD_LIBRARY_PATH !~ *$lib*) then
+            setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$lib
+         endif
+      end
+   endif
+
+   if ($?LD_LIBRARY64_PATH) then
+      echo $LD_LIBRARY64_PATH | grep $BASEDIR/$arch/lib > /dev/null
+      if ($status) then  #  == 1, if not found
+         setenv LD_LIBRARY64_PATH ${LD_LIBRARY64_PATH}:$BASEDIR/$arch/lib
+      endif
+   endif
+endif
 
 # write sh commands to a .g5_modules.sh file
 #-------------------------------------------
@@ -382,9 +388,6 @@ if ($wrapper) then
          echo 'source '$modinit_sh                       >> $outfil
       endif
       echo 'eval `'$modulecmd sh purge'`'                >> $outfil
-      if ($loadmodules) then
-         echo 'eval `'$modulecmd sh load modules'`'      >> $outfil
-      endif
       foreach mod ($mods)
          echo 'eval `'$modulecmd sh load $mod'`'         >> $outfil
       end
@@ -414,11 +417,8 @@ DESCRIPTION
      load library modules when sourced.
 
      If the script is called with "basedir", "modules", "modinit", or
-     "loadmodules", then it will echo the values to standard output without
+     "useldlibs", then it will echo the values to standard output without
      modifying the environment.
-
-     The "modinit" and "loadmodules" options are primarily for use with
-     the g5_modules_perl_wrapper script.
 
 SYNOPSIS
 
@@ -434,8 +434,8 @@ OPTIONS
      basedir             echo expected value for BASEDIR environment variable
      modules             echo expected list of modules
      modinit             echo location of csh module initialization script
-     loadmodules         echo logical indicating whether "module load modules"
-                              is needed prior to loading other modules
+     useldlibs           echo logical indicating whether BASEDIR lib should be
+                              added to LD_LIBRARY_PATH
      usemodules          echo logical indicating whether "module use directory(s)"
                               is needed prior to loading other modules
      ESMA_FC             echo value of ESMA_FC if set

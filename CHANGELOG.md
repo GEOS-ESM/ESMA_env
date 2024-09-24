@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.8.2] - 2024-09-24
+
+### Changed
+
+- Updated `g5_modules` for RHEL8 GMAO machines
+  - Change Baselibs location
+  - Add new `useldlibs` and turn off
+
 ## [4.8.1] - 2023-11-30
 
 ### Changed
