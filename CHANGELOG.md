@@ -12,6 +12,89 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.29.0] - 2024-04-25
+
+### Changed
+
+- Update to Baselibs 7.24.0
+  - ESMF v8.6.1b04
+  - NCO 5.2.4
+  - curl 8.7.1
+  - Removed udunits2_fortran and FLAP (no longer needed)
+
+## [4.28.1] - 2024-04-03
+
+### Fixed
+
+- Move back to Open MPI 4 on SLES15 at NCCS
+  - Testing showed crashes at C360 and under various other circumstances
+
+## [4.28.0] - 2024-04-02
+
+### Changed
+
+- Update to Baselibs 7.23.0
+  - Reverted to HDF5 1.10.11 (odd issues on NCCS machines with HDF5 1.14, investigating)
+  - GFE v1.15.0
+    - gFTL v1.13.0
+    - gFTL-shared v1.8.0
+    - fArgParse v1.7.0
+    - pFUnit v4.9.0
+    - yaFyaml v1.3.0
+    - pFlogger v1.14.0
+  - NCO 5.2.2
+  - Various other updates
+- Move to use Open MPI 5 by default on SLES15 at NCCS
+
+### Fixed
+
+- Testing on GMAO Desktops showed that `LD_LIBRARY_PATH` could not be altered by
+  `g5_modules`. So this is disabled on GMAO Desktops
+
+## [4.27.0] - 2024-03-04
+
+### Changed
+
+- Move to use GEOSpyD Min23.5.2 on GMAO desktops
+
+## [4.26.0] - 2024-02-22
+
+### Changed
+
+- Move to Baselibs 7.18.1
+  - HDF5 1.14.3
+  - curl 8.6.0
+  - zlib 1.3.1
+
+## [4.25.1] - 2024-01-24
+
+### Fixed
+
+- Fix incorrect Open MPI module at NCCS SLES15
+
+## [4.25.0] - 2024-01-22
+
+### Changed
+
+- Moved to Baselibs 7.17.1
+  - Fix for NAG and ESMF 8.6.0
+- Update `g5_modules` to use GCC 11.4 as the backing C compiler on SLES 15 at NCCS
+  - This was done as it was discovered that xgboost was not building on SLES15 with Intel when using GCC 12. Until xgboost can be
+    updated to a newer version, this is the workaround.
+
+## [4.24.0] - 2023-12-01
+
+### Changed
+
+- Moved to Baselibs 7.17.0
+  - GFE v1.12.0
+    - gFTL v1.11.0
+    - gFTL-shared v1.7.0
+    - fArgParse v1.6.0
+    - pFUnit v4.8.0
+    - yaFyaml v1.2.0
+    - pFlogger v1.11.0
+
 ## [4.23.0] - 2023-11-30
 
 ### Changed
