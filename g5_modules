@@ -77,7 +77,7 @@ if (($node =~ discover*) || ($node =~ borg*)  || \
    # NCCS now has both SLES15 and SLES12 machines
    set OS_VERSION=`grep VERSION_ID /etc/os-release | cut -d= -f2 | cut -d. -f1 | sed 's/"//g'`
 
-else if (($node =~ pfe*) || ($node =~ tfe*) || \
+else if (($node =~ pfe*) || ($node =~ afe*) || \
          ($node =~ r[0-9]*i[0-9]*n[0-9]*) || \
          ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
 
@@ -139,9 +139,9 @@ if ( $site == NCCS ) then
 
       set mod2 = comp/gcc/11.4.0
       set mod3 = comp/intel/2021.6.0
-      set mod4 = mpi/openmpi/4.1.6/intel-2021.6.0-gcc-11.4.0
+      set mod4 = mpi/impi/2021.13
       set mod5 = python/GEOSpyD/Min23.5.2-0_py3.11
-      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.24.0/x86_64-pc-linux-gnu/ifort_2021.6.0-openmpi_4.1.6-SLES15
+      set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.24.0/x86_64-pc-linux-gnu/ifort_2021.6.0-intelmpi_2021.13.0-SLES15
       set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES15
 
    endif

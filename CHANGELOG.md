@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.29.1] - 2024-10-16
+
+### Changed
+
+- Move to Intel MPI 2021.13 at NCCS on SLES15
+
 ## [4.29.0] - 2024-04-25
 
 ### Changed
