@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - GSL 2.8
   - jpeg 9f
   - Various build fixes
+- Move to non-Anaconda GEOSpyD
 
 ## [4.31.1] - 2024-09-18
 
