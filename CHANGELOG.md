@@ -12,6 +12,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.5.0] - 2024-10-22
+
+### Changed
+
+- Update to Baselibs 8.7.0
+  - ESMF 8.7.0
+  - FMS 2024.03
+  - HDF5 1.14.5
+  - curl 8.10.1
+  - NCO 5.2.8
+  - CDO 2.4.4
+  - GSL 2.8
+  - jpeg 9f
+  - Various build fixes
+- Move to non-Anaconda GEOSpyD
+
 ## [5.4.1] - 2024-09-18
 
 ### Fixed
