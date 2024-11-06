@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.5.1] - 2024-11-06
+
+### Changed
+
+- Make `g5_modules` executable again
+
 ## [5.5.0] - 2024-10-22
 
 ### Changed
