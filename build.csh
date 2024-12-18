@@ -62,34 +62,31 @@ else
    set NCPUs_min = 1
 endif
 
-# if batch, then skip over job submission
-#----------------------------------------
-if ($?Parallel_build_bypass_flag) then
-   goto build
-endif
-
 # set defaults
 #-------------
-setenv esmadir     ""
-setenv docmake     1
-setenv usegnu      0
-setenv notar       0
-setenv usehydro    0
-setenv usenonhydro 0
-setenv ddb         0
-setenv debug       0
-setenv aggressive  0
-setenv verbose     ""
-setenv interactive 0
-setenv proc        ""
-setenv prompt      1
-setenv queue       ""
-setenv partition   ""
-setenv account     ""
-setenv tmpdir      ""
-setenv walltime    ""
-setenv cmake_build_type "Release"
-setenv EXTRA_CMAKE_FLAGS ""
+if (! $?ESMADIR)           setenv ESMADIR           ""
+if (! $?docmake)           setenv docmake           1
+if (! $?usegnu)            setenv usegnu            0
+if (! $?notar)             setenv notar             0
+if (! $?ddb)               setenv ddb               0
+if (! $?debug)             setenv debug             0
+if (! $?aggressive)        setenv aggressive        0
+if (! $?verbose)           setenv verbose           ""
+if (! $?interactive)       setenv interactive       0
+if (! $?do_wait)           setenv do_wait           0
+if (! $?proc)              setenv proc              ""
+if (! $?prompt)            setenv prompt            1
+if (! $?queue)             setenv queue             ""
+if (! $?partition)         setenv partition         ""
+if (! $?account)           setenv account           ""
+if (! $?tmpdir)            setenv tmpdir            ""
+if (! $?walltime)          setenv walltime          ""
+if (! $?slurm_constraint)  setenv slurm_constraint  ""
+if (! $?cmake_build_type)  setenv cmake_build_type  "Release"
+if (! $?EXTRA_CMAKE_FLAGS) setenv EXTRA_CMAKE_FLAGS ""
+if (! $?FORTRAN_COMPILER)  setenv FORTRAN_COMPILER  ""
+if (! $?BUILDDIR_PASSED)   setenv BUILDDIR_PASSED   "NO"
+if (! $?INSTALLDIR_PASSED) setenv INSTALLDIR_PASSED "NO"
 
 # Detect if on compute node already
 # ---------------------------------
@@ -116,23 +113,25 @@ while ($#argv)
    #-------------------
    if (("$1" == "-debug") || ("$1" == "-db")) then
       setenv cmake_build_type "Debug"
-      set debug = 1
+      setenv debug 1
    endif
 
    # compile with aggressive
    #------------------------
    if ("$1" == "-aggressive") then
       setenv cmake_build_type "Aggressive"
-      set aggressive = 1
+      setenv aggressive 1
    endif
 
    # specify node type
    #------------------
+   if ("$1" == "-mil")  set nodeTYPE = "Milan"
    if ("$1" == "-rom")  set nodeTYPE = "Rome"
    if ("$1" == "-cas")  set nodeTYPE = "CascadeLake"
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
    if ("$1" == "-bro")  set nodeTYPE = "Broadwell"
    if ("$1" == "-has")  set nodeTYPE = "Haswell"
+   if ("$1" == "-any")  set nodeTYPE = "Any node"
 
    # reset Fortran TMPDIR
    #---------------------
@@ -153,6 +152,7 @@ while ($#argv)
    if ("$1" == "-builddir") then
       shift; if (! $#argv) goto usage
       setenv BUILDDIR $1
+      setenv BUILDDIR_PASSED "YES"
    endif
 
    # set INSTALLDIR
@@ -160,6 +160,7 @@ while ($#argv)
    if ("$1" == "-installdir") then
       shift; if (! $#argv) goto usage
       setenv INSTALLDIR $1
+      setenv INSTALLDIR_PASSED "YES"
    endif
 
    # set GMI_MECHANISM
@@ -173,10 +174,14 @@ while ($#argv)
    #----------------------
    if ("$1" == "-i") set interactive = 1
 
-   # run job interactively
-   #----------------------
+   # set verbose flag
+   #-----------------
    if ("$1" == "-verbose") set verbose = "VERBOSE=1"
    if ("$1" == "-v") set verbose = "VERBOSE=1"
+
+   # run job interactively
+   #----------------------
+   if ("$1" == "-wait") set do_wait = 1
 
    # submit batch job to alternative queue/qos
    #------------------------------------------
@@ -242,18 +247,6 @@ while ($#argv)
       setenv notar 1
    endif
 
-   # set hydrostatic option
-   #-----------------------
-   if ("$1" == "-hydrostatic") then
-      setenv usehydro 1
-   endif
-
-   # set hydrostatic option
-   #-----------------------
-   if ("$1" == "-nonhydrostatic") then
-      setenv usenonhydro 1
-   endif
-
    # If a user passes in '-- ' then everything after that is passed
    # into EXTRA_CMAKE_FLAGS and we are done parsing arguments
    #--------------------------------------------------------------
@@ -267,6 +260,14 @@ while ($#argv)
    shift
 end
 
+# Check if the ESMA_NOTAR environment variable is set
+# If so, then set notar to 1
+# --------------------------------------------------
+if ($?ESMA_NOTAR) then
+   echo "ESMA_NOTAR is set, so not creating tar file"
+   setenv notar 1
+endif
+
 # Only allow one of debug and aggressive
 # --------------------------------------
 if ( ($aggressive) && ($debug) ) then
@@ -274,46 +275,50 @@ if ( ($aggressive) && ($debug) ) then
    exit 1
 endif
 
-# Only allow one of hydrostatic and nonhydrostatic
-# ------------------------------------------------
-if ( ($usehydro) && ($usenonhydro) ) then
-   echo "ERROR. Only one of -hydrostatic and -nonhydrostatic is allowed"
-   exit 1
-endif
-
 # default nodeTYPE
 #-----------------
 if (! $?nodeTYPE) then
-   if ($SITE == NCCS) set nodeTYPE = "Skylake"
-   if ($SITE == NAS)  set nodeTYPE = "Skylake"
+   if ($SITE == NCCS) set nodeTYPE = "Milan"
+   if ($SITE == NAS)  set nodeTYPE = "Rome"
 endif
-
-# This is a flag needed at NCCS for Cascade Lake. Default is blank
-set ntaskspernode = ''
 
 # at NCCS
 #--------
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if (($nT != has) && ($nT != sky) && ($nT != cas)) then
+   if (($nT != sky) && ($nT != cas) && ($nT != mil) && ($nT != any)) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
 
-   if ($nT == has) @ NCPUS_DFLT = 28
+   # For the any node, set the default to 40 cores as
+   # this is the least number of cores you will get
+   if ($nT == any) @ NCPUS_DFLT = 40
    if ($nT == sky) @ NCPUS_DFLT = 40
    if ($nT == cas) @ NCPUS_DFLT = 48
+   if ($nT == mil) @ NCPUS_DFLT = 128
 
-   if ($nT == has) set proc = 'hasw'
+   if ($nT == any) set proc = 'any'
    if ($nT == sky) set proc = 'sky'
-   if ($nT == cas) then
-      set proc = 'cas'
-      # Adding this adds prevents a warning from NCCS about using 48
-      # tasks per node on Cascade. This script will never actually run
-      # make -j48, (usually make -j10 and only asks for 10 tasks) but
-      # this suppresses the warning.
-      set ntaskspernode = '--ntasks-per-node=45'
+   if ($nT == cas) set proc = 'cas'
+   if ($nT == mil) set proc = 'mil'
+
+   # If we are using GNU at NCCS, we can*only* use the cas or mil processors
+   # as OpenMPI is only built for Infiniband
+   if ($usegnu) then
+      if ($nT == mil) then
+         echo "Using GNU at NCCS, setting queue to mil"
+         set proc = 'mil'
+      else
+         echo "Using GNU at NCCS, setting queue to cas"
+         set proc = 'cas'
+      endif
+      set slurm_constraint = "--constraint=$proc"
+   else if ($nT == any) then
+      set slurm_constraint = "--constraint=sky|cas"
+   else
+      set slurm_constraint = "--constraint=$proc"
    endif
 
    if ("$queue" == "") then
@@ -331,11 +336,12 @@ endif
 if ( $SITE == NAS ) then
 
    set nT = `echo $nodeTYPE | cut -c1-3 | tr "[A-Z]" "[a-z]"`
-   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas) && ($nT != rom)) then
+   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas) && ($nT != rom) && ($nT != mil)) then
       echo "ERROR. Unknown node type at NAS: $nodeTYPE"
       exit 2
    endif
 
+   if ($nT == mil) set nT = 'mil_ait'
    if ($nT == rom) set nT = 'rom_ait'
    if ($nT == sky) set nT = 'sky_ele'
    if ($nT == cas) set nT = 'cas_ait'
@@ -346,10 +352,11 @@ if ( $SITE == NAS ) then
    if ($nT == sky_ele) @ NCPUS_DFLT = 40
    if ($nT == cas_ait) @ NCPUS_DFLT = 40
    if ($nT == rom_ait) @ NCPUS_DFLT = 128
+   if ($nT == mil_ait) @ NCPUS_DFLT = 128
 
    # TMPDIR needs to be reset
    #-------------------------
-   if (! "$tmpdir") then
+   if ($tmpdir == '') then
       set tmpdirDFLT = "/nobackup/$USER/scratch/"
       if ($prompt) then
          echo ""
@@ -358,6 +365,8 @@ if ( $SITE == NAS ) then
          echo -n "TMPDIR [$tmpdirDFLT] "
          setenv tmpdir $<
          if ("$tmpdir" == "") setenv tmpdir $tmpdirDFLT
+      else
+         setenv tmpdir $tmpdirDFLT
       endif
    endif
    echo "TMPDIR: $tmpdir"
@@ -377,26 +386,90 @@ endif
 
 # set Pbuild_build_directory
 # --------------------------
-if ($?BUILDDIR) then
-   setenv Pbuild_build_directory   $ESMADIR/$BUILDDIR
-else if ($debug) then
-   setenv Pbuild_build_directory   $ESMADIR/build-Debug
-else if ($aggressive) then
-   setenv Pbuild_build_directory   $ESMADIR/build-Aggressive
-else
-   setenv Pbuild_build_directory   $ESMADIR/build
+if (! $?Pbuild_build_directory) then
+   if ($?BUILDDIR) then
+      setenv Pbuild_build_directory   $ESMADIR/$BUILDDIR
+   else if ($debug) then
+      setenv Pbuild_build_directory   $ESMADIR/build-Debug
+   else if ($aggressive) then
+      setenv Pbuild_build_directory   $ESMADIR/build-Aggressive
+   else
+      setenv Pbuild_build_directory   $ESMADIR/build
+   endif
 endif
 
 # set Pbuild_install_directory
 # ----------------------------
-if ($?INSTALLDIR) then
-   setenv Pbuild_install_directory $ESMADIR/$INSTALLDIR
-else if ($debug) then
-   setenv Pbuild_install_directory $ESMADIR/install-Debug
-else if ($aggressive) then
-   setenv Pbuild_install_directory $ESMADIR/install-Aggressive
-else
-   setenv Pbuild_install_directory $ESMADIR/install
+if (! $?Pbuild_install_directory) then
+   if ($?INSTALLDIR) then
+      setenv Pbuild_install_directory $ESMADIR/$INSTALLDIR
+   else if ($debug) then
+      setenv Pbuild_install_directory $ESMADIR/install-Debug
+   else if ($aggressive) then
+      setenv Pbuild_install_directory $ESMADIR/install-Aggressive
+   else
+      setenv Pbuild_install_directory $ESMADIR/install
+   endif
+endif
+
+# If we are at NCCS, because of the dual OSs, we decorate the build and
+# install directory with the OS name. If we submit to Milan, we will add
+# -SLES15, otherwise -SLES12 to the build and install directories.  But,
+# we only do this if the user has not specified a build directory or
+# install directory
+# ---------------------------------------------------------------------
+
+if ($SITE == NCCS) then
+   # We now have to handle this in two ways. One if we are on a compute node and one if we aren't.
+   # This is because of how this script works where it sort of submits itself to the batch system
+   # and many of the variables known by the script before submission are lost after submission.
+   # So if we are on a compute node, we detect the OS version directly, but if we are just submitting on a
+   # head node, we instead have to just use the processor type passed in. We'll use oncompnode to detect
+   # which case we are in.
+   if ($oncompnode) then
+      set OS_VERSION=`grep VERSION_ID /etc/os-release | cut -d= -f2 | cut -d. -f1 | sed 's/"//g'`
+   else
+      if ($nT == mil) then
+         set OS_VERSION = 15
+      else
+         set OS_VERSION = 12
+      endif
+   endif
+   # We also check if we already appended SLES
+   if (! $?BUILDDIR && "$BUILDDIR_PASSED" == "NO") then
+      if ($Pbuild_build_directory !~ "*-SLES${OS_VERSION}") then
+         setenv Pbuild_build_directory ${Pbuild_build_directory}-SLES${OS_VERSION}
+      endif
+   endif
+   if (! $?INSTALLDIR && "$INSTALLDIR_PASSED" == "NO") then
+      if ($Pbuild_install_directory !~ "*-SLES${OS_VERSION}") then
+         setenv Pbuild_install_directory ${Pbuild_install_directory}-SLES${OS_VERSION}
+      endif
+   endif
+endif
+
+if ("$FORTRAN_COMPILER" == "") then
+   if ($usegnu) then
+      setenv FORTRAN_COMPILER 'gfortran'
+   else
+      setenv FORTRAN_COMPILER 'ifort'
+   endif
+endif
+
+if (! $?INSTALL_SOURCE_TARFILE) then
+   if ($notar) then
+      setenv INSTALL_SOURCE_TARFILE "OFF"
+   else
+      setenv INSTALL_SOURCE_TARFILE "ON"
+   endif
+endif
+
+if (! $?GMI_MECHANISM_FLAG) then
+   if ($?GMI_MECHANISM) then
+      setenv GMI_MECHANISM_FLAG "-DGMI_MECHANISM=$GMI_MECHANISM"
+   else
+      setenv GMI_MECHANISM_FLAG ""
+   endif
 endif
 
 # developer's debug
@@ -415,9 +488,11 @@ if ($ddb) then
    echo "tmpdir = $tmpdir"
    echo "proc = $proc"
    echo "interactive = $interactive"
+   echo "do_wait = $do_wait"
    echo "queue = $queue"
    if ($SITE == NCCS) then
       echo "partition = $partition"
+      echo "slurm_constraint = $slurm_constraint"
    endif
    echo "account = $account"
    echo "walltime = $walltime"
@@ -429,6 +504,12 @@ if ($ddb) then
    echo "EXTRA_CMAKE_FLAGS = $EXTRA_CMAKE_FLAGS"
    echo "Build directory = $Pbuild_build_directory"
    echo "Install directory = $Pbuild_install_directory"
+   echo "usegnu = $usegnu"
+   echo "FORTRAN_COMPILER = $FORTRAN_COMPILER"
+   echo "INSTALL_SOURCE_TARFILE = $INSTALL_SOURCE_TARFILE"
+   echo "GMI_MECHANISM_FLAG = $GMI_MECHANISM_FLAG"
+   echo "BUILDDIR_PASSED = $BUILDDIR_PASSED"
+   echo "INSTALLDIR_PASSED = $INSTALLDIR_PASSED"
    exit
 endif
 
@@ -470,15 +551,6 @@ echo "    PARALLEL BUILD "
 echo "   ================"
 echo ""
 
-# set environment variables
-#--------------------------
-if ( -d ${ESMADIR}/@env ) then
-   source $ESMADIR/@env/g5_modules
-else if ( -d ${ESMADIR}/env@ ) then
-   source $ESMADIR/env@/g5_modules
-else if ( -d ${ESMADIR}/env ) then
-   source $ESMADIR/env/g5_modules
-endif
 setenv Pbuild_source_directory  $ESMADIR
 
 # Make the BUILD directory
@@ -492,7 +564,6 @@ if (! -d $Pbuild_build_directory) then
    endif
 endif
 
-setenv Parallel_build_bypass_flag
 set jobname = "parallel_build"
 
 #===========================
@@ -575,33 +646,36 @@ setenv bldlogdir $Pbuild_build_directory/$BUILD_LOG_DIR
 setenv cmakelog  $bldlogdir/CLOG
 setenv buildlog  $bldlogdir/LOG
 setenv buildinfo $bldlogdir/info
-setenv cleanFLAG ""
+if (! $?cleanFLAG ) setenv cleanFLAG "notset"
 
-ls $cmakelog $buildlog $buildinfo >& /dev/null
-if ($status == 0) then
-   if ($prompt) then
-      echo ''
-      echo 'Previous build detected - Do you want to clean?'
-      echo '(c)     clean: Removes build and install directories, and rebuilds'
-      echo '(n)  no clean'
-      echo ''
-      echo "  Note: if you have changed MAPL, we recommend doing a clean for safety's sake"
-      echo ''
-      echo -n 'Select (c,n) <<c>> '
+if ("$cleanFLAG" == "notset") then
+   ls $cmakelog $buildlog $buildinfo >& /dev/null
+   if ($status == 0) then
+      if ($prompt) then
+         echo ''
+         echo 'Previous build detected - Do you want to clean?'
+         echo '(c)     clean: Removes build and install directories, and rebuilds'
+         echo '(n)  no clean'
+         echo ''
+         echo "  Note: if you have changed MAPL, we recommend doing a clean for safety's sake"
+         echo ''
+         echo -n 'Select (c,n) <<c>> '
 
-      set do_clean = $<
-      if ("$do_clean" != "n") then
+         set do_clean = $<
+         if ("$do_clean" != "n") then
+            set do_clean = "c"
+         endif
+      else
          set do_clean = "c"
       endif
-   else
-      set do_clean = "c"
-   endif
 
-   if ("$do_clean" == "c") then
-      setenv cleanFLAG clean
-      echo  "Removing build and install directories and re-running CMake before rebuild"
-   else
-      echo "No clean before rebuild"
+      if ("$do_clean" == "c") then
+         setenv cleanFLAG "clean"
+         echo  "Removing build and install directories and re-running CMake before rebuild"
+      else
+         setenv cleanFLAG "noclean"
+         echo "No clean before rebuild"
+      endif
    endif
 endif
 
@@ -665,6 +739,15 @@ else if (-e `which getsponsor` && (! $interactive)) then
    set groupflag = "--account=$group"
 endif
 
+set waitflag = ""
+if ($do_wait) then
+   if ($SITE == NAS) then
+      set waitflag = "-W block=true"
+   else if ($SITE == NCCS) then
+      set waitflag = "--wait"
+   endif
+endif
+
 if ($interactive) then
    goto build
 else if ( $SITE == NAS ) then
@@ -676,26 +759,36 @@ else if ( $SITE == NAS ) then
         -l walltime=$walltime  \
         -S /bin/csh            \
         -V -j oe -k oed        \
+        $waitflag              \
         $0
    unset echo
-   sleep 1
-   qstat -a | grep $USER
+   if ("$waitflag" == "") then
+      sleep 1
+      qstat -a | grep $USER
+   endif
 else if ( $SITE == NCCS ) then
    if ("$walltime" == "") setenv walltime "1:00:00"
    set echo
-   sbatch $groupflag $partition $queue    \
-        --constraint=$proc     \
+   # NOTE: The weird long export line below is needed at NCCS because of the
+   #       two OSs. For some reason, if you submit a Milan job from a SLES12
+   #       headnode, it was seeing SLES12 module paths. We believe this is
+   #       because SLURM by default exports all the environment
+   sbatch $groupflag $partition $queue \
+        $slurm_constraint      \
         --job-name=$jobname    \
         --output=$jobname.o%j  \
         --nodes=1              \
         --ntasks=${numjobs}    \
-        $ntaskspernode         \
         --time=$walltime       \
+        --export ESMADIR=${ESMADIR},cmake_build_type=${cmake_build_type},EXTRA_CMAKE_FLAGS=${EXTRA_CMAKE_FLAGS},FORTRAN_COMPILER=${FORTRAN_COMPILER},INSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE},verbose=${verbose},GMI_MECHANISM_FLAG=${GMI_MECHANISM_FLAG},Pbuild_build_directory=${Pbuild_build_directory},Pbuild_install_directory=${Pbuild_install_directory},usegnu=${usegnu},notar=${notar},tmpdir=${tmpdir},docmake=${docmake},debug=${debug},aggressive=${aggressive},BUILDDIR_PASSED=${BUILDDIR_PASSED},INSTALLDIR_PASSED=${INSTALLDIR_PASSED},queue=${queue},partition=${partition},cleanFLAG=${cleanFLAG} \
+        $waitflag              \
         $0
    unset echo
-   sleep 1
-   # Add a longer format for the job name for scripting purposes
-   squeue -a -o "%.10i %.12P %.10q %.30j %.8u %.8T %.10M %.9l %.6D %.6C %R" -u $USER
+   if ("$waitflag" == "") then
+      sleep 1
+      # Add a longer format for the job name for scripting purposes
+      squeue -a -o "%.10i %.12P %.10q %.30j %.8u %.8T %.10M %.9l %.6D %.6C %R" -u $USER
+   endif
 else
    echo $scriptname": batch procedures are not yet defined for node=$node at site=$SITE"
 endif
@@ -709,10 +802,13 @@ build:
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 if ( $cleanFLAG == "clean" ) then
+   echo "Removing build and install directories"
    rm -rf $Pbuild_build_directory
    rm -rf $Pbuild_install_directory
 
    mkdir -p $Pbuild_build_directory
+else
+   echo "Using existing build and install directories"
 endif
 
 chdir $Pbuild_build_directory
@@ -758,6 +854,7 @@ echo2 ""
 #================
 # set environment
 #================
+
 if ( -d ${ESMADIR}/@env ) then
    source $ESMADIR/@env/g5_modules
 else if ( -d ${ESMADIR}/env@ ) then
@@ -784,8 +881,13 @@ endif
 if ("$queue" != "") then
    echo1 "queue: $queue"
 endif
+if ("$partition" != "") then
+   echo1 "partition: $partition"
+endif
 if ("$account" != "") then
    echo1 "account: $account"
+echo1 "Pbuild_build_directory: $Pbuild_build_directory"
+echo1 "Pbuild_install_directory: $Pbuild_install_directory"
 endif
 
 echo1 "======================================"
@@ -795,34 +897,8 @@ echo1 "======================================"
 #===============
 # build system
 #===============
-if ($usegnu) then
-   setenv FORTRAN_COMPILER 'gfortran'
-else
-   setenv FORTRAN_COMPILER 'ifort'
-endif
 
-if ($usehydro) then
-   setenv HYDROBUILD '-DHYDROSTATIC=ON'
-else if ($usenonhydro) then
-   setenv HYDROBUILD '-DHYDROSTATIC=OFF'
-else
-   # If no option is passed, use the default in the model
-   setenv HYDROBUILD ''
-endif
-
-if ($notar) then
-   setenv INSTALL_SOURCE_TARFILE "OFF"
-else
-   setenv INSTALL_SOURCE_TARFILE "ON"
-endif
-
-if ($?GMI_MECHANISM) then
-   setenv GMI_MECHANISM_FLAG "-DGMI_MECHANISM=$GMI_MECHANISM"
-else
-   setenv GMI_MECHANISM_FLAG ""
-endif
-
-set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} ${HYDROBUILD} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE} ${GMI_MECHANISM_FLAG} ${EXTRA_CMAKE_FLAGS}"
+set cmd1 = "cmake $ESMADIR -DCMAKE_INSTALL_PREFIX=$Pbuild_install_directory -DBASEDIR=${BASEDIR}/${ARCH} -DCMAKE_Fortran_COMPILER=${FORTRAN_COMPILER} -DCMAKE_BUILD_TYPE=${cmake_build_type} -DINSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE} ${GMI_MECHANISM_FLAG} ${EXTRA_CMAKE_FLAGS}"
 set cmd2 = "make --jobs=$numjobs install $verbose"
 echo1 ""
 echo1 ""
@@ -875,10 +951,8 @@ flagged options
    -esmadir dir         esmadir location
    -nocmake             do not run cmake (useful for scripting)
    -gnu                 build with gfortran
+   -wait                wait when run as a batch job
    -no-tar              build with INSTALL_SOURCE_TARFILE=OFF (does not tar up source tarball, default is ON)
-
-   -hydrostatic         build for hydrostatic dynamics in FV
-   -nonhydrostatic      build for nonhydrostatic dynamics in FV
 
    -i                   run interactively rather than queuing job
    -q qos/queue         send batch job to qos/queue
@@ -886,11 +960,13 @@ flagged options
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
-   -rom                 compile on Rome nodes (only at NAS)
+   -mil                 compile on Milan nodes (default at NCCS)
+   -rom                 compile on Rome nodes (default at NAS, only at NAS)
    -cas                 compile on Cascade Lake nodes
-   -sky                 compile on Skylake nodes (default)
+   -sky                 compile on Skylake nodes
    -bro                 compile on Broadwell nodes (only at NAS)
-   -has                 compile on Haswell nodes
+   -has                 compile on Haswell nodes (only at NAS)
+   -any                 compile on either Sky or Cascade Lake node (only at NCCS)
 
 extra cmake options
 
