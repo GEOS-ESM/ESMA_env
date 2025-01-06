@@ -161,7 +161,7 @@ else if ( $site == NAS ) then
 
    set mod1 = GEOSenv
 
-   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-7.27.0/x86_64-pc-linux-gnu/ifort_2021.13.0-mpt_2.28_25Apr23_rhel87
+   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-7.27.0/x86_64-pc-linux-gnu/ifort_2021.13.0-mpt_2.30
    set mod2 = comp-gcc/12.3.0-TOSS4
    set mod3 = comp-intel/2024.2.0-ifort
    set mod4 = mpi-hpe/mpt
