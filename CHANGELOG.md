@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.29.2] - 2025-01-06
+
+### Changed
+
+- Update to MPT 2.30 Baselibs at NAS. This is due to NAS updating the `mpi-hpe/mpt` module to `mpi-hpe/mpt.2.30`. While this does not break GEOS, CMake throws more errors due to differences in MPT that built Baselibs vs MPT that would build GEOS.
+
 ## [4.29.1] - 2024-10-16
 
 ### Changed
