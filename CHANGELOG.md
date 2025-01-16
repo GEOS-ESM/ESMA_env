@@ -12,6 +12,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.7.0] - 2025-01-16
+
+### Changed
+
+- Update to Baselibs 8.9.0
+  - ESMF 8.8.0
+  - NCO 5.3.1
+  - CDO 2.5.0
+  - curl 8.11.1
+- Add support for flang-new
+- Turn off ESMPy building. It's not working and maybe we don't want to
+  build from source anyway as it's easier through mamba
+
 ## [5.6.0] - 2025-01-06
 
 ### Changed
