@@ -16,8 +16,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-### Changed
-
 - Update to Baselibs 7.29.0
   - ESMF 8.8.0
   - NCO 5.3.1
