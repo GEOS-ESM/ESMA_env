@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.7.1] - 2025-01-22
+
+### Fixed
+
+- Fixed GEOSpyD module on GMAO Desktops
+
 ## [5.7.0] - 2025-01-16
 
 ### Changed
