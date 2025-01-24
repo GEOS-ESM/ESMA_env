@@ -131,6 +131,7 @@ while ($#argv)
    if ("$1" == "-mil")  set nodeTYPE = "Milan"
    if ("$1" == "-rom")  set nodeTYPE = "Rome"
    if ("$1" == "-cas")  set nodeTYPE = "CascadeLake"
+   if ("$1" == "-cas15")  set nodeTYPE = "15CascadeLake"
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
    if ("$1" == "-bro")  set nodeTYPE = "Broadwell"
    if ("$1" == "-has")  set nodeTYPE = "Haswell"
@@ -316,7 +317,7 @@ endif
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if (($nT != sky) && ($nT != cas) && ($nT != mil) && ($nT != any)) then
+   if (($nT != sky) && ($nT != cas) && ($nT != mil) && ($nT != 15c) && ($nT != any)) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
@@ -326,11 +327,13 @@ if ($SITE == NCCS) then
    if ($nT == any) @ NCPUS_DFLT = 40
    if ($nT == sky) @ NCPUS_DFLT = 40
    if ($nT == cas) @ NCPUS_DFLT = 48
+   if ($nT == 15c) @ NCPUS_DFLT = 48
    if ($nT == mil) @ NCPUS_DFLT = 128
 
    if ($nT == any) set proc = 'any'
    if ($nT == sky) set proc = 'sky'
    if ($nT == cas) set proc = 'cas'
+   if ($nT == 15c) set proc = 'cas'
    if ($nT == mil) set proc = 'mil'
 
    # If we are using GNU at NCCS, we can*only* use the cas or mil processors
@@ -356,6 +359,10 @@ if ($SITE == NCCS) then
 
    if ("$partition" == "") then
       set partition = '--partition=compute'
+   endif
+
+   if ("$nT" == "15c") then
+      set reservation = "--reservation=sles15_cas"
    endif
 
 endif
@@ -456,7 +463,7 @@ if ($SITE == NCCS) then
    if ($oncompnode) then
       set OS_VERSION=`grep VERSION_ID /etc/os-release | cut -d= -f2 | cut -d. -f1 | sed 's/"//g'`
    else
-      if ($nT == mil) then
+      if ( ($nT == mil) || ($nT == 15c) ) then
          set OS_VERSION = 15
       else
          set OS_VERSION = 12
