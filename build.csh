@@ -78,6 +78,7 @@ if (! $?proc)              setenv proc              ""
 if (! $?prompt)            setenv prompt            1
 if (! $?queue)             setenv queue             ""
 if (! $?partition)         setenv partition         ""
+if (! $?reservation)       setenv reservation         ""
 if (! $?account)           setenv account           ""
 if (! $?tmpdir)            setenv tmpdir            ""
 if (! $?walltime)          setenv walltime          ""
@@ -201,6 +202,13 @@ while ($#argv)
    if ("$1" == "-partition") then
       shift; if (! $#argv) goto usage
       setenv partition "--partition=$1"
+   endif
+
+   # submit batch job to specified reservation
+   #----------------------------------------
+   if ("$1" == "-reservation") then
+      shift; if (! $#argv) goto usage
+      setenv reservation "--reservation=$1"
    endif
 
    # submit batch job to specified account
@@ -511,6 +519,7 @@ if ($ddb) then
    echo "queue = $queue"
    if ($SITE == NCCS) then
       echo "partition = $partition"
+      echo "reservation = $reservation"
       echo "slurm_constraint = $slurm_constraint"
    endif
    echo "account = $account"
@@ -792,14 +801,14 @@ else if ( $SITE == NCCS ) then
    #       two OSs. For some reason, if you submit a Milan job from a SLES12
    #       headnode, it was seeing SLES12 module paths. We believe this is
    #       because SLURM by default exports all the environment
-   sbatch $groupflag $partition $queue \
+   sbatch $groupflag $partition $reservation $queue \
         $slurm_constraint      \
         --job-name=$jobname    \
         --output=$jobname.o%j  \
         --nodes=1              \
         --ntasks=${numjobs}    \
         --time=$walltime       \
-        --export ESMADIR=${ESMADIR},cmake_build_type=${cmake_build_type},EXTRA_CMAKE_FLAGS=${EXTRA_CMAKE_FLAGS},FORTRAN_COMPILER=${FORTRAN_COMPILER},INSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE},verbose=${verbose},GMI_MECHANISM_FLAG=${GMI_MECHANISM_FLAG},Pbuild_build_directory=${Pbuild_build_directory},Pbuild_install_directory=${Pbuild_install_directory},usegnu=${usegnu},notar=${notar},tmpdir=${tmpdir},docmake=${docmake},debug=${debug},aggressive=${aggressive},BUILDDIR_PASSED=${BUILDDIR_PASSED},INSTALLDIR_PASSED=${INSTALLDIR_PASSED},queue=${queue},partition=${partition},cleanFLAG=${cleanFLAG} \
+        --export ESMADIR=${ESMADIR},cmake_build_type=${cmake_build_type},EXTRA_CMAKE_FLAGS=${EXTRA_CMAKE_FLAGS},FORTRAN_COMPILER=${FORTRAN_COMPILER},INSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE},verbose=${verbose},GMI_MECHANISM_FLAG=${GMI_MECHANISM_FLAG},Pbuild_build_directory=${Pbuild_build_directory},Pbuild_install_directory=${Pbuild_install_directory},usegnu=${usegnu},notar=${notar},tmpdir=${tmpdir},docmake=${docmake},debug=${debug},aggressive=${aggressive},BUILDDIR_PASSED=${BUILDDIR_PASSED},INSTALLDIR_PASSED=${INSTALLDIR_PASSED},queue=${queue},partition=${partition},reservation=${reservation},cleanFLAG=${cleanFLAG} \
         $waitflag              \
         $0
    unset echo
@@ -903,6 +912,9 @@ endif
 if ("$partition" != "") then
    echo1 "partition: $partition"
 endif
+if ("$reservation" != "") then
+   echo1 "reservation: $reservation"
+endif
 if ("$account" != "") then
    echo1 "account: $account"
 echo1 "Pbuild_build_directory: $Pbuild_build_directory"
@@ -988,6 +1000,8 @@ flagged options
    -i                   run interactively rather than queuing job
    -q qos/queue         send batch job to qos/queue
    -partition partition send batch job to partition (in case SLURM queue not on default compute partition)
+   -reservation  reservation
+                        send batch job to reservation
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
