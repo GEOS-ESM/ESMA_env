@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 ### Fixed
 ### Removed
+
+- Remove Skylake from NCCS
+
 ### Added
 
 ## [4.34.1] - 2025-01-22
