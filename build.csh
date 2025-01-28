@@ -131,7 +131,7 @@ while ($#argv)
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
    if ("$1" == "-bro")  set nodeTYPE = "Broadwell"
    if ("$1" == "-has")  set nodeTYPE = "Haswell"
-   if ("$1" == "-any")  set nodeTYPE = "Any node"
+   #if ("$1" == "-any")  set nodeTYPE = "Any node"
 
    # reset Fortran TMPDIR
    #---------------------
@@ -287,36 +287,29 @@ endif
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if (($nT != sky) && ($nT != cas) && ($nT != mil) && ($nT != any)) then
+   #if ( ($nT != cas) && ($nT != mil) && ($nT != any) ) then
+   if ( ($nT != cas) && ($nT != mil) ) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
 
    # For the any node, set the default to 40 cores as
    # this is the least number of cores you will get
-   if ($nT == any) @ NCPUS_DFLT = 40
-   if ($nT == sky) @ NCPUS_DFLT = 40
+   #if ($nT == any) @ NCPUS_DFLT = 48
    if ($nT == cas) @ NCPUS_DFLT = 48
    if ($nT == mil) @ NCPUS_DFLT = 128
 
-   if ($nT == any) set proc = 'any'
-   if ($nT == sky) set proc = 'sky'
+   #if ($nT == any) set proc = 'any'
    if ($nT == cas) set proc = 'cas'
    if ($nT == mil) set proc = 'mil'
 
-   # If we are using GNU at NCCS, we can*only* use the cas or mil processors
-   # as OpenMPI is only built for Infiniband
+   # If we are using GNU at NCCS, we can *only* use the cas or mil processors
+   # as OpenMPI is only built for Infiniband. Keeping this here in case
+   # more MPI issues are in future
    if ($usegnu) then
-      if ($nT == mil) then
-         echo "Using GNU at NCCS, setting queue to mil"
-         set proc = 'mil'
-      else
-         echo "Using GNU at NCCS, setting queue to cas"
-         set proc = 'cas'
-      endif
       set slurm_constraint = "--constraint=$proc"
-   else if ($nT == any) then
-      set slurm_constraint = "--constraint=sky|cas"
+   #else if ($nT == any) then
+      #set slurm_constraint = "--constraint=mil|cas"
    else
       set slurm_constraint = "--constraint=$proc"
    endif
@@ -963,10 +956,9 @@ flagged options
    -mil                 compile on Milan nodes (default at NCCS)
    -rom                 compile on Rome nodes (default at NAS, only at NAS)
    -cas                 compile on Cascade Lake nodes
-   -sky                 compile on Skylake nodes
+   -sky                 compile on Skylake nodes (only at NAS)
    -bro                 compile on Broadwell nodes (only at NAS)
    -has                 compile on Haswell nodes (only at NAS)
-   -any                 compile on either Sky or Cascade Lake node (only at NCCS)
 
 extra cmake options
 
