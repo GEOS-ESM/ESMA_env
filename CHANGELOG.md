@@ -15,6 +15,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.35.0] - 2025-02-13
+
+### Changed
+
+- Update to Baselibs 7.32.0
+  - GFE v1.19.0
+    - gFTL v1.15.2
+    - gFTL-shared v1.10.0
+    - fArgParse v1.9.0
+    - pFUnit v4.11.1
+    - yaFyaml v1.5.1
+    - pFlogger v1.15.1
+  - curl 8.12.0
+
+### Removed
+
+- Removed Skylake from NCCS in `build.csh`
+
 ## [4.34.1] - 2025-01-22
 
 ### Fixed
