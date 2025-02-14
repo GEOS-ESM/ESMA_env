@@ -20,13 +20,6 @@ if [ ! -e $g5modules ]; then
    return 1
 fi
 
-# Basedir
-export BASEDIR=$(csh $g5modules basedir)
-
-# UDUNITS2_XML_PATH
-arch=$(uname -s)
-export UDUNITS2_XML_PATH=$BASEDIR/$arch/share/udunits/udunits2.xml
-
 # Modules
 source $MODULESHOME/init/bash
 module purge
