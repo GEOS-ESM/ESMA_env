@@ -127,14 +127,9 @@ if ( $site == NCCS ) then
    set mod3 = stack-python/3.11.7
    set mod4 = git
    set mod5 = cmake
-   set mod6 = esmf/8.8.0
-   set mod7 = gftl
-   set mod8 = gftl-shared
-   set mod9 = pflogger
-   set mod10 = fargparse
-   set mod11 = udunits
+   set mod6 = jedi-geos-env
 
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 $mod8 $mod9 $mod10 $mod11 )
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/modules/init/csh
 
    set usemods = ( $usemod1 $usemod2 $usemod3 )
