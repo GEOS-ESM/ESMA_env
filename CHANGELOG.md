@@ -14,6 +14,90 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added jemalloc to `g5_modules` for use with GEOSgcm
 
+## [5.8.0] - 2025-02-13
+
+### Changed
+
+- Update to Baselibs 7.32.0
+  - GFE v1.19.0
+    - gFTL v1.15.2
+    - gFTL-shared v1.10.0
+    - fArgParse v1.9.0
+    - pFUnit v4.11.1
+    - yaFyaml v1.5.1
+    - pFlogger v1.15.1
+  - curl 8.12.0
+
+### Removed
+
+- Removed Skylake from NCCS in `build.csh`
+
+## [5.7.1] - 2025-01-22
+
+### Fixed
+
+- Fixed GEOSpyD module on GMAO Desktops
+
+## [5.7.0] - 2025-01-16
+
+### Changed
+
+- Update to Baselibs 8.9.0
+  - ESMF 8.8.0
+  - NCO 5.3.1
+  - CDO 2.5.0
+  - curl 8.11.1
+- Add support for flang-new
+- Turn off ESMPy building. It's not working and maybe we don't want to
+  build from source anyway as it's easier through mamba
+
+## [5.6.0] - 2025-01-06
+
+### Changed
+
+- Update to MPT 2.30 Baselibs at NAS. This is due to NAS updating the `mpi-hpe/mpt` module to `mpi-hpe/mpt.2.30`. While this does not break GEOS, CMake throws more errors due to differences in MPT that built Baselibs vs MPT that would build GEOS.
+
+## [5.5.1] - 2024-11-06
+
+### Changed
+
+- Make `g5_modules` executable again
+
+## [5.5.0] - 2024-10-22
+
+### Changed
+
+- Update to Baselibs 8.7.0
+  - ESMF 8.7.0
+  - FMS 2024.03
+  - HDF5 1.14.5
+  - curl 8.10.1
+  - NCO 5.2.8
+  - CDO 2.4.4
+  - GSL 2.8
+  - jpeg 9f
+  - Various build fixes
+- Move to non-Anaconda GEOSpyD
+
+## [5.4.1] - 2024-09-18
+
+### Fixed
+
+- Just do not append Baselibs `LD_LIBRARY_PATH` at NAS. Seems to break `parallel_build.csh`
+
+## [5.4.0] - 2024-09-13
+
+### Changed
+
+- Updated the default processors for `parallel_build.csh` to Milan at NCCS and Rome at NAS
+
+## [5.3.1] - 2024-09-09
+
+### Fixed
+
+- Fix issue between `g5_modules` and csh at NAS
+  - Changed order when setting `LD_LIBRARY_PATH` to avoid issues with csh and tclsh
+
 ## [5.3.0] - 2024-07-22
 
 ### Changed
