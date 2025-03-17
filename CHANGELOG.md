@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+
+- Move to GEOSpyD 24.11.3 Python 3.12
+
 ### Fixed
 ### Removed
 
