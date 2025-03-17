@@ -78,7 +78,6 @@ if (! $?proc)              setenv proc              ""
 if (! $?prompt)            setenv prompt            1
 if (! $?queue)             setenv queue             ""
 if (! $?partition)         setenv partition         ""
-if (! $?reservation)       setenv reservation         ""
 if (! $?account)           setenv account           ""
 if (! $?tmpdir)            setenv tmpdir            ""
 if (! $?walltime)          setenv walltime          ""
@@ -131,7 +130,6 @@ while ($#argv)
    if ("$1" == "-mil")  set nodeTYPE = "Milan"
    if ("$1" == "-rom")  set nodeTYPE = "Rome"
    if ("$1" == "-cas")  set nodeTYPE = "CascadeLake"
-   if ("$1" == "-cas15")  set nodeTYPE = "15CascadeLake"
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
    if ("$1" == "-bro")  set nodeTYPE = "Broadwell"
    if ("$1" == "-has")  set nodeTYPE = "Haswell"
@@ -203,13 +201,6 @@ while ($#argv)
    if ("$1" == "-partition") then
       shift; if (! $#argv) goto usage
       setenv partition "--partition=$1"
-   endif
-
-   # submit batch job to specified reservation
-   #----------------------------------------
-   if ("$1" == "-reservation") then
-      shift; if (! $#argv) goto usage
-      setenv reservation "--reservation=$1"
    endif
 
    # submit batch job to specified account
@@ -308,8 +299,8 @@ endif
 # default nodeTYPE
 #-----------------
 if (! $?nodeTYPE) then
-   if ($SITE == NCCS) set nodeTYPE = "Any"
-   if ($SITE == NAS)  set nodeTYPE = "Skylake"
+   if ($SITE == NCCS) set nodeTYPE = "Milan"
+   if ($SITE == NAS)  set nodeTYPE = "Rome"
 endif
 
 # at NCCS
@@ -317,38 +308,30 @@ endif
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if (($nT != sky) && ($nT != cas) && ($nT != mil) && ($nT != 15c) && ($nT != any)) then
+   if ( ($nT != cas) && ($nT != mil) && ($nT != any) ) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
 
    # For the any node, set the default to 40 cores as
    # this is the least number of cores you will get
-   if ($nT == any) @ NCPUS_DFLT = 40
-   if ($nT == sky) @ NCPUS_DFLT = 40
+   if ($nT == any) @ NCPUS_DFLT = 48
    if ($nT == cas) @ NCPUS_DFLT = 48
-   if ($nT == 15c) @ NCPUS_DFLT = 48
    if ($nT == mil) @ NCPUS_DFLT = 128
 
    if ($nT == any) set proc = 'any'
-   if ($nT == sky) set proc = 'sky'
    if ($nT == cas) set proc = 'cas'
-   if ($nT == 15c) set proc = 'cas'
    if ($nT == mil) set proc = 'mil'
 
-   # If we are using GNU at NCCS, we can*only* use the cas or mil processors
-   # as OpenMPI is only built for Infiniband
-   if ($usegnu) then
-      if ($nT == mil) then
-         echo "Using GNU at NCCS, setting queue to cas"
-         set proc = 'mil'
-      else
-         echo "Using GNU at NCCS, setting queue to cas"
-         set proc = 'cas'
-      endif
-      set slurm_constraint = "--constraint=$proc"
+   # Note if the user has not set proc, if we are
+   # building with GNU, we have to select something
+   # as the GNU has different answers. So we default
+   # to mil
+   if ($usegnu && ($nT == any)) then
+      echo "WARNING: Setting node type to mil as GNU optimization is processor dependent"
+      set slurm_constraint = "--constraint=mil"
    else if ($nT == any) then
-      set slurm_constraint = "--constraint=sky|cas"
+      set slurm_constraint = "--constraint=mil|cas"
    else
       set slurm_constraint = "--constraint=$proc"
    endif
@@ -361,10 +344,6 @@ if ($SITE == NCCS) then
       set partition = '--partition=compute'
    endif
 
-   if ("$nT" == "15c") then
-      set reservation = "--reservation=sles15_cas"
-   endif
-
 endif
 
 # at NAS
@@ -372,11 +351,12 @@ endif
 if ( $SITE == NAS ) then
 
    set nT = `echo $nodeTYPE | cut -c1-3 | tr "[A-Z]" "[a-z]"`
-   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas) && ($nT != rom)) then
+   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas) && ($nT != rom) && ($nT != mil)) then
       echo "ERROR. Unknown node type at NAS: $nodeTYPE"
       exit 2
    endif
 
+   if ($nT == mil) set nT = 'mil_ait'
    if ($nT == rom) set nT = 'rom_ait'
    if ($nT == sky) set nT = 'sky_ele'
    if ($nT == cas) set nT = 'cas_ait'
@@ -387,6 +367,7 @@ if ( $SITE == NAS ) then
    if ($nT == sky_ele) @ NCPUS_DFLT = 40
    if ($nT == cas_ait) @ NCPUS_DFLT = 40
    if ($nT == rom_ait) @ NCPUS_DFLT = 128
+   if ($nT == mil_ait) @ NCPUS_DFLT = 128
 
    # TMPDIR needs to be reset
    #-------------------------
@@ -446,42 +427,6 @@ if (! $?Pbuild_install_directory) then
    endif
 endif
 
-# If we are at NCCS, because of the dual OSs, we decorate the build and
-# install directory with the OS name. If we submit to Milan, we will add
-# -SLES15, otherwise -SLES12 to the build and install directories.  But,
-# we only do this if the user has not specified a build directory or
-# install directory
-# ---------------------------------------------------------------------
-
-if ($SITE == NCCS) then
-   # We now have to handle this in two ways. One if we are on a compute node and one if we aren't.
-   # This is because of how this script works where it sort of submits itself to the batch system
-   # and many of the variables known by the script before submission are lost after submission.
-   # So if we are on a compute node, we detect the OS version directly, but if we are just submitting on a
-   # head node, we instead have to just use the processor type passed in. We'll use oncompnode to detect
-   # which case we are in.
-   if ($oncompnode) then
-      set OS_VERSION=`grep VERSION_ID /etc/os-release | cut -d= -f2 | cut -d. -f1 | sed 's/"//g'`
-   else
-      if ( ($nT == mil) || ($nT == 15c) ) then
-         set OS_VERSION = 15
-      else
-         set OS_VERSION = 12
-      endif
-   endif
-   # We also check if we already appended SLES
-   if (! $?BUILDDIR && "$BUILDDIR_PASSED" == "NO") then
-      if ($Pbuild_build_directory !~ "*-SLES${OS_VERSION}") then
-         setenv Pbuild_build_directory ${Pbuild_build_directory}-SLES${OS_VERSION}
-      endif
-   endif
-   if (! $?INSTALLDIR && "$INSTALLDIR_PASSED" == "NO") then
-      if ($Pbuild_install_directory !~ "*-SLES${OS_VERSION}") then
-         setenv Pbuild_install_directory ${Pbuild_install_directory}-SLES${OS_VERSION}
-      endif
-   endif
-endif
-
 if ("$FORTRAN_COMPILER" == "") then
    if ($usegnu) then
       setenv FORTRAN_COMPILER 'gfortran'
@@ -526,7 +471,6 @@ if ($ddb) then
    echo "queue = $queue"
    if ($SITE == NCCS) then
       echo "partition = $partition"
-      echo "reservation = $reservation"
       echo "slurm_constraint = $slurm_constraint"
    endif
    echo "account = $account"
@@ -804,18 +748,13 @@ else if ( $SITE == NAS ) then
 else if ( $SITE == NCCS ) then
    if ("$walltime" == "") setenv walltime "1:00:00"
    set echo
-   # NOTE: The weird long export line below is needed at NCCS because of the
-   #       two OSs. For some reason, if you submit a Milan job from a SLES12
-   #       headnode, it was seeing SLES12 module paths. We believe this is
-   #       because SLURM by default exports all the environment
-   sbatch $groupflag $partition $reservation $queue \
+   sbatch $groupflag $partition $queue \
         $slurm_constraint      \
         --job-name=$jobname    \
         --output=$jobname.o%j  \
         --nodes=1              \
         --ntasks=${numjobs}    \
         --time=$walltime       \
-        --export ESMADIR=${ESMADIR},cmake_build_type=${cmake_build_type},EXTRA_CMAKE_FLAGS=${EXTRA_CMAKE_FLAGS},FORTRAN_COMPILER=${FORTRAN_COMPILER},INSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE},verbose=${verbose},GMI_MECHANISM_FLAG=${GMI_MECHANISM_FLAG},Pbuild_build_directory=${Pbuild_build_directory},Pbuild_install_directory=${Pbuild_install_directory},usegnu=${usegnu},notar=${notar},tmpdir=${tmpdir},docmake=${docmake},debug=${debug},aggressive=${aggressive},BUILDDIR_PASSED=${BUILDDIR_PASSED},INSTALLDIR_PASSED=${INSTALLDIR_PASSED},queue=${queue},partition=${partition},reservation=${reservation},cleanFLAG=${cleanFLAG} \
         $waitflag              \
         $0
    unset echo
@@ -919,9 +858,6 @@ endif
 if ("$partition" != "") then
    echo1 "partition: $partition"
 endif
-if ("$reservation" != "") then
-   echo1 "reservation: $reservation"
-endif
 if ("$account" != "") then
    echo1 "account: $account"
 echo1 "Pbuild_build_directory: $Pbuild_build_directory"
@@ -1007,18 +943,16 @@ flagged options
    -i                   run interactively rather than queuing job
    -q qos/queue         send batch job to qos/queue
    -partition partition send batch job to partition (in case SLURM queue not on default compute partition)
-   -reservation  reservation
-                        send batch job to reservation
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
-   -mil                 compile on Milan nodes (only at NCCS)
-   -rom                 compile on Rome nodes (only at NAS)
+   -mil                 compile on Milan nodes (default at NCCS)
+   -rom                 compile on Rome nodes (default at NAS, only at NAS)
    -cas                 compile on Cascade Lake nodes
-   -sky                 compile on Skylake nodes (default at NAS)
+   -sky                 compile on Skylake nodes (only at NAS)
    -bro                 compile on Broadwell nodes (only at NAS)
    -has                 compile on Haswell nodes (only at NAS)
-   -any                 compile on either Sky or Cascade Lake node (only at NCCS with SLURM, default at NCCS)
+   -any                 compile on any node (only at NCCS)
 
 extra cmake options
 
