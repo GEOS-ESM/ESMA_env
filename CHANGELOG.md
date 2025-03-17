@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [3.4.0.3] - 2025-03-17
+
+### Changed
+
+- Remove sles12 support; remove intermediate sles15 cas replace w/ simply cas
+
 ## [3.4.0.2] - 2025-01-24
 
 ### Changed
