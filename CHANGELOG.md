@@ -12,6 +12,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.36.0] - 2025-03-18
+
+### Changed
+
+- Move to GEOSpyD 24.11.3 Python 3.12
+
+### Removed
+
+- Removed NCCS OS detection in `build.csh` as we only have SLES 15 now
+
+### Added
+
+
 ## [4.35.0] - 2025-02-13
 
 ### Changed
