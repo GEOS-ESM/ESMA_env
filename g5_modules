@@ -129,8 +129,9 @@ if ( $site == NCCS ) then
    set mod3 = comp/gcc/12.3.0
    set mod4 = comp/intel/2024.2.0
    set mod5 = mpi/impi/2021.13
+   set mod6 = other/jemalloc/5.3.0
 
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/modules/init/csh
 
    set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES15
@@ -176,8 +177,9 @@ else if ( $site == GMAO.desktop ) then
    set mod3 = comp/gcc/12.1.0
    set mod4 = comp/intel/2024.2-ifort
    set mod5 = mpi/impi/2021.13
+   set mod6 = other/jemalloc/5.3.0
 
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/Modules/init/tcsh
 
    set usemod1 = /ford1/share/gmao_SIteam/modulefiles
