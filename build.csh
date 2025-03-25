@@ -131,7 +131,7 @@ while ($#argv)
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
    if ("$1" == "-bro")  set nodeTYPE = "Broadwell"
    if ("$1" == "-has")  set nodeTYPE = "Haswell"
-   #if ("$1" == "-any")  set nodeTYPE = "Any node"
+   if ("$1" == "-any")  set nodeTYPE = "Any node"
 
    # reset Fortran TMPDIR
    #---------------------
@@ -287,29 +287,30 @@ endif
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   #if ( ($nT != cas) && ($nT != mil) && ($nT != any) ) then
-   if ( ($nT != cas) && ($nT != mil) ) then
+   if ( ($nT != cas) && ($nT != mil) && ($nT != any) ) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
 
    # For the any node, set the default to 40 cores as
    # this is the least number of cores you will get
-   #if ($nT == any) @ NCPUS_DFLT = 48
+   if ($nT == any) @ NCPUS_DFLT = 48
    if ($nT == cas) @ NCPUS_DFLT = 48
    if ($nT == mil) @ NCPUS_DFLT = 128
 
-   #if ($nT == any) set proc = 'any'
+   if ($nT == any) set proc = 'any'
    if ($nT == cas) set proc = 'cas'
    if ($nT == mil) set proc = 'mil'
 
-   # If we are using GNU at NCCS, we can *only* use the cas or mil processors
-   # as OpenMPI is only built for Infiniband. Keeping this here in case
-   # more MPI issues are in future
-   if ($usegnu) then
-      set slurm_constraint = "--constraint=$proc"
-   #else if ($nT == any) then
-      #set slurm_constraint = "--constraint=mil|cas"
+   # Note if the user has not set proc, if we are
+   # building with GNU, we have to select something
+   # as the GNU has different answers. So we default
+   # to mil
+   if ($usegnu && ($nT == any)) then
+      echo "WARNING: Setting node type to mil as GNU optimization is processor dependent"
+      set slurm_constraint = "--constraint=mil"
+   else if ($nT == any) then
+      set slurm_constraint = "--constraint=mil|cas"
    else
       set slurm_constraint = "--constraint=$proc"
    endif
@@ -402,42 +403,6 @@ if (! $?Pbuild_install_directory) then
       setenv Pbuild_install_directory $ESMADIR/install-Aggressive
    else
       setenv Pbuild_install_directory $ESMADIR/install
-   endif
-endif
-
-# If we are at NCCS, because of the dual OSs, we decorate the build and
-# install directory with the OS name. If we submit to Milan, we will add
-# -SLES15, otherwise -SLES12 to the build and install directories.  But,
-# we only do this if the user has not specified a build directory or
-# install directory
-# ---------------------------------------------------------------------
-
-if ($SITE == NCCS) then
-   # We now have to handle this in two ways. One if we are on a compute node and one if we aren't.
-   # This is because of how this script works where it sort of submits itself to the batch system
-   # and many of the variables known by the script before submission are lost after submission.
-   # So if we are on a compute node, we detect the OS version directly, but if we are just submitting on a
-   # head node, we instead have to just use the processor type passed in. We'll use oncompnode to detect
-   # which case we are in.
-   if ($oncompnode) then
-      set OS_VERSION=`grep VERSION_ID /etc/os-release | cut -d= -f2 | cut -d. -f1 | sed 's/"//g'`
-   else
-      if ($nT == mil) then
-         set OS_VERSION = 15
-      else
-         set OS_VERSION = 12
-      endif
-   endif
-   # We also check if we already appended SLES
-   if (! $?BUILDDIR && "$BUILDDIR_PASSED" == "NO") then
-      if ($Pbuild_build_directory !~ "*-SLES${OS_VERSION}") then
-         setenv Pbuild_build_directory ${Pbuild_build_directory}-SLES${OS_VERSION}
-      endif
-   endif
-   if (! $?INSTALLDIR && "$INSTALLDIR_PASSED" == "NO") then
-      if ($Pbuild_install_directory !~ "*-SLES${OS_VERSION}") then
-         setenv Pbuild_install_directory ${Pbuild_install_directory}-SLES${OS_VERSION}
-      endif
    endif
 endif
 
@@ -762,10 +727,6 @@ else if ( $SITE == NAS ) then
 else if ( $SITE == NCCS ) then
    if ("$walltime" == "") setenv walltime "1:00:00"
    set echo
-   # NOTE: The weird long export line below is needed at NCCS because of the
-   #       two OSs. For some reason, if you submit a Milan job from a SLES12
-   #       headnode, it was seeing SLES12 module paths. We believe this is
-   #       because SLURM by default exports all the environment
    sbatch $groupflag $partition $queue \
         $slurm_constraint      \
         --job-name=$jobname    \
@@ -773,7 +734,6 @@ else if ( $SITE == NCCS ) then
         --nodes=1              \
         --ntasks=${numjobs}    \
         --time=$walltime       \
-        --export ESMADIR=${ESMADIR},cmake_build_type=${cmake_build_type},EXTRA_CMAKE_FLAGS=${EXTRA_CMAKE_FLAGS},FORTRAN_COMPILER=${FORTRAN_COMPILER},INSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE},verbose=${verbose},GMI_MECHANISM_FLAG=${GMI_MECHANISM_FLAG},Pbuild_build_directory=${Pbuild_build_directory},Pbuild_install_directory=${Pbuild_install_directory},usegnu=${usegnu},notar=${notar},tmpdir=${tmpdir},docmake=${docmake},debug=${debug},aggressive=${aggressive},BUILDDIR_PASSED=${BUILDDIR_PASSED},INSTALLDIR_PASSED=${INSTALLDIR_PASSED},queue=${queue},partition=${partition},cleanFLAG=${cleanFLAG} \
         $waitflag              \
         $0
    unset echo
@@ -959,6 +919,7 @@ flagged options
    -sky                 compile on Skylake nodes (only at NAS)
    -bro                 compile on Broadwell nodes (only at NAS)
    -has                 compile on Haswell nodes (only at NAS)
+   -any                 compile on any node (only at NCCS)
 
 extra cmake options
 
