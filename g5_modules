@@ -123,7 +123,7 @@ if ( $site == NCCS ) then
 
    set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-7.32.0/x86_64-pc-linux-gnu/ifort_2021.13.0-intelmpi_2021.13.0-SLES15
 
-   set mod1 = python/GEOSpyD/24.11.3-0/3.12
+   set mod1 = python/GEOSpyD/24.11.3-0/3.13
    set mod2 = GEOSenv
 
    set mod3 = comp/gcc/12.3.0
@@ -146,7 +146,7 @@ else if ( $site == NAS ) then
 
    set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-7.32.0/x86_64-pc-linux-gnu/ifort_2021.13.0-mpt_2.30
 
-   set mod1 = python/GEOSpyD/24.11.3-0/3.12
+   set mod1 = python/GEOSpyD/24.11.3-0/3.13
    set mod2 = GEOSenv
 
    set mod3 = comp-gcc/12.3.0-TOSS4
@@ -171,7 +171,7 @@ else if ( $site == GMAO.desktop ) then
 
    set basedir = /ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-7.32.0/x86_64-pc-linux-gnu/ifort_2021.13.0-intelmpi_2021.13
 
-   set mod1 = other/python/GEOSpyD/24.11.3-0/3.12
+   set mod1 = other/python/GEOSpyD/24.11.3-0/3.13
    set mod2 = GEOSenv
    set mod3 = comp/gcc/12.1.0
    set mod4 = comp/intel/2024.2-ifort
