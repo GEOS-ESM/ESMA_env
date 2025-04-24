@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.37.0] - 2025-04-24
+
+### Changed
+
+- Update to Baselibs 7.33.0
+  - ESMF 8.8.1
+  - NCO 5.3.3
+  - CDO 2.5.1
+  - Fixes for CMake 4.0
+
 ## [4.36.0] - 2025-03-18
 
 ### Changed
