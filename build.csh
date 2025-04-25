@@ -321,12 +321,14 @@ if ($SITE == NCCS) then
       set slurm_constraint = "--constraint=$proc"
    endif
 
-   if ("$queue" == "") then
-      set queue = '--qos=debug'
-   endif
+  #if ("$queue" == "") then
+  #   set queue = '--qos=debug'
+  #endif
 
    if ("$partition" == "") then
       set partition = '--partition=compute'
+  #else
+  #   set partition = '--reservation=geosCAM --qos=geos_xl'
    endif
 
 endif
@@ -773,8 +775,10 @@ else if ( $SITE == NCCS ) then
    #       two OSs. For some reason, if you submit a Milan job from a SLES12
    #       headnode, it was seeing SLES12 module paths. We believe this is
    #       because SLURM by default exports all the environment
-   sbatch $groupflag $partition $queue \
+## sbatch $groupflag --reservation=wmp $partition $queue \
+   sbatch $groupflag \
         $slurm_constraint      \
+        --reservation=geosCAM --qos=geos_xl \
         --job-name=$jobname    \
         --output=$jobname.o%j  \
         --nodes=1              \
