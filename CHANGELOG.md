@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.5.1] - 2025-04-28
+
+### Changed
+
+- Updated `build.csh` for post-only-SLES15 NCCS
+
 ## [4.5.0] - 2022-10-25
 
 ### Added
