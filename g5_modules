@@ -123,7 +123,7 @@ if ( $site == NCCS ) then
 
    set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-8.13.0/x86_64-pc-linux-gnu/ifort_2021.13.0-intelmpi_2021.13.0-SLES15
 
-   set mod1 = python/GEOSpyD/24.11.3-0/3.12
+   set mod1 = pchakrab/python/GEOSpyD-3.11+torch
    set mod2 = GEOSenv
 
    set mod3 = comp/gcc/12.3.0
@@ -135,7 +135,8 @@ if ( $site == NCCS ) then
    set modinit = /usr/share/modules/init/csh
 
    set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES15
-   set usemods = ( $usemod1 )
+   set usemod2 = /discover/nobackup/pchakrab/sw/modulefiles
+   set usemods = ( $usemod1 $usemod2 )
    set usemodules = 1
 
    set useldlibs = 1
