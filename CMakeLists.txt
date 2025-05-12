@@ -11,6 +11,7 @@ if (EnvModules_FOUND)
 else ()
    set (ENVIRONMENT_MODULES "No environment modules were found")
 endif ()
+set(ENVIRONMENT_MODULES "${ENVIRONMENT_MODULES}" CACHE INTERNAL "List of environment modules")
 
 foreach (conf_file BASEDIR.rc SITE.rc CMAKE_VERSION.rc GIT_VERSION.rc BUILD_MODULES.rc)
    configure_file(${conf_file}.in ${conf_file} @ONLY)
