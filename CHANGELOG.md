@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+
+- Make the `ENVIRONMENT_MODULES` variable a `CACHE` variable
+
 ### Fixed
 ### Removed
 ### Added
