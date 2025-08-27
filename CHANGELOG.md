@@ -12,6 +12,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.13.0] - 2025-08-27
+
+### Changed
+
+- Update to Baselibs 8.18.0
+  - ESMF 8.9.0
+  - curl 8.15.0
+  - NCO 5.3.4
+  - CDO 2.5.3
+  - nccmp 1.10.0.0
+  - *Removed* szip, *added* libaec
+    - Note: To use libaec correctly, users should use `ESMA_cmake` v3.63.0/v4.20.0 or higher
+
+### Fixed
+
+- Added `afe` support at NAS in `build.csh`
+- Added restriction that using `-mil` at NAS cannot be asked for on `pfe` nodes
+
 ## [5.12.0] - 2025-05-13
 
 ### Changed
@@ -22,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update to Baselibs 7.33.0
+- Update to Baselibs 8.14.0
   - ESMF 8.8.1
   - NCO 5.3.3
   - CDO 2.5.1
@@ -48,7 +66,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update to Baselibs 7.32.0
+- Update to Baselibs 8.13.0
   - GFE v1.19.0
     - gFTL v1.15.2
     - gFTL-shared v1.10.0

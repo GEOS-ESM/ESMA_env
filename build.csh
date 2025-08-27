@@ -52,7 +52,7 @@ if ( ($node == dirac)   \
    setenv SITE NCCS
 
 else if (($node =~ pfe*)   \
-      || ($node =~ tfe*)   \
+      || ($node =~ afe*)   \
       || ($node =~ r[0-9]*i[0-9]*n[0-9]*) \
       || ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
    setenv SITE NAS
@@ -332,6 +332,12 @@ if ( $SITE == NAS ) then
    set nT = `echo $nodeTYPE | cut -c1-3 | tr "[A-Z]" "[a-z]"`
    if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas) && ($nT != rom) && ($nT != mil)) then
       echo "ERROR. Unknown node type at NAS: $nodeTYPE"
+      exit 2
+   endif
+
+   # At NAS, you cannot submit to Milan nodes from pfe nodes
+   if ( ($nT == mil) && ($node =~ pfe*) ) then
+      echo "ERROR. Milan nodes cannot be accessed from pfe nodes. Please use afe nodes."
       exit 2
    endif
 
@@ -913,7 +919,7 @@ flagged options
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
-   -mil                 compile on Milan nodes (default at NCCS)
+   -mil                 compile on Milan nodes (default at NCCS; at NAS must be submitted from afe nodes)
    -rom                 compile on Rome nodes (default at NAS, only at NAS)
    -cas                 compile on Cascade Lake nodes
    -sky                 compile on Skylake nodes (only at NAS)
