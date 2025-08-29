@@ -129,8 +129,9 @@ if ( $site == NCCS ) then
    set mod5 = cmake
    set mod6 = jedi-geos-env
    set mod7 = fms
+   set mod8 = other/quiet-ifort
 
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 )
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 $mod8 )
    set modinit = /usr/share/modules/init/csh
 
    set usemods = ( $usemod1 $usemod2 $usemod3 )
