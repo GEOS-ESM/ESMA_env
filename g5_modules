@@ -129,8 +129,9 @@ if ( $site == NCCS ) then
    set mod3 = comp/gcc/12.3.0
    set mod4 = comp/intel/2024.2.0
    set mod5 = mpi/impi/2021.13
+   set mod6 = other/ISSM/2025-09-02/ifort_2021.13.0-intelmpi_2021.13.0
 
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/modules/init/csh
 
    set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES15
