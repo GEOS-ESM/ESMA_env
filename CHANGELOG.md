@@ -12,6 +12,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.14.0] - 2025-09-19
+
+### Changed
+
+- Update to Baselibs 8.19.0
+  - esmf 9.0.0b03
+  - curl 8.16.0
+  - Fixed issue with CDO and flang to disable the Fortran interface (see https://code.mpimet.mpg.de/boards/1/topics/16399)
+  - Turn off `SDPToolkit` build with flang
+
 ## [5.13.0] - 2025-08-27
 
 ### Changed
