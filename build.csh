@@ -70,6 +70,7 @@ if (! $?usegnu)            setenv usegnu            0
 if (! $?notar)             setenv notar             0
 if (! $?ddb)               setenv ddb               0
 if (! $?debug)             setenv debug             0
+if (! $?vecttrap)          setenv vecttrap          0
 if (! $?aggressive)        setenv aggressive        0
 if (! $?verbose)           setenv verbose           ""
 if (! $?interactive)       setenv interactive       0
@@ -114,6 +115,13 @@ while ($#argv)
    if (("$1" == "-debug") || ("$1" == "-db")) then
       setenv cmake_build_type "Debug"
       setenv debug 1
+   endif
+
+   # compile with vecttrap
+   #------------------------
+   if ("$1" == "-vecttrap") then
+      setenv cmake_build_type "VectTrap"
+      setenv vecttrap 1
    endif
 
    # compile with aggressive
@@ -270,8 +278,8 @@ endif
 
 # Only allow one of debug and aggressive
 # --------------------------------------
-if ( ($aggressive) && ($debug) ) then
-   echo "ERROR. Only one of -debug and -aggressive is allowed"
+if ( ($aggressive) && ($vecttrap) && ($debug) ) then
+   echo "ERROR. Only one of -debug | -vecttrap | -aggressive is allowed"
    exit 1
 endif
 
@@ -315,12 +323,14 @@ if ($SITE == NCCS) then
       set slurm_constraint = "--constraint=$proc"
    endif
 
-   if ("$queue" == "") then
-      set queue = '--qos=debug'
-   endif
+  #if ("$queue" == "") then
+  #   set queue = '--qos=debug'
+  #endif
 
    if ("$partition" == "") then
       set partition = '--partition=compute'
+  #else
+  #   set partition = '--reservation=geosCAM --qos=geos_xl'
    endif
 
 endif
@@ -385,6 +395,8 @@ if (! $?Pbuild_build_directory) then
       setenv Pbuild_build_directory   $ESMADIR/$BUILDDIR
    else if ($debug) then
       setenv Pbuild_build_directory   $ESMADIR/build-Debug
+   else if ($vecttrap) then
+      setenv Pbuild_build_directory   $ESMADIR/build-VectTrap
    else if ($aggressive) then
       setenv Pbuild_build_directory   $ESMADIR/build-Aggressive
    else
@@ -399,6 +411,8 @@ if (! $?Pbuild_install_directory) then
       setenv Pbuild_install_directory $ESMADIR/$INSTALLDIR
    else if ($debug) then
       setenv Pbuild_install_directory $ESMADIR/install-Debug
+   else if ($vecttrap) then
+      setenv Pbuild_install_directory $ESMADIR/install-VectTrap
    else if ($aggressive) then
       setenv Pbuild_install_directory $ESMADIR/install-Aggressive
    else
@@ -435,6 +449,7 @@ endif
 if ($ddb) then
    echo "ESMADIR = $ESMADIR"
    echo "debug = $debug"
+   echo "vecttrap = $vecttrap"
    echo "aggressive = $aggressive"
    echo "verbose = $verbose"
    if ($?nodeTYPE) then
@@ -729,6 +744,7 @@ else if ( $SITE == NCCS ) then
    set echo
    sbatch $groupflag $partition $queue \
         $slurm_constraint      \
+        --partition=geosgms    \
         --job-name=$jobname    \
         --output=$jobname.o%j  \
         --nodes=1              \
