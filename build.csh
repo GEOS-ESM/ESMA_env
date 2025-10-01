@@ -323,14 +323,12 @@ if ($SITE == NCCS) then
       set slurm_constraint = "--constraint=$proc"
    endif
 
-  #if ("$queue" == "") then
-  #   set queue = '--qos=debug'
-  #endif
+   if ("$queue" == "") then
+      set queue = '--qos=debug'
+   endif
 
    if ("$partition" == "") then
       set partition = '--partition=compute'
-  #else
-  #   set partition = '--reservation=geosCAM --qos=geos_xl'
    endif
 
 endif
@@ -750,7 +748,6 @@ else if ( $SITE == NCCS ) then
    set echo
    sbatch $groupflag $partition $queue \
         $slurm_constraint      \
-        --partition=geosgms    \
         --job-name=$jobname    \
         --output=$jobname.o%j  \
         --nodes=1              \
