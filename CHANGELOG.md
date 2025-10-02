@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.15.0] - 2025-10-02
+
+### Added
+
+- Added new `-vecttrap` option to `build.csh` to turn on vectorization trapping in GEOS (requires ESMA_cmake v4.25.0 or higher)
+
 ## [5.14.0] - 2025-09-19
 
 ### Changed
