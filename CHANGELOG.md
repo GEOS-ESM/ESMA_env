@@ -12,6 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [6.0.0] - 2025-10-XX
+
+### Changed
+
+- Updated to Baselibs 9.0.0
+  - FMS 2025.04
+    - NOTE 1: FMS is now built in mixed-precision mode. As such, we move the major number since linking to FMS is now different enough we want to note this
+    - NOTE 2: We now do a patch on FMS for (preliminary) LLVM Flang testing. Once LLVM Flang is fully supported, this patch will be removed
+  - GFE v1.21.0
+    - pFUnit v4.14.0
+    - This is mainly for LLVM Flang support
+
 ## [5.15.0] - 2025-10-02
 
 ### Added
