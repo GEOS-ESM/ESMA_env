@@ -12,7 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
-## [6.0.0] - 2025-10-XX
+## [6.0.0] - 2025-10-21
 
 ### Changed
 
@@ -23,6 +23,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - GFE v1.21.0
     - pFUnit v4.14.0
     - This is mainly for LLVM Flang support
+
+## [5.16.0] - 2025-10-21
+
+### Changed
+
+- Update to Baselibs 8.20.0
+  - GFE v1.20.0
+    - gFTL v1.16.0
+    - gFTL-shared v1.11.0
+    - fArgParse v1.10.0
+    - pFUnit v4.13.0
+    - yaFyaml v1.6.0
+    - pFlogger v1.17.0
+  - NCO 5.3.5
+  - This is mainly for ifx 2025.2 support
+  - Requires CMake 3.24
 
 ## [5.15.0] - 2025-10-02
 
