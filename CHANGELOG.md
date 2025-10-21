@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - GFE v1.21.0
     - pFUnit v4.14.0
     - This is mainly for LLVM Flang support
+- Move to GEOSpyD 25.3.1 Python 3.13
 
 ## [5.16.0] - 2025-10-21
 
