@@ -12,6 +12,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [6.0.0] - 2025-10-21
+
+### Changed
+
+- Updated to Baselibs 9.0.0
+  - FMS 2025.04
+    - NOTE 1: FMS is now built in mixed-precision mode. As such, we move the major number since linking to FMS is now different enough we want to note this
+    - NOTE 2: We now do a patch on FMS for (preliminary) LLVM Flang testing. Once LLVM Flang is fully supported, this patch will be removed
+  - GFE v1.21.0
+    - pFUnit v4.14.0
+    - This is mainly for LLVM Flang support
+- Move to GEOSpyD 25.3.1 Python 3.13
+
+## [5.16.0] - 2025-10-21
+
+### Changed
+
+- Update to Baselibs 8.20.0
+  - GFE v1.20.0
+    - gFTL v1.16.0
+    - gFTL-shared v1.11.0
+    - fArgParse v1.10.0
+    - pFUnit v4.13.0
+    - yaFyaml v1.6.0
+    - pFlogger v1.17.0
+  - NCO 5.3.5
+  - This is mainly for ifx 2025.2 support
+  - Requires CMake 3.24
+
 ## [5.15.0] - 2025-10-02
 
 ### Added
