@@ -53,8 +53,10 @@ if ( ($node == dirac)   \
 
 else if (($node =~ pfe*)   \
       || ($node =~ afe*)   \
+      || ($node =~ athfe*)   \
       || ($node =~ r[0-9]*i[0-9]*n[0-9]*) \
-      || ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
+      || ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*) \
+      |  ($node =~ x[0-9]*c[0-9]*s[0-9]*b[0-9]*n[0-9]*) ) then
    setenv SITE NAS
 
 else
@@ -133,12 +135,12 @@ while ($#argv)
 
    # specify node type
    #------------------
+   if ("$1" == "-tur")  set nodeTYPE = "Turin"
    if ("$1" == "-mil")  set nodeTYPE = "Milan"
    if ("$1" == "-rom")  set nodeTYPE = "Rome"
    if ("$1" == "-cas")  set nodeTYPE = "CascadeLake"
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
    if ("$1" == "-bro")  set nodeTYPE = "Broadwell"
-   if ("$1" == "-has")  set nodeTYPE = "Haswell"
    if ("$1" == "-any")  set nodeTYPE = "Any node"
 
    # reset Fortran TMPDIR
@@ -338,29 +340,37 @@ endif
 if ( $SITE == NAS ) then
 
    set nT = `echo $nodeTYPE | cut -c1-3 | tr "[A-Z]" "[a-z]"`
-   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas) && ($nT != rom) && ($nT != mil)) then
+   if (($nT != bro) && ($nT != sky) && ($nT != cas) && ($nT != rom) && ($nT != mil) && ($nT != tur)) then
       echo "ERROR. Unknown node type at NAS: $nodeTYPE"
       exit 2
    endif
 
-   # At NAS, you cannot submit to Milan nodes from pfe nodes
-   if ( ($nT == mil) && ($node =~ pfe*) ) then
-      echo "ERROR. Milan nodes cannot be accessed from pfe nodes. Please use afe nodes."
+   # At NAS, you must submit to Milan nodes from afe nodes
+   if ( ($nT == mil) && ($node !~ afe*) ) then
+      echo "ERROR. Milan nodes can only be accessed from afe nodes."
       exit 2
    endif
 
+   # At NAS, you must submit to Turin nodes from athfe nodes
+   if ( ($nT == tur) && ($node !~ athfe*) ) then
+      echo "ERROR. Turin nodes can only be accessed from athfe nodes."
+      exit 2
+   endif
+
+   if ($nT == tur) set nT = 'tur_ath'
    if ($nT == mil) set nT = 'mil_ait'
    if ($nT == rom) set nT = 'rom_ait'
-   if ($nT == sky) set nT = 'sky_ele'
    if ($nT == cas) set nT = 'cas_ait'
+   if ($nT == sky) set nT = 'sky_ele'
+   if ($nT == bro) set nT = 'bro_ele'
    set proc = ":model=$nT"
 
-   if ($nT == has)     @ NCPUS_DFLT = 24
-   if ($nT == bro)     @ NCPUS_DFLT = 28
+   if ($nT == bro_ele) @ NCPUS_DFLT = 28
    if ($nT == sky_ele) @ NCPUS_DFLT = 40
    if ($nT == cas_ait) @ NCPUS_DFLT = 40
    if ($nT == rom_ait) @ NCPUS_DFLT = 128
    if ($nT == mil_ait) @ NCPUS_DFLT = 128
+   if ($nT == tur_ath) @ NCPUS_DFLT = 256
 
    # TMPDIR needs to be reset
    #-------------------------
@@ -932,12 +942,12 @@ flagged options
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
+   -tur                 compile on Turin nodes (only at NAS, must be submitted from athfe nodes)
    -mil                 compile on Milan nodes (default at NCCS; at NAS must be submitted from afe nodes)
    -rom                 compile on Rome nodes (default at NAS, only at NAS)
    -cas                 compile on Cascade Lake nodes
    -sky                 compile on Skylake nodes (only at NAS)
    -bro                 compile on Broadwell nodes (only at NAS)
-   -has                 compile on Haswell nodes (only at NAS)
    -any                 compile on any node (only at NCCS)
 
 extra cmake options
