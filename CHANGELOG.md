@@ -8,15 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
-
-- Support for Athena/Turin/TOSS5 at NAS
-  - Update to Baselibs 8.23.0
-  - Update `build.csh` to support Athena/Turin/TOSS5 at NAS
-    - Also remove Haswell
-
 ### Fixed
 ### Removed
 ### Added
+
+## [5.17.0] - 2026-01-02
+
+### Changed
+
+- Update to Baselibs 8.24.0
+  - ESMF v9.0.0b08
+  - GFE v1.22.0
+    - pFUnit v4.15.0
+  - curl 8.17.0
+  - NCO 5.3.6
+  - CDO 2.5.4
+  - Various updates for Athena/Turin/TOSS5 at NAS
+- Support for Athena/Turin/TOSS5 at NAS
+  - Update `build.csh` to support Athena/Turin/TOSS5 at NAS
+    - Also remove Haswell
 
 ## [5.16.0] - 2025-10-21
 
