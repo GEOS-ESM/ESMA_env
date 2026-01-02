@@ -56,7 +56,7 @@ else if (($node =~ pfe*)   \
       || ($node =~ athfe*)   \
       || ($node =~ r[0-9]*i[0-9]*n[0-9]*) \
       || ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*) \
-      |  ($node =~ x[0-9]*c[0-9]*s[0-9]*b[0-9]*n[0-9]*) ) then
+      || ($node =~ x[0-9]*c[0-9]*s[0-9]*b[0-9]*n[0-9]*) ) then
    setenv SITE NAS
 
 else
