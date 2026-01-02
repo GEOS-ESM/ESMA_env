@@ -74,12 +74,20 @@ if (($node =~ discover*) || ($node =~ borg*)  || \
 
    set site = "NCCS"
 
-else if (($node =~ pfe*) || ($node =~ afe*) || \
+else if (($node =~ pfe*) || ($node =~ afe*) || ($node =~ athfe*) || \
          ($node =~ r[0-9]*i[0-9]*n[0-9]*) || \
-         ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
+         ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*) || \
+         ($node =~ x[0-9]*c[0-9]*s[0-9]*b[0-9]*n[0-9]*) ) then
 
    # We are on NAS...
    set site = "NAS"
+
+   set OS_VERSION_ID=`grep VERSION_ID /etc/os-release | cut -d= -f2 | cut -d. -f1 | sed 's/"//g'`
+   if ( "$OS_VERSION_ID" == "8" ) then
+      set TOSS_VERSION = "TOSS4"
+   else if ( "$OS_VERSION_ID" == "9" ) then
+      set TOSS_VERSION = "TOSS5"
+   endif
 
 else if ( -d /ford1/share/gmao_SIteam/ && -d /ford1/local/ && $arch == Linux ) then
    set site = "GMAO.desktop"
@@ -114,6 +122,7 @@ X86_64:
 set modinit = DUMMY
 
 set usemodules = 0
+set switchmodules = 0
 set useldlibs = 0
 
 #========#
@@ -121,7 +130,7 @@ set useldlibs = 0
 #========#
 if ( $site == NCCS ) then
 
-   set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-9.0.0/x86_64-pc-linux-gnu/ifort_2021.13.0-intelmpi_2021.13.0
+   set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-9.4.0/x86_64-pc-linux-gnu/ifort_2021.13.0-intelmpi_2021.13.0
 
    set mod1 = python/GEOSpyD/25.3.1-0/3.13
    set mod2 = GEOSenv
@@ -145,23 +154,49 @@ if ( $site == NCCS ) then
 #=======#
 else if ( $site == NAS ) then
 
-   set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-9.0.0/x86_64-pc-linux-gnu/ifort_2021.13.0-mpt_2.30
+   if ( $TOSS_VERSION == "TOSS4" ) then
 
-   set mod1 = python/GEOSpyD/25.3.1-0/3.13
-   set mod2 = GEOSenv
+      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-9.4.0/x86_64-pc-linux-gnu/ifort_2021.13.0-mpt_2.30
 
-   set mod3 = comp-gcc/12.3.0-TOSS4
-   set mod4 = comp-intel/2024.2.0-ifort
-   set mod5 = mpi-hpe/mpt
+      set mod1 = python/GEOSpyD/25.3.1-0/3.13
+      set mod2 = GEOSenv
 
-   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
-   set modinit = /usr/share/modules/init/tcsh
+      set mod3 = comp-gcc/12.3.0-TOSS4
+      set mod4 = comp-intel/2024.2.0-ifort
+      set mod5 = mpi-hpe/mpt
 
-   set usemod1 = /u/scicon/tools/modulefiles
-   set usemod2 = /nobackup/gmao_SIteam/modulefiles
-   set usemod3 = /nasa/modulefiles/testing
-   set usemods = ( $usemod1 $usemod2 $usemod3 )
-   set usemodules = 1
+      set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 )
+      set modinit = /usr/share/modules/init/tcsh
+
+      set usemod1 = /u/scicon/tools/modulefiles
+      set usemod2 = /nobackup/gmao_SIteam/modulefiles
+      set usemod3 = /nasa/modulefiles/testing
+      set usemods = ( $usemod1 $usemod2 $usemod3 )
+      set usemodules = 1
+
+   else
+
+      set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-9.4.0/x86_64-pc-linux-gnu/ifort_2021.13.0-craympich_8.1.33
+
+      set mod1 = python/GEOSpyD/25.3.1-0/3.13
+      set mod2 = GEOSenv
+
+      set mod3 = comp-gcc/12.5.0
+      set mod4 = PrgEnv-intel/8.6.0
+      set mod5 = comp-intel/2024.2.0
+      set mod6 = mpi/mpich-ifort
+
+      set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
+      set modinit = /opt/cray/pe/modules/3.2.11.7/init/csh
+
+      set switchmods = ( intel/2023.2.1:intel/2024.2.0 )
+      set switchmodules = 1
+
+      set usemod1 = /nobackup/gmao_SIteam/modulefiles-TOSS5
+      set usemods = ( $usemod1 )
+      set usemodules = 1
+
+   endif
 
    set useldlibs = 0
 
@@ -170,7 +205,7 @@ else if ( $site == NAS ) then
 #=================#
 else if ( $site == GMAO.desktop ) then
 
-   set basedir = /ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-9.0.0/x86_64-pc-linux-gnu/ifort_2021.13.0-intelmpi_2021.13
+   set basedir = /ford1/share/gmao_SIteam/Baselibs/ESMA-Baselibs-9.4.0/x86_64-pc-linux-gnu/ifort_2021.13.0-intelmpi_2021.13
 
    set mod1 = other/python/GEOSpyD/25.3.1-0/3.13
    set mod2 = GEOSenv
@@ -233,6 +268,9 @@ if ( $#argv > 0 ) then
 
    else if ( $1 == usemodules ) then
       echo $usemods
+
+   else if ( $1 == switchmodules ) then
+      echo $switchmods
 
    else if ( $1 == useldlibs ) then
       echo $useldlibs
@@ -333,6 +371,14 @@ if (-e $modinit) then
    foreach mod ( $mods )
       module load $mod
    end
+
+   if ($switchmodules) then
+      foreach switchmod ( $switchmods )
+         set frommodule = `echo $switchmod | cut -d: -f1`
+         set tomodule = `echo $switchmod | cut -d: -f2`
+         module switch $frommodule $tomodule
+      end
+   endif
 
    if ($?XTRAMODS2LOAD) then
       set xmods = (`echo $XTRAMODS2LOAD | cut -d: -f1- --output-delimiter=" "`)
