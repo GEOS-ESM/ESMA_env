@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.18.0] - 2026-02-10
+
+### Changed
+
+- Added ISSM module at NCCS and NAS
+  - This is for on-going testing and development of ISSM in GEOS. In the model, ISSM is an optional build, so for now we only support at our operational sites.
+
 ## [5.17.0] - 2026-01-02
 
 ### Changed
