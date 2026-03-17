@@ -141,8 +141,6 @@ if ( $site == NCCS ) then
       set mod1 = python/GEOSpyD/25.3.1-0/3.13
    endif
 
-   
-
    set mod2 = GEOSenv
    set mod3 = comp/gcc/12.3.0
    set mod4 = comp/intel/2024.2.0
@@ -190,6 +188,7 @@ else if ( $site == NAS ) then
 
       set basedir = /nobackup/gmao_SIteam/Baselibs/ESMA-Baselibs-9.4.0/x86_64-pc-linux-gnu/ifort_2021.13.0-craympich_8.1.33
 
+      set mod1 = python/GEOSpyD/25.3.1-0/3.13
       set mod2 = GEOSenv
 
       set mod3 = comp-gcc/12.5.0
