@@ -9,11 +9,308 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## [6.2.0] - 2026-02-10
+
+### Changed
+
+- Added ISSM module at NCCS and NAS
+  - This is for on-going testing and development of ISSM in GEOS. In the model, ISSM is an optional build, so for now we only support at our operational sites.
+
+## [6.1.0] - 2026-01-02
+
+### Changed
+
+- Update to Baselibs 9.4.0
+  - ESMF v9.0.0b08
+  - GFE v1.22.0
+    - pFUnit v4.15.0
+  - curl 8.17.0
+  - NCO 5.3.6
+  - CDO 2.5.4
+  - Various updates for Athena/Turin/TOSS5 at NAS
+- Support for Athena/Turin/TOSS5 at NAS
+  - Update `build.csh` to support Athena/Turin/TOSS5 at NAS
+    - Also remove Haswell
+
+## [6.0.0] - 2025-10-21
+
+### Changed
+
+- Updated to Baselibs 9.0.0
+  - FMS 2025.04
+    - NOTE 1: FMS is now built in mixed-precision mode. As such, we move the major number since linking to FMS is now different enough we want to note this
+    - NOTE 2: We now do a patch on FMS for (preliminary) LLVM Flang testing. Once LLVM Flang is fully supported, this patch will be removed
+  - GFE v1.21.0
+    - pFUnit v4.14.0
+    - This is mainly for LLVM Flang support
+- Move to GEOSpyD 25.3.1 Python 3.13
+
+## [5.16.0] - 2025-10-21
+
+### Changed
+
+- Update to Baselibs 8.20.0
+  - GFE v1.20.0
+    - gFTL v1.16.0
+    - gFTL-shared v1.11.0
+    - fArgParse v1.10.0
+    - pFUnit v4.13.0
+    - yaFyaml v1.6.0
+    - pFlogger v1.17.0
+  - NCO 5.3.5
+  - This is mainly for ifx 2025.2 support
+  - Requires CMake 3.24
+
+## [5.15.0] - 2025-10-02
+
+### Added
+
+- Added new `-vecttrap` option to `build.csh` to turn on vectorization trapping in GEOS (requires ESMA_cmake v4.25.0 or higher)
+
+## [5.14.0] - 2025-09-19
+
+### Changed
+
+- Update to Baselibs 8.19.0
+  - esmf 9.0.0b03
+  - curl 8.16.0
+  - Fixed issue with CDO and flang to disable the Fortran interface (see https://code.mpimet.mpg.de/boards/1/topics/16399)
+  - Turn off `SDPToolkit` build with flang
+
+## [5.13.0] - 2025-08-27
+
+### Changed
+
+- Update to Baselibs 8.18.0
+  - ESMF 8.9.0
+  - curl 8.15.0
+  - NCO 5.3.4
+  - CDO 2.5.3
+  - nccmp 1.10.0.0
+  - *Removed* szip, *added* libaec
+    - Note: To use libaec correctly, users should use `ESMA_cmake` v3.63.0/v4.20.0 or higher
+
 ### Fixed
+
+- Added `afe` support at NAS in `build.csh`
+- Added restriction that using `-mil` at NAS cannot be asked for on `pfe` nodes
+
+## [5.12.0] - 2025-05-13
+
+### Changed
+
+- Make the `ENVIRONMENT_MODULES` variable a `CACHE` variable
+
+## [5.11.0] - 2025-04-24
+
+### Changed
+
+- Update to Baselibs 8.14.0
+  - ESMF 8.8.1
+  - NCO 5.3.3
+  - CDO 2.5.1
+  - Fixes for CMake 4.0
+
+## [5.10.0] - 2025-03-25
+
+### Added
+
+- Added jemalloc to `g5_modules` for use with GEOSgcm
+
+## [5.9.0] - 2025-03-18
+
+### Changed
+
+- Move to GEOSpyD 24.11.3 Python 3.12
 
 ### Removed
 
+- Removed NCCS OS detection in `build.csh` as we only have SLES 15 now
+
+## [5.8.0] - 2025-02-13
+
+### Changed
+
+- Update to Baselibs 8.13.0
+  - GFE v1.19.0
+    - gFTL v1.15.2
+    - gFTL-shared v1.10.0
+    - fArgParse v1.9.0
+    - pFUnit v4.11.1
+    - yaFyaml v1.5.1
+    - pFlogger v1.15.1
+  - curl 8.12.0
+
+### Removed
+
+- Removed Skylake from NCCS in `build.csh`
+
+## [5.7.1] - 2025-01-22
+
+### Fixed
+
+- Fixed GEOSpyD module on GMAO Desktops
+
+## [5.7.0] - 2025-01-16
+
+### Changed
+
+- Update to Baselibs 8.9.0
+  - ESMF 8.8.0
+  - NCO 5.3.1
+  - CDO 2.5.0
+  - curl 8.11.1
+- Add support for flang-new
+- Turn off ESMPy building. It's not working and maybe we don't want to
+  build from source anyway as it's easier through mamba
+
+## [5.6.0] - 2025-01-06
+
+### Changed
+
+- Update to MPT 2.30 Baselibs at NAS. This is due to NAS updating the `mpi-hpe/mpt` module to `mpi-hpe/mpt.2.30`. While this does not break GEOS, CMake throws more errors due to differences in MPT that built Baselibs vs MPT that would build GEOS.
+
+## [5.5.1] - 2024-11-06
+
+### Changed
+
+- Make `g5_modules` executable again
+
+## [5.5.0] - 2024-10-22
+
+### Changed
+
+- Update to Baselibs 8.7.0
+  - ESMF 8.7.0
+  - FMS 2024.03
+  - HDF5 1.14.5
+  - curl 8.10.1
+  - NCO 5.2.8
+  - CDO 2.4.4
+  - GSL 2.8
+  - jpeg 9f
+  - Various build fixes
+- Move to non-Anaconda GEOSpyD
+
+## [5.4.1] - 2024-09-18
+
+### Fixed
+
+- Just do not append Baselibs `LD_LIBRARY_PATH` at NAS. Seems to break `parallel_build.csh`
+
+## [5.4.0] - 2024-09-13
+
+### Changed
+
+- Updated the default processors for `parallel_build.csh` to Milan at NCCS and Rome at NAS
+
+## [5.3.1] - 2024-09-09
+
+### Fixed
+
+- Fix issue between `g5_modules` and csh at NAS
+  - Changed order when setting `LD_LIBRARY_PATH` to avoid issues with csh and tclsh
+
+## [5.3.0] - 2024-07-22
+
+### Changed
+
+- Update to Baselibs 8.5.0
+  - GFE v1.16.0
+    - gFTL v1.14.0
+    - gFTL-shared v1.9.0
+    - fArgParse v1.8.0
+    - pFUnit v4.10.0
+    - yaFyaml v1.4.0
+
+## [5.2.0] - 2024-07-05
+
+### Changed
+
+- Update to Baselibs 8.4.0
+  - Restore FMS build (was erroneously removed in 8.2.0)
+  - Fixes for MPT and using icx/icpx at NAS
+- Move to use Intel ifort 2021.13 on SLES 15 at NCCS, at NAS, and on GMAO Desktops
+
+## [5.1.0] - 2024-07-05
+
+### Changed
+
+- Update to Baselibs 8.3.1
+  - ESMF 8.6.1
+  - FMS 2024.01.02
+  - curl 8.8.0
+  - NCO 5.2.6
+  - Various make system updates for other compilers and machines
+- Move to use Intel ifort 2021.12 on SLES 15 at NCCS, at NAS, and on GMAO Desktops
+- Update to GEOSpyD Min24.0.0 for Python3
+
+## [5.0.0] - 2024-05-20
+
+### Changed
+
+- Update to Baselibs 8.0.2
+  - Has FMS 2024.01 and libyaml 0.2.5
+- Move to use Intel MPI 2021.12 on SLES 15 at NCCS
+- Add support for Milan processors at NAS
+
 ### Added
+
+- Added yaml linter
+
+## [4.29.0] - 2024-04-25
+
+### Changed
+
+- Update to Baselibs 7.24.0
+  - ESMF v8.6.1b04
+  - NCO 5.2.4
+  - curl 8.7.1
+  - Removed udunits2_fortran and FLAP (no longer needed)
+
+## [4.28.1] - 2024-04-03
+
+### Fixed
+
+- Move back to Open MPI 4 on SLES15 at NCCS
+  - Testing showed crashes at C360 and under various other circumstances
+
+## [4.28.0] - 2024-04-02
+
+### Changed
+
+- Update to Baselibs 7.23.0
+  - Reverted to HDF5 1.10.11 (odd issues on NCCS machines with HDF5 1.14, investigating)
+  - GFE v1.15.0
+    - gFTL v1.13.0
+    - gFTL-shared v1.8.0
+    - fArgParse v1.7.0
+    - pFUnit v4.9.0
+    - yaFyaml v1.3.0
+    - pFlogger v1.14.0
+  - NCO 5.2.2
+  - Various other updates
+- Move to use Open MPI 5 by default on SLES15 at NCCS
+
+### Fixed
+
+- Testing on GMAO Desktops showed that `LD_LIBRARY_PATH` could not be altered by
+  `g5_modules`. So this is disabled on GMAO Desktops
+
+## [4.27.0] - 2024-03-04
+
+### Changed
+
+- Move to use GEOSpyD Min23.5.2 on GMAO desktops
+
+## [4.26.0] - 2024-02-22
+
+### Changed
+
+- Move to Baselibs 7.18.1
+  - HDF5 1.14.3
+  - curl 8.6.0
+  - zlib 1.3.1
 
 ## [4.25.1] - 2024-01-24
 
