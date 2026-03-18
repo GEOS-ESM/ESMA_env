@@ -16,7 +16,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- Update to Baselibs 8.27.0
+- Update to Baselibs 9.7.1
   - ESMF v9.0.0b10
   - GFE v1.23.0
     - gFTL v1.17.0
