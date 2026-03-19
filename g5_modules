@@ -135,7 +135,7 @@ if ( $site == NCCS ) then
 
    set basedir = /discover/swdev/gmao_SIteam/Baselibs/ESMA-Baselibs-9.4.0/x86_64-pc-linux-gnu/ifort_2021.13.0-intelmpi_2021.13.0
 
-   if ($?USE_DSL)
+   if ($?USE_DSL) then
       set mod1 = DSL/latest
    else
       set mod1 = python/GEOSpyD/25.3.1-0/3.13
@@ -149,7 +149,7 @@ if ( $site == NCCS ) then
 
    set mod7 = other/ISSM/2026-02-09/ifort_2021.13.0-intelmpi_2021.13.0
 
-   set mods = ( $mod3 $mod1 $mod2 $mod4 $mod5 $mod6 $mod7 )
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 )
    set modinit = /usr/share/modules/init/csh
 
    set usemod1 = /discover/swdev/gmao_SIteam/modulefiles-SLES15
