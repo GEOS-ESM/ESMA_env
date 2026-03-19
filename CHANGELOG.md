@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [6.3.1] - 2026-03-19
+
+### Fixed
+
+- Fix for Athena at NAS
+
 ## [6.3.0] - 2026-03-18
 
 ### Changed

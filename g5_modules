@@ -195,7 +195,7 @@ else if ( $site == NAS ) then
       set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 )
       set modinit = /opt/cray/pe/modules/3.2.11.7/init/csh
 
-      set switchmods = ( intel/2023.2.1:intel/2024.2.0 )
+      set switchmods = ( intel/latest:intel/2024.2.0 )
       set switchmodules = 1
 
       set usemod1 = /nobackup/gmao_SIteam/modulefiles-TOSS5
