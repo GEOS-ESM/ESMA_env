@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+- `USE_DSL` environement variable pilot a swap from the regular`GEOSpyD` python to the `DSL/latest` one
+
 ## [6.4.0] - 2026-03-25
 
 ### Changed
