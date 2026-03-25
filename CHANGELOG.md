@@ -9,6 +9,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+## [6.4.0] - 2026-03-25
+
+### Changed
+
+- Update `build.csh` to set default NAS node type based on login node
+  - `pfe*` → Rome (`rom_ait`)
+  - `afe*` → Milan (`mil_ait`)
+  - `athfe*` → Turin (`tur_ath`)
+
+## [6.3.1] - 2026-03-19
+
+### Fixed
+
+- Fix for Athena at NAS
+
+## [6.3.0] - 2026-03-18
+
+### Changed
+
+- Update to Baselibs 9.7.1
+  - ESMF v9.0.0b10
+  - GFE v1.23.0
+    - gFTL v1.17.0
+    - gFTL-shared v1.12.0
+    - fArgParse v1.11.0
+    - pFUnit v4.16.0
+  - Better support for LLVM Flang
+
 ## [6.2.0] - 2026-02-10
 
 ### Changed
