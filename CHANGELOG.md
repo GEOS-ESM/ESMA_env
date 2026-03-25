@@ -12,6 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.20.0] - 2026-03-25
+
+### Changed
+
+- Update `build.csh` to set default NAS node type based on login node
+  - `pfe*` → Rome (`rom_ait`)
+  - `afe*` → Milan (`mil_ait`)
+  - `athfe*` → Turin (`tur_ath`)
+
 ## [5.19.1] - 2026-03-19
 
 ### Fixed
