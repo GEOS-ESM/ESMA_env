@@ -12,7 +12,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
-- `USE_DSL` environement variable pilot a swap from the regular`GEOSpyD` python to the `DSL/latest` one
+## [5.21.0] - 2026-03-26
+
+### Changed
+
+- Add `USE_DSL` environment variable pilot a swap from the regular `GEOSpyD` python to the `DSL/latest` stack
+
+## [5.20.1] - 2026-03-26
+
+### Fixed
+
+- Update `build.csh` to default to `-q normal` for Turin nodes, which require at least the normal queue
 
 ## [5.20.0] - 2026-03-25
 
