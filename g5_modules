@@ -240,9 +240,9 @@ else if ( $site == gs6150 ) then
 
    set mod1 = stack-gcc/13.3.0
    set mod2 = openmpi/5.0.5
-   set mod3 = Baselibs/8.27.0
-   set mod4 =
-   set mod5 =
+   set mod3 = texinfo/7.1
+   set mod4 = libxml2
+   set mod5 = Baselibs/8.27.0
    set mod6 =
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
