@@ -23,9 +23,15 @@ fi
 # Basedir
 export BASEDIR=$(csh $g5modules basedir)
 
+echo "g5modules = $g5modules"
+echo "MODULESHOME = $MODULESHOME"
+echo "BASEDIR= $BASEDIR"
+
+
 # UDUNITS2_XML_PATH
 arch=$(uname -s)
 export UDUNITS2_XML_PATH=$BASEDIR/$arch/share/udunits/udunits2.xml
+
 
 # Modules
 source $MODULESHOME/init/bash

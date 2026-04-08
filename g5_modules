@@ -99,6 +99,7 @@ endif
 
 alias echo2  "echo \!* > /dev/stderr"
 
+
 # get values
 #-----------
 if ($mach == x86_64) goto X86_64
@@ -231,6 +232,28 @@ else if ( $site == GMAO.desktop ) then
    # Testing shows adding BASEDIR lib to LD_LIBRARY_PATH
    # causes issues with the TCL modules on the GMAO machines
    set useldlibs = 0
+
+# Ubuntu v24.0.4 LTS
+else if ( $site == gs6150 ) then
+
+   set basedir = /home/yonggang/tools/mathomp4/baselibs/modulefiles/MPI/gcc-gfortran-13.3.0/openmpi-5.0.5
+
+   set mod1 = stack-gcc/13.3.0
+   set mod2 = openmpi/5.0.5
+   set mod3 = Baselibs/8.27.0
+   set mod4 =
+   set mod5 =
+   set mod6 =
+
+   set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
+   set modinit = /usr/share/lmod/lmod/init/bash
+
+   set usemod1 = /home/yonggang/tools/ss_all/spack-stack_1.9.3/envs/env_openmp//install/modulefiles/Core
+   set usemod2 = /home/yonggang/tools/mathomp4/baselibs/modulefiles/MPI/gcc-gfortran-13.3.0/openmpi-5.0.5
+   set usemod3 =
+   set usemods = ( $usemod1 $usemod2 $usemod3 )
+
+   set useldlibs = 1
 
 endif
 
