@@ -243,7 +243,7 @@ else if ( $site == gs6150 ) then
    set mod3 = texinfo/7.1
    set mod4 = libxml2
    set mod5 = Baselibs/8.27.0
-   set mod6 =
+   set mod6 = openblas/0.3.24
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
    set modinit = /usr/share/lmod/lmod/init/bash
