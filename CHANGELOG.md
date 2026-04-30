@@ -12,6 +12,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [4.29.1.2] - 2026-04-30
+
+### Changed
+
+- Update `build.csh` to the latest version used in newer tags
+  - Remove SLES12 business, update node types at NCCS and NAS
+- Remove SLES12 references from `g5_modules`
+
 ## [4.29.1.1] - 2026-01-21
 
 ### Changed

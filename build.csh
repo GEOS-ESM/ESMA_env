@@ -27,6 +27,8 @@
 # 10Oct2017  MAT     Added Skylake at NAS. Added option to pass in
 #                    account
 # 08Jul2019  MAT     Changes for git-based GEOSadas
+# 25Mar2026  MAT     Default NAS node type now based on login node
+#                    (pfe->Rome, afe->Milan, athfe->Turin)
 #------------------------------------------------------------------------
 
 # NOTE: This is now called by a stub routine. For sanity's
@@ -52,9 +54,11 @@ if ( ($node == dirac)   \
    setenv SITE NCCS
 
 else if (($node =~ pfe*)   \
-      || ($node =~ tfe*)   \
+      || ($node =~ afe*)   \
+      || ($node =~ athfe*)   \
       || ($node =~ r[0-9]*i[0-9]*n[0-9]*) \
-      || ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*)) then
+      || ($node =~ r[0-9]*c[0-9]*t[0-9]*n[0-9]*) \
+      || ($node =~ x[0-9]*c[0-9]*s[0-9]*b[0-9]*n[0-9]*) ) then
    setenv SITE NAS
 
 else
@@ -125,12 +129,12 @@ while ($#argv)
 
    # specify node type
    #------------------
+   if ("$1" == "-tur")  set nodeTYPE = "Turin"
    if ("$1" == "-mil")  set nodeTYPE = "Milan"
    if ("$1" == "-rom")  set nodeTYPE = "Rome"
    if ("$1" == "-cas")  set nodeTYPE = "CascadeLake"
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
    if ("$1" == "-bro")  set nodeTYPE = "Broadwell"
-   if ("$1" == "-has")  set nodeTYPE = "Haswell"
    if ("$1" == "-any")  set nodeTYPE = "Any node"
 
    # reset Fortran TMPDIR
@@ -278,8 +282,20 @@ endif
 # default nodeTYPE
 #-----------------
 if (! $?nodeTYPE) then
-   if ($SITE == NCCS) set nodeTYPE = "Any"
-   if ($SITE == NAS)  set nodeTYPE = "Skylake"
+   if ($SITE == NCCS) set nodeTYPE = "Milan"
+   if ($SITE == NAS) then
+      # Default node type depends on which NAS login node we are on:
+      #   pfe*   --> Rome  (rom_ait)
+      #   afe*   --> Milan (mil_ait)
+      #   athfe* --> Turin (tur_ath)
+      if ($node =~ athfe*) then
+         set nodeTYPE = "Turin"
+      else if ($node =~ afe*) then
+         set nodeTYPE = "Milan"
+      else
+         set nodeTYPE = "Rome"
+      endif
+   endif
 endif
 
 # at NCCS
@@ -287,36 +303,30 @@ endif
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if (($nT != sky) && ($nT != cas) && ($nT != mil) && ($nT != any)) then
+   if ( ($nT != cas) && ($nT != mil) && ($nT != any) ) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
 
    # For the any node, set the default to 40 cores as
    # this is the least number of cores you will get
-   if ($nT == any) @ NCPUS_DFLT = 40
-   if ($nT == sky) @ NCPUS_DFLT = 40
+   if ($nT == any) @ NCPUS_DFLT = 48
    if ($nT == cas) @ NCPUS_DFLT = 48
    if ($nT == mil) @ NCPUS_DFLT = 128
 
    if ($nT == any) set proc = 'any'
-   if ($nT == sky) set proc = 'sky'
    if ($nT == cas) set proc = 'cas'
    if ($nT == mil) set proc = 'mil'
 
-   # If we are using GNU at NCCS, we can*only* use the cas or mil processors
-   # as OpenMPI is only built for Infiniband
-   if ($usegnu) then
-      if ($nT == mil) then
-         echo "Using GNU at NCCS, setting queue to cas"
-         set proc = 'mil'
-      else
-         echo "Using GNU at NCCS, setting queue to cas"
-         set proc = 'cas'
-      endif
-      set slurm_constraint = "--constraint=$proc"
+   # Note if the user has not set proc, if we are
+   # building with GNU, we have to select something
+   # as the GNU has different answers. So we default
+   # to mil
+   if ($usegnu && ($nT == any)) then
+      echo "WARNING: Setting node type to mil as GNU optimization is processor dependent"
+      set slurm_constraint = "--constraint=mil"
    else if ($nT == any) then
-      set slurm_constraint = "--constraint=sky|cas"
+      set slurm_constraint = "--constraint=mil|cas"
    else
       set slurm_constraint = "--constraint=$proc"
    endif
@@ -336,21 +346,40 @@ endif
 if ( $SITE == NAS ) then
 
    set nT = `echo $nodeTYPE | cut -c1-3 | tr "[A-Z]" "[a-z]"`
-   if (($nT != has) && ($nT != bro) && ($nT != sky) && ($nT != cas) && ($nT != rom)) then
+   if (($nT != bro) && ($nT != sky) && ($nT != cas) && ($nT != rom) && ($nT != mil) && ($nT != tur)) then
       echo "ERROR. Unknown node type at NAS: $nodeTYPE"
       exit 2
    endif
 
+   # At NAS, you must submit to Milan nodes from afe nodes
+   if ( ($nT == mil) && ($node !~ afe*) ) then
+      echo "ERROR. Milan nodes can only be accessed from afe nodes."
+      exit 2
+   endif
+
+   # At NAS, you must submit to Turin nodes from athfe nodes
+   if ( ($nT == tur) && ($node !~ athfe*) ) then
+      echo "ERROR. Turin nodes can only be accessed from athfe nodes."
+      exit 2
+   endif
+
+   if ($nT == tur) set nT = 'tur_ath'
+   if ($nT == mil) set nT = 'mil_ait'
    if ($nT == rom) set nT = 'rom_ait'
-   if ($nT == sky) set nT = 'sky_ele'
    if ($nT == cas) set nT = 'cas_ait'
+   if ($nT == sky) set nT = 'sky_ele'
+   if ($nT == bro) set nT = 'bro_ele'
    set proc = ":model=$nT"
 
-   if ($nT == has)     @ NCPUS_DFLT = 24
-   if ($nT == bro)     @ NCPUS_DFLT = 28
+   if ($nT == bro_ele) @ NCPUS_DFLT = 28
    if ($nT == sky_ele) @ NCPUS_DFLT = 40
    if ($nT == cas_ait) @ NCPUS_DFLT = 40
    if ($nT == rom_ait) @ NCPUS_DFLT = 128
+   if ($nT == mil_ait) @ NCPUS_DFLT = 128
+   if ($nT == tur_ath) @ NCPUS_DFLT = 256
+
+   # Turin requires at least the normal queue
+   if (($nT == tur_ath) && ("$queue" == "")) set queue = "-q normal"
 
    # TMPDIR needs to be reset
    #-------------------------
@@ -407,42 +436,6 @@ if (! $?Pbuild_install_directory) then
       setenv Pbuild_install_directory $ESMADIR/install-Aggressive
    else
       setenv Pbuild_install_directory $ESMADIR/install
-   endif
-endif
-
-# If we are at NCCS, because of the dual OSs, we decorate the build and
-# install directory with the OS name. If we submit to Milan, we will add
-# -SLES15, otherwise -SLES12 to the build and install directories.  But,
-# we only do this if the user has not specified a build directory or
-# install directory
-# ---------------------------------------------------------------------
-
-if ($SITE == NCCS) then
-   # We now have to handle this in two ways. One if we are on a compute node and one if we aren't.
-   # This is because of how this script works where it sort of submits itself to the batch system
-   # and many of the variables known by the script before submission are lost after submission.
-   # So if we are on a compute node, we detect the OS version directly, but if we are just submitting on a
-   # head node, we instead have to just use the processor type passed in. We'll use oncompnode to detect
-   # which case we are in.
-   if ($oncompnode) then
-      set OS_VERSION=`grep VERSION_ID /etc/os-release | cut -d= -f2 | cut -d. -f1 | sed 's/"//g'`
-   else
-      if ($nT == mil) then
-         set OS_VERSION = 15
-      else
-         set OS_VERSION = 12
-      endif
-   endif
-   # We also check if we already appended SLES
-   if (! $?BUILDDIR && "$BUILDDIR_PASSED" == "NO") then
-      if ($Pbuild_build_directory !~ "*-SLES${OS_VERSION}") then
-         setenv Pbuild_build_directory ${Pbuild_build_directory}-SLES${OS_VERSION}
-      endif
-   endif
-   if (! $?INSTALLDIR && "$INSTALLDIR_PASSED" == "NO") then
-      if ($Pbuild_install_directory !~ "*-SLES${OS_VERSION}") then
-         setenv Pbuild_install_directory ${Pbuild_install_directory}-SLES${OS_VERSION}
-      endif
    endif
 endif
 
@@ -767,10 +760,6 @@ else if ( $SITE == NAS ) then
 else if ( $SITE == NCCS ) then
    if ("$walltime" == "") setenv walltime "1:00:00"
    set echo
-   # NOTE: The weird long export line below is needed at NCCS because of the
-   #       two OSs. For some reason, if you submit a Milan job from a SLES12
-   #       headnode, it was seeing SLES12 module paths. We believe this is
-   #       because SLURM by default exports all the environment
    sbatch $groupflag $partition $queue \
         $slurm_constraint      \
         --job-name=$jobname    \
@@ -778,7 +767,6 @@ else if ( $SITE == NCCS ) then
         --nodes=1              \
         --ntasks=${numjobs}    \
         --time=$walltime       \
-        --export ESMADIR=${ESMADIR},cmake_build_type=${cmake_build_type},EXTRA_CMAKE_FLAGS=${EXTRA_CMAKE_FLAGS},FORTRAN_COMPILER=${FORTRAN_COMPILER},INSTALL_SOURCE_TARFILE=${INSTALL_SOURCE_TARFILE},verbose=${verbose},GMI_MECHANISM_FLAG=${GMI_MECHANISM_FLAG},Pbuild_build_directory=${Pbuild_build_directory},Pbuild_install_directory=${Pbuild_install_directory},usegnu=${usegnu},notar=${notar},tmpdir=${tmpdir},docmake=${docmake},debug=${debug},aggressive=${aggressive},BUILDDIR_PASSED=${BUILDDIR_PASSED},INSTALLDIR_PASSED=${INSTALLDIR_PASSED},queue=${queue},partition=${partition},cleanFLAG=${cleanFLAG} \
         $waitflag              \
         $0
    unset echo
@@ -958,13 +946,18 @@ flagged options
    -account account     send batch job to account
    -walltime hh:mm:ss   time to use as batch walltime at job submittal
 
-   -mil                 compile on Milan nodes (only at NCCS)
+   -tur                 compile on Turin nodes (only at NAS, must be submitted from athfe nodes)
+   -mil                 compile on Milan nodes (default at NCCS; at NAS must be submitted from afe nodes)
    -rom                 compile on Rome nodes (only at NAS)
    -cas                 compile on Cascade Lake nodes
-   -sky                 compile on Skylake nodes (default at NAS)
+   -sky                 compile on Skylake nodes (only at NAS)
    -bro                 compile on Broadwell nodes (only at NAS)
-   -has                 compile on Haswell nodes (only at NAS)
-   -any                 compile on either Sky or Cascade Lake node (only at NCCS with SLURM, default at NCCS)
+   -any                 compile on any node (only at NCCS)
+
+   Default NAS node type is based on login node:
+      pfe*   -> Rome  (-rom)
+      afe*   -> Milan (-mil)
+      athfe* -> Turin (-tur)
 
 extra cmake options
 
