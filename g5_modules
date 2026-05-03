@@ -246,7 +246,7 @@ else if ( $site == gs6150 ) then
    set mod6 = openblas/0.3.24
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
-   set modinit = /usr/share/lmod/lmod/init/bash
+   set modinit = /usr/share/lmod/lmod/init/csh
 
    set usemod1 = /home/yonggang/tools/ss_all/spack-stack_1.9.3/envs/env_openmp//install/modulefiles/Core
    set usemod2 = /home/yonggang/tools/mathomp4/baselibs/modulefiles/MPI/gcc-gfortran-13.3.0/openmpi-5.0.5
