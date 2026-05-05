@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [6.6.0] - 2026-05-05
+
+### Changed
+
+- Updated ISSM module to geos/1.0.0
+
 ## [6.5.0] - 2026-03-26
 
 ### Changed

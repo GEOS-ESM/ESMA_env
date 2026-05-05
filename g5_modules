@@ -137,7 +137,7 @@ if ( $site == NCCS ) then
    else
       set mod1 = python/GEOSpyD/25.3.1-0/3.13
    endif
-   
+
    set mod2 = GEOSenv
 
    set mod3 = comp/gcc/12.3.0
@@ -145,7 +145,7 @@ if ( $site == NCCS ) then
    set mod5 = mpi/impi/2021.13
    set mod6 = other/jemalloc/5.3.0
 
-   set mod7 = other/ISSM/2026-02-09/ifort_2021.13.0-intelmpi_2021.13.0
+   set mod7 = other/ISSM/geos/1.0.0/ifort_2021.13.0-intelmpi_2021.13.0
 
    set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 )
    set modinit = /usr/share/modules/init/csh
@@ -172,7 +172,7 @@ else if ( $site == NAS ) then
       set mod4 = comp-intel/2024.2.0-ifort
       set mod5 = mpi-hpe/mpt
 
-      set mod6 = other/ISSM/2026-02-10/ifort_2021.13.0-mpt_2.30
+      set mod6 = other/ISSM/geos/1.0.0/ifort_2021.13.0-mpt_2.30
 
       set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 )
       set modinit = /usr/share/modules/init/tcsh
@@ -195,7 +195,7 @@ else if ( $site == NAS ) then
       set mod5 = comp-intel/2024.2.0
       set mod6 = mpi/mpich-ifort
 
-      set mod7 = other/ISSM/2026-02-10/ifort_2021.13.0-craympich_8.1.33
+      set mod7 = other/ISSM/geos/1.0.0/ifort_2021.13.0-craympich_8.1.33
 
       set mods = ( $mod1 $mod2 $mod3 $mod4 $mod5 $mod6 $mod7 )
       set modinit = /opt/cray/pe/modules/3.2.11.7/init/csh
