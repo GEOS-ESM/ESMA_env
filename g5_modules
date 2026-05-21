@@ -254,6 +254,8 @@ else if ( $site == gs6150 ) then
    set usemods = ( $usemod1 $usemod2 $usemod3 )
    set usemodules = 1
 
+   set SS_GCC_ROOT = "/home/yonggang/tools/ss_all/spack-stack_1.9.3/envs/env_openmp/install/gcc/13.3.0"
+   set ld_libraries = ( ${SS_GCC_ROOT}/libiconv-1.17-6xm2r2b/lib ${SS_GCC_ROOT}/xz-5.4.6-bhqm72g/lib ${SS_GCC_ROOT}/libxml2-2.11.9-2du33yb/lib ${SS_GCC_ROOT}/openmpi-5.0.5-74tszzc/lib )
    set useldlibs = 1
 
 endif
