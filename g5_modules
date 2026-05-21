@@ -252,6 +252,7 @@ else if ( $site == gs6150 ) then
    set usemod2 = /home/yonggang/tools/mathomp4/baselibs/modulefiles/MPI/gcc-gfortran-13.3.0/openmpi-5.0.5
    set usemod3 =
    set usemods = ( $usemod1 $usemod2 $usemod3 )
+   set usemodules = 1
 
    set useldlibs = 1
 
@@ -418,6 +419,7 @@ if (-e $modinit) then
 
 endif
 if (! $wrapper) echo " for $node"
+
 
 # write sh commands to a .g5_modules.sh file
 #-------------------------------------------
