@@ -1,4 +1,5 @@
-#!/usr/bin/sh
+####!/usr/bin/sh
+#!/usr/bin/bash
 #=======================================================================
 # name - g5_modules.bash
 # purpose -
