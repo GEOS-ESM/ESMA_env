@@ -1,4 +1,8 @@
 #!/bin/csh
+#
+# It is a mimic of g5_module.bash
+# from AI,  but now it is not needed
+#
 #=================================================================
 set script_dir = `dirname $0`
 set g5ModDir = `cd "$script_dir" && pwd`
