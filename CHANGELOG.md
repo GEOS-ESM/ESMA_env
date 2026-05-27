@@ -12,6 +12,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.23.0] - 2026-05-28
+
+### Changed
+
+- Move to GEOSpyD 26.3.2 Python 3.14
+- Updated ISSM module to geos/1.0.2-py3.14
+
 ## [5.22.0] - 2026-05-05
 
 ### Changed
