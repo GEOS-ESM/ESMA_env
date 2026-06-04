@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - pFlogger v1.18.1
   - fftw v3.3.11
   - Various fixes for compiler testing
+- Move to Intel MPI at NAS by default
+  - This is due to issue found with Ops L91 runs with MPT in v12
 
 ## [5.23.0] - 2026-05-28
 
