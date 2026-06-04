@@ -12,6 +12,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [6.8.0] - 2026-06-04
+
+### Changed
+
+- Update to Baselibs 8.32.0
+  - GFE v1.28.0
+    - pFUnit v4.19.0
+    - pFlogger v1.18.1
+  - fftw v3.3.11
+  - Various fixes for compiler testing
+- Move to Intel MPI at NAS by default
+  - This is due to issue found with Ops L91 runs with MPT in v12
+
 ## [6.7.0] - 2026-05-28
 
 ### Changed
