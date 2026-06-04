@@ -12,6 +12,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.24.0] - 2026-06-04
+
+### Changed
+
+- Update to Baselibs 8.32.0
+  - GFE v1.28.0
+    - pFUnit v4.19.0
+    - pFlogger v1.18.1
+  - fftw v3.3.11
+  - Various fixes for compiler testing
+
 ## [5.23.0] - 2026-05-28
 
 ### Changed
