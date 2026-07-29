@@ -236,7 +236,7 @@ else if ( $site == GMAO.desktop ) then
 # Ubuntu v24.0.4 LTS
 else if ( $site == gs6150 ) then
 
-   set basedir = /home/yonggang/tools/mathomp4/baselibs/modulefiles/MPI/gcc-gfortran-13.3.0/openmpi-5.0.5
+   set basedir = /home/yonggang/tools/mathomp4/baselibs/installed/MPI/gcc-13.3.0/openmpi-5.0.5/Baselibs/8.27.0
 
    set mod1 = stack-gcc/13.3.0
    set mod2 = openmpi/5.0.5
