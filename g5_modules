@@ -233,7 +233,9 @@ else if ( $site == GMAO.desktop ) then
    # causes issues with the TCL modules on the GMAO machines
    set useldlibs = 0
 
-# Ubuntu v24.0.4 LTS
+#====================#
+# Ubuntu v24.0.4 LTS #
+#====================#
 else if ( $site == gs6150 ) then
 
    set basedir = /home/yonggang/tools/mathomp4/baselibs/installed/MPI/gcc-13.3.0/openmpi-5.0.5/Baselibs/8.27.0
@@ -329,6 +331,7 @@ if ( $#argv > 0 ) then
 
    exit
 endif
+
 
 SETVALUES:
 #================#
