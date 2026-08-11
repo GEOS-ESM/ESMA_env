@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [6.9.1] - 2026-08-11
+
+### Fixed
+
+- Support module switching in `g5_modules.sh` and `g5_modules.zsh` based on `switchmodules` output from `g5_modules`
+
 ## [6.9.0] - 2026-07-07
 
 ### Changed
