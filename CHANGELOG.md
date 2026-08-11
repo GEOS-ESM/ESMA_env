@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [6.9.2] - 2026-08-11
+
+### Fixed
+
+- Check variable existence before echoing in `g5_modules` to prevent undefined variable errors when `switchmodules` or `usemodules` is queried
+
 ## [6.9.1] - 2026-08-11
 
 ### Fixed
