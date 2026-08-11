@@ -40,3 +40,12 @@ for mymod in $(csh $g5modules modules); do
     module load $mymod
 done
 
+for switchmod in $(csh $g5modules switchmodules); do
+    if [ "$switchmod" != "0" ]; then
+        frommodule=${switchmod%%:*}
+        tomodule=${switchmod#*:}
+        module switch $frommodule $tomodule
+    fi
+done
+
+
