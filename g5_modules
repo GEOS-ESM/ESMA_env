@@ -277,16 +277,28 @@ if ( $#argv > 0 ) then
       echo $modinit
 
    else if ( $1 == usemodules ) then
-      echo $usemods
+      if ( $?usemods ) then
+         echo $usemods
+      else
+         echo 0
+      endif
 
    else if ( $1 == switchmodules ) then
-      echo $switchmods
+      if ( $?switchmods ) then
+         echo $switchmods
+      else
+         echo 0
+      endif
 
    else if ( $1 == useldlibs ) then
       echo $useldlibs
 
    else if ( $1 == ESMA_FC ) then
-      echo $ESMA_FC
+      if ( $?ESMA_FC ) then
+         echo $ESMA_FC
+      else
+         echo 0
+      endif
 
    else if ( $1 == site ) then
       echo $site
