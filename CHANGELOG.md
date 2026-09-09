@@ -12,6 +12,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [6.10.0] - 2026-09-08
+
+### Changed
+
+- Update to Baselibs 9.13.0
+  - ESMF 9.0.0b17
+  - FMS 2026.01.01
+  - nccmp 1.11.0.0
+  - CDO 2.6.3
+  - NCO 5.3.9
+  - zlib 1.3.2
+  - Update both `hdf4` and `hdf5` builds to pass in `-fPIC`
+  - Allow `hdfeos` to build with Intel `ifx` by configuring with `--disable-fortran` (C interfaces only) and avoiding reliance on `h4fc-hdf4` rather than excluding `hdfeos` entirely.
+  - Build `libyaml` with Autotools so it installs the `yaml-0.1.pc` pkg-config file required by FMS 2026.01.01.
+  - Enable FMS YAML support with `-DWITH_YAML=ON`.
+- NOTE: This must be used with [ESMA_cmake v5.17.0](https://github.com/GEOS-ESM/ESMA_cmake/releases/tag/v5.17.0) or higher due to changes in FMS 2026.01.01
+
 ## [6.9.2] - 2026-08-11
 
 ### Fixed
