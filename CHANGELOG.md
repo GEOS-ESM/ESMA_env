@@ -12,6 +12,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.26.0] - 2026-09-09
+
+### Changed
+
+- Update to Baselibs 8.33.0
+  - ESMF 9.0.0b17
+  - nccmp 1.11.0.0
+  - CDO 2.6.3
+  - NCO 5.3.9
+  - zlib 1.3.2
+  - Update both `hdf4` and `hdf5` builds to pass in `-fPIC`
+  - Allow `hdfeos` to build with Intel `ifx` by configuring with `--disable-fortran` (C interfaces only) and avoiding reliance on `h4fc-hdf4` rather than excluding `hdfeos` entirely.
+
 ## [5.25.2] - 2026-08-11
 
 ### Fixed
