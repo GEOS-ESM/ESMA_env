@@ -12,6 +12,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.27.0] - 2026-10-26
+
+### Changed
+
+- Update to GEOSpyD 26.7.2 Python 3.14
+
 ## [5.26.0] - 2026-09-09
 
 ### Changed
