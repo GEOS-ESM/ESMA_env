@@ -143,7 +143,6 @@ while ($#argv)
    if ("$1" == "-cas")  set nodeTYPE = "CascadeLake"
    if ("$1" == "-sky")  set nodeTYPE = "Skylake"
    if ("$1" == "-bro")  set nodeTYPE = "Broadwell"
-   if ("$1" == "-any")  set nodeTYPE = "Any node"
 
    # reset Fortran TMPDIR
    #---------------------
@@ -311,33 +310,17 @@ endif
 if ($SITE == NCCS) then
 
    set nT = `echo $nodeTYPE| tr "[A-Z]" "[a-z]" | cut -c1-3 `
-   if ( ($nT != cas) && ($nT != mil) && ($nT != any) ) then
+   if ( ($nT != mil) ) then
       echo "ERROR. Unknown node type at NCCS: $nodeTYPE"
       exit 1
    endif
 
-   # For the any node, set the default to 40 cores as
-   # this is the least number of cores you will get
-   if ($nT == any) @ NCPUS_DFLT = 48
-   if ($nT == cas) @ NCPUS_DFLT = 48
    if ($nT == mil) @ NCPUS_DFLT = 128
 
-   if ($nT == any) set proc = 'any'
-   if ($nT == cas) set proc = 'cas'
    if ($nT == mil) set proc = 'mil'
 
-   # Note if the user has not set proc, if we are
-   # building with GNU, we have to select something
-   # as the GNU has different answers. So we default
-   # to mil
-   if ($usegnu && ($nT == any)) then
-      echo "WARNING: Setting node type to mil as GNU optimization is processor dependent"
-      set slurm_constraint = "--constraint=mil"
-   else if ($nT == any) then
-      set slurm_constraint = "--constraint=mil|cas"
-   else
-      set slurm_constraint = "--constraint=$proc"
-   endif
+   # Currently NCCS only has Milan nodes. So we just only use that.
+   set slurm_constraint = "--constraint=$proc"
 
    if ("$queue" == "") then
       set queue = '--qos=debug'
@@ -962,10 +945,9 @@ flagged options
    -tur                 compile on Turin nodes (only at NAS, must be submitted from athfe nodes)
    -mil                 compile on Milan nodes (default at NCCS; at NAS must be submitted from afe nodes)
    -rom                 compile on Rome nodes (only at NAS)
-   -cas                 compile on Cascade Lake nodes
+   -cas                 compile on Cascade Lake nodes (only at NAS)
    -sky                 compile on Skylake nodes (only at NAS)
    -bro                 compile on Broadwell nodes (only at NAS)
-   -any                 compile on any node (only at NCCS)
 
    Default NAS node type is based on login node:
       pfe*   -> Rome  (-rom)
