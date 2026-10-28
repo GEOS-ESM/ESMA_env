@@ -12,6 +12,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [6.11.0] - 2026-10-26
+
+### Changed
+
+- Update to GEOSpyD 26.7.2 Python 3.14
+
+### Removed
+
+- Remove Cascade Lake support at NCCS in `build.csh`; only Milan nodes will be available starting 2026-11-01. Cascade Lake remains supported at NAS.
+- Remove the NCCS `-any` option from `build.csh`.
+
 ## [6.10.0] - 2026-09-08
 
 ### Changed
