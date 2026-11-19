@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Changed
+
+- Update to Baselibs 9.14.0
+- Update ISSM module to geos/1.0.4
+
 ### Fixed
 ### Removed
 ### Added
