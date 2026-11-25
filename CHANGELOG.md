@@ -12,6 +12,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 ### Added
 
+## [5.28.0] - 2026-11-25
+
+### Changed
+
+- Update to Baselibs 8.34.0
+  - GFE v1.31.0
+    - fArgParse v1.12.0
+    - pFUnit v4.22.0
+    - yaFyaml v1.7.3
+    - pFlogger v1.19.1
+- Update ISSM module to geos/1.0.4
+
 ## [5.27.0] - 2026-10-26
 
 ### Changed
